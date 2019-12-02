@@ -1,12 +1,11 @@
-with open('input') as file:
-    program = file.read().replace('\n', '').split(',')
-    for i in range(len(program)):
-        program[i] = int(program[i])
+def get_program(file):
+    with open(file) as f:
+        return list(map(int, f.read().split(',')))
 
-    # 1202 program alarm
-    program[1] = 12
-    program[2] = 2
 
+def run_program(program, noun, verb):
+    program[1] = noun
+    program[2] = verb
     pc = 0
     while pc < len(program):
         opcode = program[pc]
@@ -21,5 +20,21 @@ with open('input') as file:
         else:
             print('unknown opcode')
             break
-    print(program[0])
-    file.close()
+    return program[0]
+
+
+def part_one():
+    return run_program(get_program('input'), 12, 2)
+
+
+def part_two(output):
+    program = get_program('input')
+    for noun in range(100):
+        for verb in range(100):
+            if run_program(program.copy(), noun, verb) == output:
+                return 100 * noun + verb
+    return 'not found'
+
+
+print(part_one())
+print(part_two(19690720))
