@@ -12,4 +12,4 @@ with open('input') as mass_list:
         while module_fuel > 0:
             total_fuel += module_fuel
             module_fuel = calculate_fuel(module_fuel)
-    print(int(total_fuel))
+    print(total_fuel)
