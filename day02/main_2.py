@@ -1,3 +1,8 @@
+def get_program(file):
+    with open(file) as f:
+        return list(map(int, f.read().split(',')))
+
+
 def run_program(program, noun, verb):
     program[1] = noun
     program[2] = verb
@@ -18,13 +23,12 @@ def run_program(program, noun, verb):
     return program[0]
 
 
-with open('input') as file:
-    program = file.read().replace('\n', '').split(',')
-    for i in range(len(program)):
-        program[i] = int(program[i])
-    file.close()
+def main(output):
     for noun in range(100):
         for verb in range(100):
-            if run_program(program.copy(), noun, verb) == 19690720:
-                print(100 * noun + verb)
-                break
+            if run_program(get_program('input'), noun, verb) == output:
+                return 100 * noun + verb
+    return 'not found'
+
+
+print(main(19690720))
