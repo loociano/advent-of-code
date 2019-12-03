@@ -28,12 +28,7 @@ def _paint_path(area_dict, delay_dict, wire_data, id, with_delay):
                 area_dict[key] = id
                 delay_dict[key] = step
             else:
-                if with_delay:
-                    dist = delay_dict.get(key) + step
-                else:
-                    dist = abs(x) + abs(y)
-                if dist < min_dist:
-                    min_dist = dist
+                min_dist = min(min_dist, delay_dict.get(key) + step if with_delay else abs(x) + abs(y))
     return min_dist
 
 
