@@ -6,15 +6,13 @@ def _get_wires(filename):
         return list(file.readline().rstrip().split(',')), list(file.readline().rstrip().split(','))
 
 
-def _paint_path(area_dict, delay_dict, wire, mark, with_delay):
+def _paint_path(area_dict, delay_dict, wire_data, id, with_delay):
     min_dist = sys.maxsize
-    x = 0
-    y = 0
-    delay = 0
-    for i in range(len(wire)):
-        next = wire[i]
-        dir = next[0:1]
-        steps = int(next[1:])
+    x, y = 0, 0
+    step = 0
+    for i in range(len(wire_data)):
+        next = wire_data[i]
+        dir, steps = next[0:1], int(next[1:])
         for j in range(steps):
             if dir == 'R':
                 x += 1
@@ -24,14 +22,14 @@ def _paint_path(area_dict, delay_dict, wire, mark, with_delay):
                 y += 1
             else:
                 y -= 1
-            delay += 1
+            step += 1
             key = "{} {}".format(x, y)
-            if area_dict.get(key) is None or area_dict[key] == mark:
-                area_dict[key] = mark
-                delay_dict[key] = delay
+            if area_dict.get(key) is None or area_dict.get(key) == id:
+                area_dict[key] = id
+                delay_dict[key] = step
             else:
                 if with_delay:
-                    dist = delay_dict.get(key) + delay
+                    dist = delay_dict.get(key) + step
                 else:
                     dist = abs(x) + abs(y)
                 if dist < min_dist:
@@ -49,10 +47,10 @@ def part_one():
 
 def part_two():
     wire1, wire2 = _get_wires('input')
-    area = {}
-    delay = {}
-    _paint_path(area, delay, wire1, 1, True)
-    return _paint_path(area, delay, wire2, 2, True)
+    area_dict = {}
+    delay_dict = {}
+    _paint_path(area_dict, delay_dict, wire1, 1, True)
+    return _paint_path(area_dict, delay_dict, wire2, 2, True)
 
 
 print(part_one())
