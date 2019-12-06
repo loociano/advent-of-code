@@ -5,7 +5,6 @@ def get_orbits(file):
         for orbit in orbits:
             node1, node2 = orbit.rstrip().split(')')
             graph[node2] = node1
-    print(graph)
     return graph
 
 
@@ -47,5 +46,5 @@ def part_two():
     return count_you + count_san + 2
 
 
-print(part_one())
-print(part_two())
+print(part_one())  # 333679
+print(part_two())  # 370
