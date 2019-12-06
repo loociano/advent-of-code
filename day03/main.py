@@ -48,5 +48,5 @@ def part_two():
     return _paint_path(area_dict, delay_dict, wire2, 2, True)
 
 
-print(part_one())
-print(part_two())
+print(part_one())  # 1626
+print(part_two())  # 27330
