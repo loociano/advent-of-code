@@ -21,9 +21,9 @@ def get_program(file):
         return list(map(int, f.read().split(',')))
 
 
-def run(program, inputs, is_feedback = False):
+def run(program, inputs, is_feedback=False, pc=0):
     diagnostic_code = 0
-    pc = 0
+    pc = pc
     while pc < len(program):
         opcode_obj = _decode_opcode(program[pc])
         opcode = opcode_obj[3] * 10 + opcode_obj[4]
@@ -44,7 +44,7 @@ def run(program, inputs, is_feedback = False):
             diagnostic_code = op1
             pc += 2
             if is_feedback:
-                return diagnostic_code
+                return diagnostic_code, pc
         elif opcode == 5 or opcode == 6:
             op1, op2 = _get_op1(program, pc, op1_mode), _get_op2(program, pc, op2_mode)
             pc = op2 if (opcode == 5 and op1 != 0) or (opcode == 6 and op1 == 0) else pc + 3
@@ -58,7 +58,7 @@ def run(program, inputs, is_feedback = False):
             pc += 4
         elif opcode == 99:
             if is_feedback:
-                return None
+                return diagnostic_code, None
             break
         else:
             print('unknown opcode')
@@ -89,4 +89,25 @@ def part_one():
     return max_thruster_signal
 
 
+def part_two():
+    max_thruster_signal = 0
+    program = get_program('input')
+    phase_seqs = permute(range(5, 10))
+    output = 0
+    for phase_seq in phase_seqs:
+        programs = [program.copy(), program.copy(), program.copy(), program.copy(), program.copy()]
+        pcs = [0, 0, 0, 0, 0]
+        inputs = [[], [], [], [], []]
+        for i in range(0, 5):
+            inputs[i].append(phase_seq[i])
+        while pcs[0] is not None:
+            for i in range(0, 5):
+                inputs[i].append(output)
+                output, pc = run(programs[i], inputs[i], True, pcs[i])
+                pcs[i] = pc
+        max_thruster_signal = max(max_thruster_signal, inputs[0][0])
+    return max_thruster_signal
+
+
 print(part_one())  # 87138
+print(part_two())  # 17279674
