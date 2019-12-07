@@ -21,7 +21,7 @@ def get_program(file):
         return list(map(int, f.read().split(',')))
 
 
-def run(program, input_id):
+def run(program, inputs, is_feedback = False):
     diagnostic_code = 0
     pc = 0
     while pc < len(program):
@@ -35,12 +35,16 @@ def run(program, input_id):
             program[dest] = op1 + op2 if opcode == 1 else op1 * op2
             pc += 4
         elif opcode == 3:
-            program[program[pc + 1]] = input_id
+            if len(inputs) == 0:
+                raise Exception('no input!')
+            program[program[pc + 1]] = inputs.pop(0)
             pc += 2
         elif opcode == 4:
             op1 = _get_op1(program, pc, op1_mode)
             diagnostic_code = op1
             pc += 2
+            if is_feedback:
+                return diagnostic_code
         elif opcode == 5 or opcode == 6:
             op1, op2 = _get_op1(program, pc, op1_mode), _get_op2(program, pc, op2_mode)
             pc = op2 if (opcode == 5 and op1 != 0) or (opcode == 6 and op1 == 0) else pc + 3
@@ -53,6 +57,8 @@ def run(program, input_id):
             program[program[pc + 3]] = 1 if op1 == op2 else 0
             pc += 4
         elif opcode == 99:
+            if is_feedback:
+                return None
             break
         else:
             print('unknown opcode')
@@ -60,5 +66,27 @@ def run(program, input_id):
     return diagnostic_code
 
 
-print(run(get_program('input'), 1))  # 9025675
-print(run(get_program('input'), 5))  # 11981754
+def permute(phases):
+    phase_seq = [[]]
+    for n in phases:
+        new_perm = []
+        for perm in phase_seq:
+            for i in range(len(perm) + 1):
+                new_perm.append(perm[:i] + [n] + perm[i:])
+                phase_seq = new_perm
+    return phase_seq
+
+
+def part_one():
+    max_thruster_signal = 0
+    program = get_program('input')
+    phase_seqs = permute(range(0, 5))
+    for phase_seq in phase_seqs:
+        output = 0
+        while len(phase_seq) > 0:
+            output = run(program.copy(), [phase_seq.pop(0), output])
+        max_thruster_signal = max(max_thruster_signal, output)
+    return max_thruster_signal
+
+
+print(part_one())  # 87138
