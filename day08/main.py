@@ -47,5 +47,13 @@ def part_two(width, height):
     return '\n'.join(message)
 
 
-print(part_one(25, 6))
-print(part_two(25, 6))
+print(part_one(25, 6))  # 1965
+print(part_two(25, 6))  # GZKJY
+"""
+ XX  XXXX X  X   XX X   X
+X  X    X X X     X X   X
+X      X  XX      X  X X 
+X XX  X   X X     X   X  
+X  X X    X X  X  X   X  
+ XXX XXXX X  X  XX    X  
+"""
