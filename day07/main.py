@@ -21,7 +21,7 @@ def get_program(file):
         return list(map(int, f.read().split(',')))
 
 
-def run(program, inputs, is_feedback=False, pc=0):
+def _run(program, inputs, is_feedback=False, pc=0):
     diagnostic_code = 0
     pc = pc
     while pc < len(program):
@@ -66,46 +66,49 @@ def run(program, inputs, is_feedback=False, pc=0):
     return diagnostic_code
 
 
-def permute(phases):
-    phase_seq = [[]]
+def _get_phase_permutations(phases):
+    phase_perms = [[]]
     for n in phases:
         new_perm = []
-        for perm in phase_seq:
+        for perm in phase_perms:
             for i in range(len(perm) + 1):
                 new_perm.append(perm[:i] + [n] + perm[i:])
-                phase_seq = new_perm
-    return phase_seq
+                phase_perms = new_perm
+    return phase_perms
 
 
 def part_one():
     max_thruster_signal = 0
     program = get_program('input')
-    phase_seqs = permute(range(0, 5))
-    for phase_seq in phase_seqs:
+    phase_perms = _get_phase_permutations(range(0, 5))
+    for phase_perm in phase_perms:
         output = 0
-        while len(phase_seq) > 0:
-            output = run(program.copy(), [phase_seq.pop(0), output])
+        while len(phase_perm) > 0:
+            output = _run(program.copy(), [phase_perm.pop(0), output])
         max_thruster_signal = max(max_thruster_signal, output)
     return max_thruster_signal
 
 
+def _run_with_phase_setting(program, phase_setting):
+    programs, pcs, inputs = [], [], []
+    num_amps = len(phase_setting)
+    amp_output = 0
+    for i in range(0, num_amps):
+        programs.append(program.copy())
+        pcs.append(0)
+        inputs.append([phase_setting[i]])
+    while pcs[0] is not None:
+        for i in range(0, num_amps):
+            inputs[i].append(amp_output)
+            amp_output, pc = _run(programs[i], inputs[i], True, pcs[i])
+            pcs[i] = pc
+    return inputs[0][0]
+
+
 def part_two():
     max_thruster_signal = 0
-    program = get_program('input')
-    phase_seqs = permute(range(5, 10))
-    output = 0
-    for phase_seq in phase_seqs:
-        programs = [program.copy(), program.copy(), program.copy(), program.copy(), program.copy()]
-        pcs = [0, 0, 0, 0, 0]
-        inputs = [[], [], [], [], []]
-        for i in range(0, 5):
-            inputs[i].append(phase_seq[i])
-        while pcs[0] is not None:
-            for i in range(0, 5):
-                inputs[i].append(output)
-                output, pc = run(programs[i], inputs[i], True, pcs[i])
-                pcs[i] = pc
-        max_thruster_signal = max(max_thruster_signal, inputs[0][0])
+    for phase_perm in _get_phase_permutations(range(5, 10)):
+        max_thruster_signal = max(max_thruster_signal, _run_with_phase_setting(get_program('input'), phase_perm))
     return max_thruster_signal
 
 
