@@ -16,8 +16,7 @@ def _get_layer_with_fewest_zeros(freq_list):
     return result
 
 
-def part_one(width, height):
-    pixels = _get_image_pixels('input')
+def _compute_freqs(pixels, width, height):
     layer = -1
     freq_list = []
     for i, pixel in enumerate(pixels):
@@ -25,13 +24,10 @@ def part_one(width, height):
             layer += 1
             freq_list.append([0 for i in range(0, 10)])
         freq_list[layer][pixel] += 1
-
-    result_layer = _get_layer_with_fewest_zeros(freq_list)
-    return result_layer[1] * result_layer[2]
+    return freq_list
 
 
-def part_two(width, height):
-    pixels = _get_image_pixels('input')
+def _compute_image(pixels, width, height):
     num_layers = int(len(pixels) / (width * height))
     message = []
     for row in range(0, height):
@@ -47,8 +43,17 @@ def part_two(width, height):
     return '\n'.join(message)
 
 
-print(part_one(25, 6))  # 1965
-print(part_two(25, 6))  # GZKJY
+def part_one(filename, width, height):
+    result_layer = _get_layer_with_fewest_zeros(_compute_freqs(_get_image_pixels(filename), width, height))
+    return result_layer[1] * result_layer[2]
+
+
+def part_two(filename, width, height):
+    return _compute_image(_get_image_pixels(filename), width, height)
+
+
+print(part_one('input', 25, 6))  # 1965
+print(part_two('input', 25, 6))  # GZKJY
 """
  XX  XXXX X  X   XX X   X
 X  X    X X X     X X   X
