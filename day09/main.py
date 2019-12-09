@@ -8,27 +8,25 @@ def _decode_opcode(num):
     return digits
 
 
-def _get_op(program, pc, mode, offset, rel_base):
+def _get_op_address(program, pc, mode, offset, rel_base):
     if mode == 0:  # position mode
-        return program[program[pc + offset]]
-    if mode == 1:  # immediate mode
         return program[pc + offset]
+    if mode == 1:  # immediate mode
+        return pc + offset
     if mode == 2:  # relative mode
-        return program[rel_base + program[pc + offset]]
+        return rel_base + program[pc + offset]
 
 
 def _get_op1(program, pc, mode, rel_base):
-    return _get_op(program, pc, mode, 1, rel_base)
+    return program[_get_op_address(program, pc, mode, 1, rel_base)]
 
 
 def _get_op2(program, pc, mode, rel_base):
-    return _get_op(program, pc, mode, 2, rel_base)
+    return program[_get_op_address(program, pc, mode, 2, rel_base)]
 
 
-def _get_op3(program, pc, mode, offset, rel_base):
-    if mode == 2:
-        return rel_base + program[pc + offset]
-    return program[pc + offset]
+def _get_op3_address(program, pc, mode, offset, rel_base):
+    return _get_op_address(program, pc, mode, offset, rel_base)
 
 
 def get_program(file):
@@ -51,10 +49,10 @@ def run(program, input_id=0):
         op3_mode = opcode_obj[0]
         if opcode == 1 or opcode == 2:
             op1, op2 = _get_op1(mem, pc, op1_mode, rel_base), _get_op2(mem, pc, op2_mode, rel_base)
-            mem[_get_op3(mem, pc, op3_mode, 3, rel_base)] = op1 + op2 if opcode == 1 else op1 * op2
+            mem[_get_op3_address(mem, pc, op3_mode, 3, rel_base)] = op1 + op2 if opcode == 1 else op1 * op2
             pc += 4
         elif opcode == 3:
-            mem[_get_op3(mem, pc, op1_mode, 1, rel_base)] = input_id
+            mem[_get_op3_address(mem, pc, op1_mode, 1, rel_base)] = input_id
             pc += 2
         elif opcode == 4:
             op1 = _get_op1(mem, pc, op1_mode, rel_base)
@@ -65,11 +63,11 @@ def run(program, input_id=0):
             pc = op2 if (opcode == 5 and op1 != 0) or (opcode == 6 and op1 == 0) else pc + 3
         elif opcode == 7:
             op1, op2 = _get_op1(mem, pc, op1_mode, rel_base), _get_op2(mem, pc, op2_mode, rel_base)
-            mem[_get_op3(mem, pc, op3_mode, 3, rel_base)] = 1 if op1 < op2 else 0
+            mem[_get_op3_address(mem, pc, op3_mode, 3, rel_base)] = 1 if op1 < op2 else 0
             pc += 4
         elif opcode == 8:
             op1, op2 = _get_op1(mem, pc, op1_mode, rel_base), _get_op2(mem, pc, op2_mode, rel_base)
-            mem[_get_op3(mem, pc, op3_mode, 3, rel_base)] = 1 if op1 == op2 else 0
+            mem[_get_op3_address(mem, pc, op3_mode, 3, rel_base)] = 1 if op1 == op2 else 0
             pc += 4
         elif opcode == 9:
             rel_base += _get_op1(mem, pc, op1_mode, rel_base)
@@ -86,4 +84,9 @@ def part_one():
     return run(get_program('input'), 1)
 
 
-print(part_one())
+def part_two():
+    return run(get_program('input'), 2)
+
+
+print(part_one())  # 2870072642
+print(part_two())  # 58534
