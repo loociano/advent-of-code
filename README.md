@@ -14,3 +14,4 @@ This year I am learning Python 3 and familiarizing myself with [Google's Python 
 * [Day 6: Universal Orbit Map](https://adventofcode.com/2019/day/6) [[solution](https://github.com/loociano/AdventOfCode2019/blob/master/day05/main.py)]
 * [Day 7: Amplification Circuit](https://adventofcode.com/2019/day/7) [[solution](https://github.com/loociano/AdventOfCode2019/blob/master/day05/main.py)]
 * [Day 8: Space Image Format](https://adventofcode.com/2019/day/8) [[solution](https://github.com/loociano/AdventOfCode2019/blob/master/day08/main.py)]
+* [Day 9: Sensor Boost](https://adventofcode.com/2019/day/9) [[solution](https://github.com/loociano/AdventOfCode2019/blob/master/day09/main.py)]
