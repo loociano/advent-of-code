@@ -13,15 +13,15 @@ def get_map(file):
     return map
 
 
-def find_asteroid(map, width, height, x, y, dx, dy):
+def find_asteroid_pos(map, width, height, x, y, dx, dy):
     pos_x = x + dx
     pos_y = y + dy
     while width > pos_x >= 0 and height > pos_y >= 0:
         if map[pos_y][pos_x] == '#':
-            return True
+            return [pos_x, pos_y]
         pos_x += dx
         pos_y += dy
-    return False
+    return None
 
 
 def normalize(x, y):
@@ -84,7 +84,8 @@ def calc_directions(width, height):
     return sorted_dirs
 
 
-def part_one():
+def get_monitoring_station_position(filename):
+    best_position = [0, 0]
     max_asteroids = 0
     map = get_map('input')
     width = len(map[0])
@@ -96,10 +97,35 @@ def part_one():
                 count_asteroids = 0
                 for dir in dirs:
                     dx, dy = dir.split(' ')
-                    if find_asteroid(map, width, height, x, y, int(dx), int(dy)):
+                    pos = find_asteroid_pos(map, width, height, x, y, int(dx), int(dy))
+                    if pos is not None:
                         count_asteroids += 1
-                max_asteroids = max(max_asteroids, count_asteroids)
-    return max_asteroids
+                if count_asteroids > max_asteroids:
+                    max_asteroids = count_asteroids
+                    best_position = [x, y]
+    return max_asteroids, best_position
 
 
-print(part_one())
+def part_one(filename):
+    return get_monitoring_station_position(filename)[0]
+
+
+def part_two(filename, vaporized_num):
+    map = get_map('input')
+    width, height = len(map[0]), len(map)
+    dirs = calc_directions(width, height)
+    max_asteroids, station_pos = get_monitoring_station_position(filename)
+    count = 0
+    while count < vaporized_num:
+        for dir in dirs:
+            dx, dy = dir.split(' ')
+            asteroid_pos = find_asteroid_pos(map, width, height, station_pos[0], station_pos[1], int(dx), int(dy))
+            if asteroid_pos is not None:
+                map[asteroid_pos[1]][asteroid_pos[0]] = '.'  # vaporized
+                count += 1
+                if count == vaporized_num:
+                    return asteroid_pos[0] * 100 + asteroid_pos[1]
+
+
+print(part_one('input'))  # 276
+print(part_two('input', 200))  # 1321
