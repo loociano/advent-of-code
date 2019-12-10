@@ -26,17 +26,13 @@ def find_asteroid_pos(map, width, height, x, y, dx, dy):
 
 def normalize(x, y):
     gcd = math.gcd(x, y)
-    return '{} {}'.format(x // gcd, y // gcd)
+    return tuple([x // gcd, y // gcd])
 
 
-def cmp_sin(a, b):
-    dira = a.split(' ')
-    ax, ay = int(dira[0]), int(dira[1])
-    ah = math.sqrt(ax * ax + ay * ay)
-    dirb = b.split(' ')
-    bx, by = int(dirb[0]), int(dirb[1])
-    bh = math.sqrt(bx * bx + by * by)
-    return 1 if math.asin(ay / ah) > math.asin(by / bh) else -1
+def cmp_vector_angle(a, b):
+    ah = math.sqrt(a[0] * a[0] + a[1] * a[1])
+    bh = math.sqrt(b[0] * b[0] + b[1] * b[1])
+    return 1 if math.asin(a[1] / ah) > math.asin(b[1] / bh) else -1
 
 
 def get_first_quadrant(width, height):
@@ -44,7 +40,7 @@ def get_first_quadrant(width, height):
     for w in range(1, width):
         for h in range(-height + 1, 0):
             dirs.add(normalize(w, h))
-    return sorted(dirs, key=cmp_to_key(cmp_sin))
+    return sorted(dirs, key=cmp_to_key(cmp_vector_angle))
 
 
 def get_second_quadrant(width, height):
@@ -52,7 +48,7 @@ def get_second_quadrant(width, height):
     for w in range(-width + 1, 0):
         for h in range(-height + 1, 0):
             dirs.add(normalize(w, h))
-    return sorted(dirs, key=cmp_to_key(cmp_sin), reverse=True)
+    return sorted(dirs, key=cmp_to_key(cmp_vector_angle), reverse=True)
 
 
 def get_third_quadrant(width, height):
@@ -60,7 +56,7 @@ def get_third_quadrant(width, height):
     for w in range(-width + 1, 0):
         for h in range(1, height):
             dirs.add(normalize(w, h))
-    return sorted(dirs, key=cmp_to_key(cmp_sin), reverse=True)
+    return sorted(dirs, key=cmp_to_key(cmp_vector_angle), reverse=True)
 
 
 def get_fourth_quadrant(width, height):
@@ -68,7 +64,7 @@ def get_fourth_quadrant(width, height):
     for w in range(1, width):
         for h in range(1, height):
             dirs.add(normalize(w, h))
-    return sorted(dirs, key=cmp_to_key(cmp_sin))
+    return sorted(dirs, key=cmp_to_key(cmp_vector_angle))
 
 
 def calc_directions(width, height):
@@ -85,19 +81,18 @@ def calc_directions(width, height):
 
 
 def get_monitoring_station_position(filename):
-    best_position = [0, 0]
+    best_position = None
     max_asteroids = 0
     map = get_map('input')
     width = len(map[0])
     height = len(map)
-    dirs = calc_directions(width, height)
+    directions = calc_directions(width, height)
     for y in range(0, height):
         for x in range(0, width):
             if map[y][x] == '#':
                 count_asteroids = 0
-                for dir in dirs:
-                    dx, dy = dir.split(' ')
-                    pos = find_asteroid_pos(map, width, height, x, y, int(dx), int(dy))
+                for vector in directions:
+                    pos = find_asteroid_pos(map, width, height, x, y, vector[0], vector[1])
                     if pos is not None:
                         count_asteroids += 1
                 if count_asteroids > max_asteroids:
@@ -113,17 +108,16 @@ def part_one(filename):
 def part_two(filename, vaporized_num):
     map = get_map('input')
     width, height = len(map[0]), len(map)
-    dirs = calc_directions(width, height)
+    directions = calc_directions(width, height)
     max_asteroids, station_pos = get_monitoring_station_position(filename)
-    count = 0
-    while count < vaporized_num:
-        for dir in dirs:
-            dx, dy = dir.split(' ')
-            asteroid_pos = find_asteroid_pos(map, width, height, station_pos[0], station_pos[1], int(dx), int(dy))
+    vaporized_count = 0
+    while vaporized_count < vaporized_num:
+        for vector in directions:
+            asteroid_pos = find_asteroid_pos(map, width, height, station_pos[0], station_pos[1], vector[0], vector[1])
             if asteroid_pos is not None:
                 map[asteroid_pos[1]][asteroid_pos[0]] = '.'  # vaporized
-                count += 1
-                if count == vaporized_num:
+                vaporized_count += 1
+                if vaporized_count == vaporized_num:
                     return asteroid_pos[0] * 100 + asteroid_pos[1]
 
 
