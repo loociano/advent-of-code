@@ -28,9 +28,9 @@ def _normalize(x, y):
     return tuple([x // gcd, y // gcd])
 
 
-def _cmp_vector_angle(vector_a):
-    ah = math.sqrt(vector_a[0] * vector_a[0] + vector_a[1] * vector_a[1])
-    return math.asin(vector_a[1] / ah)
+def _cmp_vector_angle(vector):
+    hyp = math.sqrt(vector[0] * vector[0] + vector[1] * vector[1])
+    return math.asin(vector[1] / hyp)
 
 
 def _get_quadrant_dirs(range_x, range_y, is_angle_negative):
