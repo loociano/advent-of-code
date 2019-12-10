@@ -1,5 +1,4 @@
 import math
-from functools import cmp_to_key
 
 
 def _get_map(file):
@@ -29,10 +28,9 @@ def _normalize(x, y):
     return tuple([x // gcd, y // gcd])
 
 
-def _cmp_vector_angle(vector_a, vector_b):
+def _cmp_vector_angle(vector_a):
     ah = math.sqrt(vector_a[0] * vector_a[0] + vector_a[1] * vector_a[1])
-    bh = math.sqrt(vector_b[0] * vector_b[0] + vector_b[1] * vector_b[1])
-    return 1 if math.asin(vector_a[1] / ah) > math.asin(vector_b[1] / bh) else -1
+    return math.asin(vector_a[1] / ah)
 
 
 def _get_quadrant_dirs(range_x, range_y, is_angle_negative):
@@ -42,7 +40,7 @@ def _get_quadrant_dirs(range_x, range_y, is_angle_negative):
             if w == 0 and h == 0:
                 continue
             dirs.add(_normalize(w, h))
-    return sorted(dirs, key=cmp_to_key(_cmp_vector_angle), reverse=is_angle_negative)
+    return sorted(dirs, key=_cmp_vector_angle, reverse=is_angle_negative)
 
 
 def _calc_directions(width, height):
