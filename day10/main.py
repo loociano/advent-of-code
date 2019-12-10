@@ -1,4 +1,5 @@
 import math
+from functools import cmp_to_key
 
 
 def get_map(file):
@@ -28,13 +29,59 @@ def normalize(x, y):
     return '{} {}'.format(x // gcd, y // gcd)
 
 
-def calc_directions(width, height):
+def cmp_sin(a, b):
+    dira = a.split(' ')
+    ax, ay = int(dira[0]), int(dira[1])
+    ah = math.sqrt(ax * ax + ay * ay)
+    dirb = b.split(' ')
+    bx, by = int(dirb[0]), int(dirb[1])
+    bh = math.sqrt(bx * bx + by * by)
+    return 1 if math.asin(ay / ah) > math.asin(by / bh) else -1
+
+
+def get_first_quadrant(width, height):
     dirs = set()
-    for w in range(-width + 1, width):
-        for h in range(-height, height):
-            if not(w == 0 and h == 0):
-              dirs.add(normalize(w, h))
-    return dirs
+    for w in range(1, width):
+        for h in range(-height + 1, 0):
+            dirs.add(normalize(w, h))
+    return sorted(dirs, key=cmp_to_key(cmp_sin))
+
+
+def get_second_quadrant(width, height):
+    dirs = set()
+    for w in range(-width + 1, 0):
+        for h in range(-height + 1, 0):
+            dirs.add(normalize(w, h))
+    return sorted(dirs, key=cmp_to_key(cmp_sin), reverse=True)
+
+
+def get_third_quadrant(width, height):
+    dirs = set()
+    for w in range(-width + 1, 0):
+        for h in range(1, height):
+            dirs.add(normalize(w, h))
+    return sorted(dirs, key=cmp_to_key(cmp_sin), reverse=True)
+
+
+def get_fourth_quadrant(width, height):
+    dirs = set()
+    for w in range(1, width):
+        for h in range(1, height):
+            dirs.add(normalize(w, h))
+    return sorted(dirs, key=cmp_to_key(cmp_sin))
+
+
+def calc_directions(width, height):
+    sorted_dirs = []
+    sorted_dirs.append(normalize(0, -height))  # Top
+    sorted_dirs.extend(get_first_quadrant(width, height))
+    sorted_dirs.append(normalize(width - 1, 0))  # Right
+    sorted_dirs.extend(get_fourth_quadrant(width, height))
+    sorted_dirs.append(normalize(0, height))  # Bottom
+    sorted_dirs.extend(get_third_quadrant(width, height))
+    sorted_dirs.append(normalize(-width, 0))  # Left
+    sorted_dirs.extend(get_second_quadrant(width, height))
+    return sorted_dirs
 
 
 def part_one():
