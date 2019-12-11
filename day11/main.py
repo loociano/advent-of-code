@@ -1,145 +1,150 @@
-def _decode_opcode(num):
-    digits = [0, 0, 0, 0, 0]
-    pos = len(digits) - 1
-    while num > 0 and pos >= 0:
-        digits[pos] = num % 10
-        num //= 10
-        pos -= 1
-    return digits
+class Intcode:
+
+    mem = [0] * 100000
+    pc = 0
+    relative_base = 0
+
+    def __init__(self, program: list):
+        self.program = program
+        for pos, intcode in enumerate(program):
+            self.mem[pos] = intcode
+
+    def run(self, input_val: int) -> int:
+        output = None
+        while True:
+            opcode_obj = self._decode_opcode()
+            opcode = opcode_obj[3] * 10 + opcode_obj[4]
+            op1_mode = opcode_obj[2]
+            op2_mode = opcode_obj[1]
+            op3_mode = opcode_obj[0]
+            if opcode == 1 or opcode == 2:
+                op1, op2 = self._get_op1(op1_mode), self._get_op2(op2_mode)
+                self.mem[self._get_op3_address(op3_mode, 3)] = op1 + op2 if opcode == 1 else op1 * op2
+                self.pc += 4
+            elif opcode == 3:
+                self.mem[self._get_op3_address(op1_mode, 1)] = input_val
+                self.pc += 2
+            elif opcode == 4:
+                op1 = self._get_op1(op1_mode)
+                output = op1
+                self.pc += 2
+                break
+            elif opcode == 5 or opcode == 6:
+                op1, op2 = self._get_op1(op1_mode), self._get_op2(op2_mode)
+                self.pc = op2 if (opcode == 5 and op1 != 0) or (opcode == 6 and op1 == 0) else self.pc + 3
+            elif opcode == 7:
+                op1, op2 = self._get_op1(op1_mode), self._get_op2(op2_mode)
+                self.mem[self._get_op3_address(op3_mode, 3)] = 1 if op1 < op2 else 0
+                self.pc += 4
+            elif opcode == 8:
+                op1, op2 = self._get_op1(op1_mode), self._get_op2(op2_mode)
+                self.mem[self._get_op3_address(op3_mode, 3)] = 1 if op1 == op2 else 0
+                self.pc += 4
+            elif opcode == 9:
+                self.relative_base += self._get_op1(op1_mode)
+                self.pc += 2
+            elif opcode == 99:
+                output = None
+                break
+            else:
+                print('unknown opcode')
+                break
+        return output
+
+    def _decode_opcode(self) -> list:
+        opcode = self.mem[self.pc]
+        digits = [0, 0, 0, 0, 0]
+        pos = len(digits) - 1
+        while opcode > 0 and pos >= 0:
+            digits[pos] = opcode % 10
+            opcode //= 10
+            pos -= 1
+        return digits
+
+    def _get_op_address(self, mode, offset):
+        if mode == 0:  # position mode
+            return self.mem[self.pc + offset]
+        if mode == 1:  # immediate mode
+            return self.pc + offset
+        if mode == 2:  # relative mode
+            return self.relative_base + self.mem[self.pc + offset]
+
+    def _get_op1(self, mode):
+        return self.mem[self._get_op_address(mode, 1)]
+
+    def _get_op2(self, mode):
+        return self.mem[self._get_op_address(mode, 2)]
+
+    def _get_op3_address(self, mode, offset):
+        return self._get_op_address(mode, offset)
 
 
-def _get_op_address(mem, pc, mode, offset, rel_base):
-    if mode == 0:  # position mode
-        return mem[pc + offset]
-    if mode == 1:  # immediate mode
-        return pc + offset
-    if mode == 2:  # relative mode
-        return rel_base + mem[pc + offset]
-
-
-def _get_op1(mem, pc, mode, rel_base):
-    return mem[_get_op_address(mem, pc, mode, 1, rel_base)]
-
-
-def _get_op2(mem, pc, mode, rel_base):
-    return mem[_get_op_address(mem, pc, mode, 2, rel_base)]
-
-
-def _get_op3_address(mem, pc, mode, offset, rel_base):
-    return _get_op_address(mem, pc, mode, offset, rel_base)
+def _make_key(x: int, y: int):
+    return '{} {}'.format(x, y)
 
 
 def _get_panel_color(grid: dict, robot_pos: tuple):
-    return int(grid.get('{} {}'.format(robot_pos[0], robot_pos[1]), 0))
+    return int(grid.get(_make_key(robot_pos[0], robot_pos[1]), 0))
 
 
 def _paint_panel(grid: dict, robot_pos: tuple, color: int):
-    key = '{} {}'.format(robot_pos[0], robot_pos[1])
+    key = _make_key(robot_pos[0], robot_pos[1])
     newly_painted = grid.get(key) is None
     grid[key] = color
     return newly_painted
 
 
-def get_program(file):
+def _get_program(file):
     with open(file) as f:
         return list(map(int, f.read().split(',')))
 
 
-def run(mem: list, input: int, pc: int, rel_base: int):
-    output = None
-    pc = pc
-    rel_base = rel_base
-    while True:
-        opcode_obj = _decode_opcode(mem[pc])
-        opcode = opcode_obj[3] * 10 + opcode_obj[4]
-        op1_mode = opcode_obj[2]
-        op2_mode = opcode_obj[1]
-        op3_mode = opcode_obj[0]
-        if opcode == 1 or opcode == 2:
-            op1, op2 = _get_op1(mem, pc, op1_mode, rel_base), _get_op2(mem, pc, op2_mode, rel_base)
-            mem[_get_op3_address(mem, pc, op3_mode, 3, rel_base)] = op1 + op2 if opcode == 1 else op1 * op2
-            pc += 4
-        elif opcode == 3:
-            mem[_get_op3_address(mem, pc, op1_mode, 1, rel_base)] = input
-            pc += 2
-        elif opcode == 4:
-            op1 = _get_op1(mem, pc, op1_mode, rel_base)
-            output = op1
-            pc += 2
-            break
-        elif opcode == 5 or opcode == 6:
-            op1, op2 = _get_op1(mem, pc, op1_mode, rel_base), _get_op2(mem, pc, op2_mode, rel_base)
-            pc = op2 if (opcode == 5 and op1 != 0) or (opcode == 6 and op1 == 0) else pc + 3
-        elif opcode == 7:
-            op1, op2 = _get_op1(mem, pc, op1_mode, rel_base), _get_op2(mem, pc, op2_mode, rel_base)
-            mem[_get_op3_address(mem, pc, op3_mode, 3, rel_base)] = 1 if op1 < op2 else 0
-            pc += 4
-        elif opcode == 8:
-            op1, op2 = _get_op1(mem, pc, op1_mode, rel_base), _get_op2(mem, pc, op2_mode, rel_base)
-            mem[_get_op3_address(mem, pc, op3_mode, 3, rel_base)] = 1 if op1 == op2 else 0
-            pc += 4
-        elif opcode == 9:
-            rel_base += _get_op1(mem, pc, op1_mode, rel_base)
-            pc += 2
-        elif opcode == 99:
-            output = None
-            break
-        else:
-            print('unknown opcode')
-            break
-    return output, pc, rel_base
+def _print_hull(hull: list):
+    hull_str = []
+    for row in hull:
+        hull_str.append(''.join(row))
+    return '\n'.join(hull_str)
 
 
-def load_program(program: list) -> list:
-    mem = [0] * 100000
-    for pos, intcode in enumerate(program):
-        mem[pos] = intcode
-    return mem
-
-
-def part_one(grid: dict):
-    mem = load_program(get_program('input'))
-    pc, rel_base = 0, 0
+def part_one(filename: str, grid=None):
+    if grid is None:
+        grid = {}
+    vm = Intcode(_get_program(filename))
     robot_pos = tuple([0, 0])
-    dirs = [[0, 1], [1, 0], [0, -1], [-1, 0]]  # up, right, down, left
+    dirs = [[0, -1], [1, 0], [0, 1], [-1, 0]]  # up, right, down, left
     curr_dir = 0  # default: up
     painted_count = 0
     while True:
         curr_color = _get_panel_color(grid, robot_pos)
-        color, pc, rel_base = run(mem, curr_color, pc, rel_base)
+        color = vm.run(curr_color)
         if color is None:
             break
         painted_count += 1 if _paint_panel(grid, robot_pos, color) else 0
-        direction, pc, rel_base = run(mem, curr_color, pc, rel_base)
+        direction = vm.run(curr_color)
         if direction == 1:  # turn right 90 degrees
             curr_dir += 1
         elif direction == 0:  # turn left 90 degrees
             curr_dir -= 1
-        vector = dirs[curr_dir % len(dirs)]
-        robot_pos = tuple([robot_pos[0] + vector[0], robot_pos[1] + vector[1]])
+        dir_vector = dirs[curr_dir % len(dirs)]
+        robot_pos = tuple([robot_pos[0] + dir_vector[0], robot_pos[1] + dir_vector[1]])
     return painted_count
 
 
-def part_two():
-    grid = {'0 0': 1}  # starting panel is white
-    part_one(grid)
-    n = 100
+def part_two(filename):
+    grid = {_make_key(0, 0): 1}  # starting panel is white
+    grid_width = part_one(filename, grid)
     hull = []
-    for i in range(0, n):
-        hull.append(['.'] * n)
+    for i in range(0, grid_width):
+        hull.append([' '] * grid_width)
 
-    x = n // 2
+    x = grid_width // 2
     y = x
     for key, value in grid.items():
         dx, dy = key.split(' ')
         if value == 1:
-            hull[y - int(dy)][x + int(dx)] = 'X'
-
-    hull_str = []
-    for row in range(0, n):
-        hull_str.append(''.join(hull[row]))
-    return '\n'.join(hull_str)
+            hull[y + int(dy)][x + int(dx)] = '█'
+    return _print_hull(hull)
 
 
-print(part_one({}))
-print(part_two())
+print(part_one('input'))
+print(part_two('input'))
