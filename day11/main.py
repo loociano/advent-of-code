@@ -1,8 +1,7 @@
 class Intcode:
-
-    mem = [0] * 100000
     pc = 0
     relative_base = 0
+    mem = [0] * 100000
 
     def __init__(self, program: list):
         self.program = program
@@ -61,7 +60,7 @@ class Intcode:
             pos -= 1
         return digits
 
-    def _get_op_address(self, mode, offset):
+    def _get_op_address(self, mode, offset) -> int:
         if mode == 0:  # position mode
             return self.mem[self.pc + offset]
         if mode == 1:  # immediate mode
@@ -69,29 +68,40 @@ class Intcode:
         if mode == 2:  # relative mode
             return self.relative_base + self.mem[self.pc + offset]
 
-    def _get_op1(self, mode):
+    def _get_op1(self, mode) -> int:
         return self.mem[self._get_op_address(mode, 1)]
 
-    def _get_op2(self, mode):
+    def _get_op2(self, mode) -> int:
         return self.mem[self._get_op_address(mode, 2)]
 
-    def _get_op3_address(self, mode, offset):
+    def _get_op3_address(self, mode, offset) -> int:
         return self._get_op_address(mode, offset)
 
 
-def _make_key(x: int, y: int):
-    return '{} {}'.format(x, y)
+class RobotGrid:
+    grid = {}
+    robot_pos = tuple([0, 0])
+    dirs = [[0, -1], [1, 0], [0, 1], [-1, 0]]  # up, right, down, left
+    dir_index = 0
 
+    def __init__(self, grid):
+        self.grid = grid
 
-def _get_panel_color(grid: dict, robot_pos: tuple):
-    return int(grid.get(_make_key(robot_pos[0], robot_pos[1]), 0))
+    def get_panel_color(self) -> int:
+        return int(self.grid.get(self.robot_pos, 0))
 
+    def paint_panel(self, color: int) -> bool:
+        newly_painted = self.grid.get(self.robot_pos) is None
+        self.grid[self.robot_pos] = color
+        return newly_painted
 
-def _paint_panel(grid: dict, robot_pos: tuple, color: int):
-    key = _make_key(robot_pos[0], robot_pos[1])
-    newly_painted = grid.get(key) is None
-    grid[key] = color
-    return newly_painted
+    def move_robot(self, next_dir: int):
+        if next_dir == 1:  # turn right 90 degrees
+            self.dir_index += 1
+        elif next_dir == 0:  # turn left 90 degrees
+            self.dir_index -= 1
+        dir_vector = self.dirs[self.dir_index % len(self.dirs)]
+        self.robot_pos = tuple([self.robot_pos[0] + dir_vector[0], self.robot_pos[1] + dir_vector[1]])
 
 
 def _get_program(file):
@@ -110,41 +120,29 @@ def part_one(filename: str, grid=None):
     if grid is None:
         grid = {}
     vm = Intcode(_get_program(filename))
-    robot_pos = tuple([0, 0])
-    dirs = [[0, -1], [1, 0], [0, 1], [-1, 0]]  # up, right, down, left
-    curr_dir = 0  # default: up
+    robot_grid = RobotGrid(grid)
     painted_count = 0
     while True:
-        curr_color = _get_panel_color(grid, robot_pos)
+        curr_color = robot_grid.get_panel_color()
         color = vm.run(curr_color)
         if color is None:
             break
-        painted_count += 1 if _paint_panel(grid, robot_pos, color) else 0
-        direction = vm.run(curr_color)
-        if direction == 1:  # turn right 90 degrees
-            curr_dir += 1
-        elif direction == 0:  # turn left 90 degrees
-            curr_dir -= 1
-        dir_vector = dirs[curr_dir % len(dirs)]
-        robot_pos = tuple([robot_pos[0] + dir_vector[0], robot_pos[1] + dir_vector[1]])
+        painted_count += 1 if robot_grid.paint_panel(color) else 0
+        robot_grid.move_robot(vm.run(curr_color))
     return painted_count
 
 
 def part_two(filename):
-    grid = {_make_key(0, 0): 1}  # starting panel is white
-    grid_width = part_one(filename, grid)
-    hull = []
-    for i in range(0, grid_width):
-        hull.append([' '] * grid_width)
+    grid = {tuple([0, 0]): 1}  # starting panel is white
+    grid_max_width = part_one(filename, grid)
+    hull = [[' '] * grid_max_width for i in range(0, grid_max_width)]
 
-    x = grid_width // 2
-    y = x
+    origin_x, origin_y = grid_max_width // 2, grid_max_width // 2
     for key, value in grid.items():
-        dx, dy = key.split(' ')
         if value == 1:
-            hull[y + int(dy)][x + int(dx)] = '█'
+            hull[origin_y + key[1]][origin_x + key[0]] = '█'
     return _print_hull(hull)
 
 
-print(part_one('input'))
-print(part_two('input'))
+print(part_one('input'))  # 2373
+print(part_two('input'))  # PCKRLPUK
