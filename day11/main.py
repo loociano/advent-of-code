@@ -30,7 +30,7 @@ def _get_op3_address(mem, pc, mode, offset, rel_base):
 
 
 def _get_panel_color(grid: dict, robot_pos: tuple):
-    return grid.get('{} {}'.format(robot_pos[0], robot_pos[1]), 0)
+    return int(grid.get('{} {}'.format(robot_pos[0], robot_pos[1]), 0))
 
 
 def _paint_panel(grid: dict, robot_pos: tuple, color: int):
@@ -45,10 +45,10 @@ def get_program(file):
         return list(map(int, f.read().split(',')))
 
 
-def run(mem: list, input: int, pc: int):
+def run(mem: list, input: int, pc: int, rel_base: int):
     output = None
     pc = pc
-    rel_base = 0
+    rel_base = rel_base
     while True:
         opcode_obj = _decode_opcode(mem[pc])
         opcode = opcode_obj[3] * 10 + opcode_obj[4]
@@ -87,27 +87,30 @@ def run(mem: list, input: int, pc: int):
         else:
             print('unknown opcode')
             break
-    return output, pc
+    return output, pc, rel_base
 
 
-def part_one():
-    program = get_program('input')
+def load_program(program: list) -> list:
     mem = [0] * 100000
     for pos, intcode in enumerate(program):
         mem[pos] = intcode
-    grid = {}
-    pc = 0
+    return mem
+
+
+def part_one(grid: dict):
+    mem = load_program(get_program('input'))
+    pc, rel_base = 0, 0
     robot_pos = tuple([0, 0])
     dirs = [[0, 1], [1, 0], [0, -1], [-1, 0]]  # up, right, down, left
     curr_dir = 0  # default: up
     painted_count = 0
     while True:
         curr_color = _get_panel_color(grid, robot_pos)
-        color, pc = run(mem, curr_color, pc)
+        color, pc, rel_base = run(mem, curr_color, pc, rel_base)
         if color is None:
             break
         painted_count += 1 if _paint_panel(grid, robot_pos, color) else 0
-        direction, pc = run(mem, curr_color, pc)
+        direction, pc, rel_base = run(mem, curr_color, pc, rel_base)
         if direction == 1:  # turn right 90 degrees
             curr_dir += 1
         elif direction == 0:  # turn left 90 degrees
@@ -117,4 +120,26 @@ def part_one():
     return painted_count
 
 
-print(part_one())
+def part_two():
+    grid = {'0 0': 1}  # starting panel is white
+    part_one(grid)
+    n = 100
+    hull = []
+    for i in range(0, n):
+        hull.append(['.'] * n)
+
+    x = n // 2
+    y = x
+    for key, value in grid.items():
+        dx, dy = key.split(' ')
+        if value == 1:
+            hull[y - int(dy)][x + int(dx)] = 'X'
+
+    hull_str = []
+    for row in range(0, n):
+        hull_str.append(''.join(hull[row]))
+    return '\n'.join(hull_str)
+
+
+print(part_one({}))
+print(part_two())
