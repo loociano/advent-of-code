@@ -103,11 +103,11 @@ def part_one():
     painted_count = 0
     while True:
         curr_color = _get_panel_color(grid, robot_pos)
-        color, pc = run(mem, curr_color, pc, grid, robot_pos)
+        color, pc = run(mem, curr_color, pc)
         if color is None:
             break
         painted_count += 1 if _paint_panel(grid, robot_pos, color) else 0
-        direction, pc = run(mem, curr_color, pc, grid, robot_pos)
+        direction, pc = run(mem, curr_color, pc)
         if direction == 1:  # turn right 90 degrees
             curr_dir += 1
         elif direction == 0:  # turn left 90 degrees
