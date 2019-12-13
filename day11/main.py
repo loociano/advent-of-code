@@ -47,11 +47,13 @@ def part_one(filename: str, grid=None):
     painted_count = 0
     while True:
         curr_color = robot_grid.get_panel_color()
-        color = vm.run(curr_color)
+        vm.set_input(curr_color)
+        color = vm.run()
         if color is None:
             break
         painted_count += 1 if robot_grid.paint_panel(color) else 0
-        robot_grid.move_robot(vm.run(curr_color))
+        vm.set_input(curr_color)
+        robot_grid.move_robot(vm.run())
     return painted_count
 
 
