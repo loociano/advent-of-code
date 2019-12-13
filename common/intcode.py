@@ -2,13 +2,17 @@ class Intcode:
     pc = 0
     relative_base = 0
     mem = [0] * 100000
+    input_val = 0
 
     def __init__(self, program: list):
         self.program = program
         for pos, intcode in enumerate(program):
             self.mem[pos] = intcode
 
-    def run(self, input_val=0) -> int:
+    def set_input(self, input_val: int):
+        self.input_val = input_val
+
+    def run(self) -> int:
         output = None
         while True:
             opcode_obj = self._decode_opcode()
@@ -21,7 +25,7 @@ class Intcode:
                 self.mem[self._get_op3_address(op3_mode, 3)] = op1 + op2 if opcode == 1 else op1 * op2
                 self.pc += 4
             elif opcode == 3:
-                self.mem[self._get_op3_address(op1_mode, 1)] = input_val
+                self.mem[self._get_op3_address(op1_mode, 1)] = self.input_val
                 self.pc += 2
             elif opcode == 4:
                 op1 = self._get_op1(op1_mode)
