@@ -11,58 +11,48 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-import math
+from math import ceil
 
 
-def load_reactions(filename: str):
-    table = {}
+def load_reactions(filename: str) -> dict:
+    formulas = {}
     with open(filename) as f:
         for line in f.readlines():
             inputs, output = line.rstrip().split('=>')
             chemicals = inputs.rstrip().split(',')
-            output_q, output_val = output.lstrip().split(' ')
+            chem_amount, chem_name = output.lstrip().split(' ')
             for i, val in enumerate(chemicals):
                 a, b = val.lstrip().rstrip().split(' ')
                 chemicals[i] = [int(a), b]
-            chemicals.insert(0, int(output_q))
-            table[output_val] = chemicals
-    return table
+            chemicals.insert(0, int(chem_amount))
+            formulas[chem_name] = chemicals
+    return formulas
+
+
+def count_ores_recursive(totals: dict, formulas: dict, chem_name: str, amount: int):
+    # Base case
+    if chem_name == 'ORE':
+        return amount
+
+    deps = formulas[chem_name]
+    output_amount = deps[0]
+    amount -= totals[chem_name]
+    multiplier = ceil(amount / output_amount)
+    totals[chem_name] = multiplier * output_amount - amount
+    ore_count = 0
+    for i in range(1, len(deps)):
+        chem_amount = multiplier * deps[i][0]
+        chem_name = deps[i][1]
+        ore_count += count_ores_recursive(totals, formulas, chem_name, chem_amount)
+    return ore_count
 
 
 def part_one(filename: str):
-    ore_count = 0
-    table = load_reactions(filename)
-    bases = {}
-    remainders = {}
-    stack = [[1, 'FUEL']]
-    while len(stack) > 0:
-        out_num, name = stack.pop()
-        print('{} {}'.format(out_num, name))
-        deps = table.get(name)
-        if len(deps) == 2:  # element maps directly to ORE
-            if bases.get(name) is None:
-                bases[name] = out_num
-            else:
-                bases[name] += out_num
-        elif len(deps) > 2:
-            minimum = deps[0]
-            if out_num == minimum:
-                multiplier = 1
-            elif out_num < minimum:
-                multiplier = 1  # math.ceil(minimum / out_num)
-                remainders[name] = minimum - out_num
-            else:
-                multiplier = math.ceil(out_num / minimum)
-                remainders[name] = out_num - minimum
-            for i in range(1, len(deps)):
-                stack.append([deps[i][0] * multiplier, deps[i][1]])
-
-    for key, val in bases.items():
-        deps = table.get(key)
-        minimum = deps[0]
-        ores = deps[1][0]
-        ore_count += ores * math.ceil(val / minimum)
-    return ore_count
+    formulas = load_reactions(filename)
+    totals = {}
+    for key in formulas.keys():
+        totals[key] = 0
+    return count_ores_recursive(totals, formulas, 'FUEL', 1)
 
 
 print(part_one('input'))
