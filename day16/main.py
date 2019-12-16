@@ -18,30 +18,34 @@ def read_file(file: str) -> list:
         return list(map(int, [x for x in f.read()]))
 
 
-def generate_pattern(order: int, length: int) -> list:
+def fft(digits: list, target_phases: int) -> list:
+    output = digits.copy()
     base_pat = [0, 1, 0, -1]
-    pattern = []
-    base_index = 0
-    while len(pattern) <= length:
-        reps = order + 1
-        while reps > 0 and len(pattern) <= length:
-            pattern.append(base_pat[base_index])
-            reps -= 1
-        if base_index >= len(base_pat) - 1:
+    for phase in range(0, target_phases):
+        print('phase: {}'.format(phase))
+        phase_output = []
+        for i in range(0, len(output)):
             base_index = 0
-        else:
-            base_index += 1
-    pattern.pop(0)
-    return pattern
-
-
-def generate_patterns(length: int) -> list:
-    return [generate_pattern(i, length) for i in range(0, length)]
+            reps = i + 1
+            digit_calc = 0
+            count_reps = 1
+            for j, digit in enumerate(output):
+                if count_reps == reps:
+                    count_reps = 0
+                    if base_index == len(base_pat) - 1:
+                        base_index = 0
+                    else:
+                        base_index += 1
+                digit_calc += digit * base_pat[base_index]
+                count_reps += 1
+            phase_output.append(digit_calc % 10 if digit_calc >= 0 else abs(digit_calc % -10))
+        output = phase_output
+    return output
 
 
 def part_one(filename: str, target_phases: int) -> str:
-    digits = read_file(filename)
-    patterns = generate_patterns(len(digits))
+    output = fft(read_file(filename), target_phases)
+    return ''.join([str(d) for d in output[:8]])
 
     for phase in range(0, target_phases):
         output_digits = []
