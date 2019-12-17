@@ -94,7 +94,3 @@ def part_two(filename: str) -> int:
     grid, width, height = get_grid(vm)
     print(serialize_grid(grid, width, height))
     return get_collected_dust(vm)
-
-
-print(part_one('input'))  # 6520
-print(part_two('input'))  # 1071369
