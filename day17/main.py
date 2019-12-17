@@ -18,13 +18,13 @@ from common.utils import read_program
 def is_intersection(grid: dict, x: int, y: int, width: int, height: int) -> bool:
     if x == 0 or y == 0 or x == width - 1 or y == height - 1:
         return False
-    return grid[(x - 1, y)] == 35 and grid[(x + 1, y)] == 35 \
-        and grid[(x, y - 1)] == 35 and grid[(x, y + 1)] == 35
+    return grid[(x - 1, y)] == ord('#') and grid[(x + 1, y)] == ord('#') \
+        and grid[(x, y - 1)] == ord('#') and grid[(x, y + 1)] == ord('#')
 
 
 def is_grid_char(num: int) -> bool:
     chars = set('#.^v<>')
-    return str(chr(num)) in chars or num == 10
+    return str(chr(num)) in chars or num == 10  # newline
 
 
 def get_grid(vm: Intcode) -> (dict, int, int):
@@ -65,14 +65,36 @@ def part_one(filename: str) -> int:
     return get_alignment_param_sum(grid, width, height)
 
 
+def string_to_ascii_list(string: str) -> list:
+    return list(map(ord, list(string)))
+
+
+def get_collected_dust(vm: Intcode) -> int:
+    # This is obtained from inspecting the robot path (grid)
+    input_routine = string_to_ascii_list('A,B,A,B,C,B,A,C,B,C\n'
+                                         'L,12,L,8,R,10,R,10\n'
+                                         'L,6,L,4,L,12\n'
+                                         'R,10,L,8,L,4,R,10\n'
+                                         'n\n')
+    while True:
+        if len(input_routine) > 0:
+            vm.set_input(input_routine.pop(0))
+        output = vm.run_until_input_or_done()
+        if output is None:
+            collected_dust = vm.get_output()
+            break
+    return collected_dust
+
+
 def part_two(filename: str) -> int:
     program = read_program(filename)
     program[0] = 2
     vm = Intcode(program)
+
     grid, width, height = get_grid(vm)
     print(serialize_grid(grid, width, height))
-    return 0
+    return get_collected_dust(vm)
 
 
 print(part_one('input'))  # 6520
-print(part_two('input'))
+print(part_two('input'))  # 1071369

@@ -18,6 +18,7 @@ class Intcode:
     relative_base = 0
     mem = [0] * 100000
     input_val = 0
+    output = None
 
     def __init__(self, program: list):
         self.program = program
@@ -27,8 +28,13 @@ class Intcode:
     def set_input(self, input_val: int):
         self.input_val = input_val
 
-    def run(self) -> int:
-        output = None
+    def get_output(self):
+        return self.output
+
+    def run_until_input_or_done(self) -> int:
+        return self.run(False, True)
+
+    def run(self, stop_on_output=True, stop_on_input=False) -> int:
         while True:
             opcode_obj = self._decode_opcode()
             opcode = opcode_obj[3] * 10 + opcode_obj[4]
@@ -42,11 +48,14 @@ class Intcode:
             elif opcode == 3:
                 self.mem[self._get_op3_address(op1_mode, 1)] = self.input_val
                 self.pc += 2
+                if stop_on_input:
+                    break
             elif opcode == 4:
                 op1 = self._get_op1(op1_mode)
-                output = op1
+                self.output = op1
                 self.pc += 2
-                break
+                if stop_on_output:
+                    break
             elif opcode == 5 or opcode == 6:
                 op1, op2 = self._get_op1(op1_mode), self._get_op2(op2_mode)
                 self.pc = op2 if (opcode == 5 and op1 != 0) or (opcode == 6 and op1 == 0) else self.pc + 3
@@ -62,12 +71,11 @@ class Intcode:
                 self.relative_base += self._get_op1(op1_mode)
                 self.pc += 2
             elif opcode == 99:
-                output = None
-                break
+                return
             else:
                 print('unknown opcode')
                 break
-        return output
+        return self.output
 
     def _decode_opcode(self) -> list:
         opcode = self.mem[self.pc]
