@@ -22,11 +22,18 @@ def is_intersection(grid: dict, x: int, y: int, width: int, height: int) -> bool
         and grid[(x, y - 1)] == 35 and grid[(x, y + 1)] == 35
 
 
-def get_alignment_param_sum(vm: Intcode) -> int:
+def is_grid_char(num: int) -> bool:
+    chars = set('#.^v<>')
+    return str(chr(num)) in chars or num == 10
+
+
+def get_grid(vm: Intcode) -> (dict, int, int):
     grid = {}
     x, y, width, height = 0, 0, 0, 0
     output = vm.run()
     while output is not None:
+        if not is_grid_char(output):
+            break
         if output == 10:  # newline
             y += 1
             width = max(width, x)
@@ -36,7 +43,10 @@ def get_alignment_param_sum(vm: Intcode) -> int:
             x += 1
         output = vm.run()
     height = y - 1  # input ends with newline
+    return grid, width, height
 
+
+def get_alignment_param_sum(grid: dict, width: int, height: int) -> int:
     alignment_param_sum = 0
     for y in range(0, height):
         for x in range(0, width):
@@ -45,9 +55,24 @@ def get_alignment_param_sum(vm: Intcode) -> int:
     return alignment_param_sum
 
 
+def serialize_grid(grid: dict, width: int, height: int):
+    return '\n'.join([''.join(map(chr, [grid[(x, y)] for x in range(0, width)])) for y in range(0, height)])
+
+
 def part_one(filename: str) -> int:
     vm = Intcode(read_program(filename))
-    return get_alignment_param_sum(vm)
+    grid, width, height = get_grid(vm)
+    return get_alignment_param_sum(grid, width, height)
 
 
-print(part_one('input'))
+def part_two(filename: str) -> int:
+    program = read_program(filename)
+    program[0] = 2
+    vm = Intcode(program)
+    grid, width, height = get_grid(vm)
+    print(serialize_grid(grid, width, height))
+    return 0
+
+
+print(part_one('input'))  # 6520
+print(part_two('input'))
