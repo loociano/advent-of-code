@@ -22,7 +22,6 @@ def fft(digits: list, target_phases: int) -> list:
     output = digits.copy()
     base_pat = [0, 1, 0, -1]
     for phase in range(0, target_phases):
-        print('phase: {}'.format(phase))
         phase_output = []
         for i in range(0, len(output)):
             base_index = 0
@@ -43,19 +42,33 @@ def fft(digits: list, target_phases: int) -> list:
     return output
 
 
+# Calculates FFT for the second half of the input list [n/2, n].
+# For a digit at position i, its new value is calculated as (A[i] + A[i+1] + ... + A[n]) % 10
+def fft_second_half(digits: list, target_phases: int) -> list:
+    output = digits.copy()
+    half_len = len(digits) // 2
+    for phase in range(0, target_phases):
+        phase_output = [0] * len(digits)
+        right_array_sum = sum(output[half_len:])
+        for i in range(half_len, len(output)):
+            if i != 0:
+                right_array_sum -= output[i - 1]
+            phase_output[i] = right_array_sum % 10
+        output = phase_output
+    return output
+
+
 def part_one(filename: str, target_phases: int) -> str:
     output = fft(read_file(filename), target_phases)
-    return ''.join([str(d) for d in output[:8]])
+    return ''.join(map(str, output[:8]))
 
-    for phase in range(0, target_phases):
-        output_digits = []
-        for i in range(0, len(digits)):
-            digit_calc = 0
-            for j, digit in enumerate(digits):
-                digit_calc += digit * patterns[i][j]
-            output_digits.append(digit_calc % 10 if digit_calc >= 0 else abs(digit_calc % -10))
-        digits = output_digits
-    return ''.join([str(d) for d in digits[:8]])
+
+def part_two(filename: str, target_phases: int) -> str:
+    input_num = read_file(filename) * 10000
+    offset = int(''.join(map(str, input_num[:7])))
+    output = fft_second_half(input_num, target_phases)
+    return ''.join(map(str, output[offset:offset+8]))
 
 
 print(part_one('input', 100))  # 70856418
+print(part_two('input', 100))  # 87766336
