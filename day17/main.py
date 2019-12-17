@@ -15,15 +15,11 @@ from common.intcode import Intcode
 from common.utils import read_program
 
 
-def make_key(x: int, y: int) -> str:
-    return '{} {}'.format(x, y)
-
-
 def is_intersection(grid: dict, x: int, y: int, width: int, height: int) -> bool:
     if x == 0 or y == 0 or x == width - 1 or y == height - 1:
         return False
-    return grid[make_key(x - 1, y)] == 35 and grid[make_key(x + 1, y)] == 35 \
-        and grid[make_key(x, y - 1)] == 35 and grid[make_key(x, y + 1)] == 35
+    return grid[(x - 1, y)] == 35 and grid[(x + 1, y)] == 35 \
+        and grid[(x, y - 1)] == 35 and grid[(x, y + 1)] == 35
 
 
 def get_alignment_param_sum(vm: Intcode) -> int:
@@ -36,7 +32,7 @@ def get_alignment_param_sum(vm: Intcode) -> int:
             width = max(width, x)
             x = 0
         else:
-            grid[make_key(x, y)] = output
+            grid[(x, y)] = output
             x += 1
         output = vm.run()
     height = y - 1  # input ends with newline
@@ -44,7 +40,7 @@ def get_alignment_param_sum(vm: Intcode) -> int:
     alignment_param_sum = 0
     for y in range(0, height):
         for x in range(0, width):
-            if grid[make_key(x, y)] == 35 and is_intersection(grid, x, y, width, height):
+            if grid[(x, y)] == 35 and is_intersection(grid, x, y, width, height):
                 alignment_param_sum += x * y
     return alignment_param_sum
 
