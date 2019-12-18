@@ -12,14 +12,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 import unittest
-from aoc2019.day17.solution import part_one, part_two
+from aoc2019.src.day17.solution import part_one, part_two
 
 
 class TestDay17(unittest.TestCase):
 
-    def test_solutions(self):
-        self.assertEqual(part_one('input'), 6520)
-        self.assertEqual(part_two('input'), 1071369)
+    def test_part_one(self):
+        self.assertEqual(part_one('aoc2019/test/day17/input'), 6520)
+
+    def test_part_two(self):
+        self.assertEqual(part_two('aoc2019/test/day17/input'), 1071369)
 
 
 if __name__ == '__main__':
