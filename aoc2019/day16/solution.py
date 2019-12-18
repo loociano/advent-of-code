@@ -69,6 +69,3 @@ def part_two(filename: str, target_phases: int) -> str:
     output = fft_second_half(input_num, target_phases)
     return ''.join(map(str, output[offset:offset+8]))
 
-
-print(part_one('input', 100))  # 70856418
-print(part_two('input', 100))  # 87766336
