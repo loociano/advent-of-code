@@ -11,8 +11,18 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+import os
 
 
 def read_program(file) -> list:
     with open(file) as f:
         return list(map(int, f.read().split(',')))
+
+
+def read_file(file) -> list:
+    with open(file) as f:
+        return [line.rstrip() for line in f.readlines()]
+
+
+def get_path(dir_name: str, filename: str) -> str:
+    return os.path.join(os.path.dirname(dir_name), filename)
