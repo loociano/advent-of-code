@@ -9,6 +9,9 @@ class TestDay18(unittest.TestCase):
     def test_shortest_path_test1(self):
         self.assertEqual(part_one(get_path(__file__, 'test1.txt')), 8)
 
+    def test_shortest_path_test2(self):
+        self.assertEqual(part_one(get_path(__file__, 'test2.txt')), 86)
+
 
 if __name__ == '__main__':
     unittest.main()
