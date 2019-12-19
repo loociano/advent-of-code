@@ -17,12 +17,10 @@ from aoc2019.src.common.utils import read_file
 
 class TreeNode:
 
-    def __init__(self, val, steps, keys, parent):
+    def __init__(self, val, steps, keys):
         self.val = val
-        self.steps = steps
-        self.parent = parent
-        self.neighbours = []
         self.keys = keys
+        self.steps = steps
         self.visited = set()
 
 
@@ -62,22 +60,21 @@ def is_key(grid: list, x: int, y: int) -> bool:
 
 def min_steps_all_keys(grid: list, num_keys: int, start_x: int, start_y: int) -> int:
     dirs = [(0, -1), (0, 1), (-1, 0), (1, 0)]
-    root = TreeNode('@', 0, set(), None)
+    root = TreeNode('@', 0, set())
     q = [(start_x, start_y, 0, root)]
     while len(q) > 0:
         x, y, steps, root = q.pop(0)
         value = grid[y][x]
+        root.visited.add((x, y))
         if is_door(grid, x, y) and value.lower() not in root.keys:
             continue
         if is_key(grid, x, y) and value not in root.keys:
             key = value
-            node = TreeNode(key, steps, root.keys.copy(), root)
+            node = TreeNode(key, steps, root.keys.copy())
             node.keys.add(key)
-            root.neighbours.append(node)
             root = node
             if len(node.keys) == num_keys:  # found last key
                 return root.steps
-        root.visited.add((x, y))
         for dir in dirs:
             new_pos = (x + dir[0], y + dir[1])
             if is_in_bounds(grid, x + dir[0], y + dir[1]) and new_pos not in root.visited:
