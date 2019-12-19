@@ -1,6 +1,6 @@
 # 🎄 Advent of Code 🎄
 
-![](https://api.travis-ci.org/loociano/advent-of-code.svg?branch=master)
+[![ ](https://api.travis-ci.org/loociano/advent-of-code.svg?branch=master)](https://travis-ci.org/loociano/advent-of-code)
 
 My own solutions to [Advent of Code](https://adventofcode.com/).
 
