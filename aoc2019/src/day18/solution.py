@@ -30,13 +30,13 @@ def get_grid(lines: list) -> list:
     return [list(line) for line in lines]
 
 
-def get_doors(grid: list) -> dict:
-    doors = {}
+def get_num_keys(grid: list) -> int:
+    count = 0
     for y in range(0, len(grid)):
         for x in range(0, len(grid[y])):
-            if is_door(grid, x, y):
-                doors[grid[y][x]] = (x, y)
-    return doors
+            if is_key(grid, x, y):
+                count += 1
+    return count
 
 
 def find_start(grid: list) -> tuple:
@@ -46,7 +46,7 @@ def find_start(grid: list) -> tuple:
                 return x, y
 
 
-def in_bounds(grid: list, x: int, y: int) -> bool:
+def is_in_bounds(grid: list, x: int, y: int) -> bool:
     if x < 0 or x > len(grid[0]) - 1 or y < 0 or y > len(grid) - 1:
         return False
     return grid[y][x] != '#'
@@ -56,11 +56,11 @@ def is_door(grid: list, x: int, y: int) -> bool:
     return grid[y][x].isupper()
 
 
-def is_door_key(grid: list, x: int, y: int) -> bool:
+def is_key(grid: list, x: int, y: int) -> bool:
     return grid[y][x].islower()
 
 
-def min_steps_all_keys(grid: list, doors: dict, start_x: int, start_y: int) -> int:
+def min_steps_all_keys(grid: list, num_keys: int, start_x: int, start_y: int) -> int:
     dirs = [(0, -1), (0, 1), (-1, 0), (1, 0)]
     root = TreeNode('@', 0, set(), None)
     q = [(start_x, start_y, 0, root)]
@@ -69,24 +69,23 @@ def min_steps_all_keys(grid: list, doors: dict, start_x: int, start_y: int) -> i
         value = grid[y][x]
         if is_door(grid, x, y) and value.lower() not in root.keys:
             continue
-        if is_door_key(grid, x, y) and value not in root.keys:
+        if is_key(grid, x, y) and value not in root.keys:
             key = value
             node = TreeNode(key, steps, root.keys.copy(), root)
             node.keys.add(key)
             root.neighbours.append(node)
             root = node
-            if doors.get(key.upper()) is None:
-                return root.steps  # last key
+            if len(node.keys) == num_keys:  # found last key
+                return root.steps
         root.visited.add((x, y))
         for dir in dirs:
             new_pos = (x + dir[0], y + dir[1])
-            if in_bounds(grid, x + dir[0], y + dir[1]) and new_pos not in root.visited:
+            if is_in_bounds(grid, x + dir[0], y + dir[1]) and new_pos not in root.visited:
                 q.append((x + dir[0], y + dir[1], steps + 1, root))
     return -1
 
 
 def part_one(filename: str) -> int:
     grid = get_grid(read_file(filename))
-    doors = get_doors(grid)
     x, y = find_start(grid)
-    return min_steps_all_keys(grid, doors, x, y)
+    return min_steps_all_keys(grid, get_num_keys(grid), x, y)
