@@ -34,6 +34,9 @@ class Intcode:
     def run_until_input_or_done(self) -> int:
         return self.run(False, True)
 
+    def run_until_io_or_done(self) -> int:
+        return self.run(True, True)
+
     def run(self, stop_on_output=True, stop_on_input=False) -> int:
         while True:
             opcode_obj = self._decode_opcode()
