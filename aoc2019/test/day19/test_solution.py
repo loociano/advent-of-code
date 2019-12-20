@@ -13,12 +13,15 @@
 # limitations under the License.
 import unittest
 from aoc2019.src.common.utils import get_path
-from aoc2019.src.day19.solution import part_one
+from aoc2019.src.day19.solution import part_one, part_two
 
 
 class TestDay19(unittest.TestCase):
-    def test_puzzle_input(self):
+    def test_part_one(self):
         self.assertEqual(229, part_one(get_path(__file__, 'input.txt'), 50, 50))
+
+    def test_part_two(self):
+        self.assertEqual(6950903, part_two(get_path(__file__, 'input.txt')))
 
 
 if __name__ == '__main__':
