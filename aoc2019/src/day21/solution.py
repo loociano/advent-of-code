@@ -27,15 +27,16 @@ def run_springscript(vm: Intcode) -> (int, str):
     return -1, ''.join(ascii_image)
 
 
-def send_instr(vm: Intcode, instrs: list):
-    while len(instrs) > 0:
-        ascii_int = instrs.pop(0)
+def send_instr(vm: Intcode, script: list):
+    ascii_chars = list(map(ord, list(''.join(script))))
+    while len(ascii_chars) > 0:
+        ascii_int = ascii_chars.pop(0)
         vm.set_input(ascii_int)
         vm.run_until_input_or_done()
 
 
-def get_hull_damage(vm: Intcode, instrs: list) -> int:
-    send_instr(vm, instrs)
+def get_hull_damage(vm: Intcode, script: list) -> int:
+    send_instr(vm, script)
     damage, ascii_images = run_springscript(vm)
     if ascii_images:
         print(ascii_images)
@@ -44,30 +45,30 @@ def get_hull_damage(vm: Intcode, instrs: list) -> int:
 
 def part_one(filename: str) -> int:
     # (!A or !B or !C) and D
-    instrs = list(map(ord, list(
-        'NOT A T\n'
-        'NOT B J\n'
-        'OR T J\n'
-        'NOT C T\n'
-        'OR T J\n'
-        'AND D J\n'
-        'WALK\n')))
-    return get_hull_damage(Intcode(read_program(filename)), instrs)
+    script = [
+        'NOT A T\n',
+        'NOT B J\n',
+        'OR T J\n',
+        'NOT C T\n',
+        'OR T J\n',
+        'AND D J\n',
+        'WALK\n']
+    return get_hull_damage(Intcode(read_program(filename)), script)
 
 
 def part_two(filename: str) -> int:
-    instrs = list(map(ord, list(
-        # (!A OR !B OR !C) AND D AND (E OR H)
+    script = [
+        # (!A or !B or !C) and D and (E or H)
         # Inferred experimentally by inspecting the failed scenarios
-        'NOT A T\n'
-        'NOT B J\n'
-        'OR T J\n'
-        'NOT C T\n'
-        'OR T J\n'
-        'AND D J\n'
-        'NOT E T\n'
-        'NOT T T\n'
-        'OR H T\n'
-        'AND T J\n'
-        'RUN\n')))
-    return get_hull_damage(Intcode(read_program(filename)), instrs)
+        'NOT A T\n',
+        'NOT B J\n',
+        'OR T J\n',
+        'NOT C T\n',
+        'OR T J\n',
+        'AND D J\n',
+        'NOT E T\n',
+        'NOT T T\n',
+        'OR H T\n',
+        'AND T J\n',
+        'RUN\n']
+    return get_hull_damage(Intcode(read_program(filename)), script)
