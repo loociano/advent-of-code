@@ -17,8 +17,11 @@ from aoc2019.src.common.utils import read_map
 def find_start(grid: list) -> (int, int):
     for y in range(0, len(grid)):
         for x in range(0, len(grid[y])):
-            if grid[y][x] == grid[y + 1][x] == 'A' and grid[y + 2][x] == '.':
-                return x, y + 2
+            if grid[y][x] == grid[y + 1][x] == 'A':
+                if y + 2 < len(grid) and grid[y + 2][x] == '.':
+                    return x, y + 2
+                else:
+                    return x, y - 1
 
 
 def find_portals(grid: list) -> (dict, dict):
@@ -94,7 +97,7 @@ def bsf_min_steps(grid: list, portals_key_pos: dict, portals_key_name: dict, sta
         while q_size > 0:
             x, y, level = q.pop(0)
             q_size -= 1
-            visited.add((x, y))
+            visited.add((x, y, level))
             portal = portals_key_pos.get((x, y))
             if portal is not None:
                 if portal == ('A', 'A'):
@@ -109,16 +112,19 @@ def bsf_min_steps(grid: list, portals_key_pos: dict, portals_key_name: dict, sta
                     if recursive:
                         level += 1
                     x, y = warp_to(grid, coord_outer[0], coord_outer[1])
-                    visited.add(coord_outer)
+                    visited.add((coord_outer[0], coord_outer[1], level))
                 else:
                     if recursive:
-                        level -= 1
+                        if level == 0:  # outer portals are walls in level zero
+                            continue
+                        else:
+                            level -= 1
                     x, y = warp_to(grid, coord_inner[0], coord_inner[1])
-                    visited.add(coord_inner)
-                visited.add((x, y))
+                    visited.add((coord_inner[0], coord_inner[1], level))
+                visited.add((x, y, level))
 
             for dx_y in [(0, -1), (0, 1), (-1, 0), (1, 0)]:
-                new_pos = (x + dx_y[0], y + dx_y[1])
+                new_pos = (x + dx_y[0], y + dx_y[1], level)
                 if within_bounds(grid, new_pos) and new_pos not in visited:
                     q.append((x + dx_y[0], y + dx_y[1], level))
         steps += 1

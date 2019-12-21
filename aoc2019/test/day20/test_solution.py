@@ -27,7 +27,13 @@ class TestDay20(unittest.TestCase):
         self.assertEqual(514, part_one(get_path(__file__, 'input.txt')))
 
     def test_case1_recursive_spaces(self):
-        self.assertEqual(-1, part_two(get_path(__file__, 'test1.txt')))
+        self.assertEqual(26, part_two(get_path(__file__, 'test1.txt')))
+
+    def test_case3_recursive_spaces(self):
+        self.assertEqual(396, part_two(get_path(__file__, 'test3.txt')))
+
+    def test_case3_puzzle_input(self):
+        self.assertEqual(6208, part_two(get_path(__file__, 'input.txt')))
 
 
 if __name__ == '__main__':
