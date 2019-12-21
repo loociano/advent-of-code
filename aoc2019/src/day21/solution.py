@@ -15,16 +15,16 @@ from aoc2019.src.common.intcode import Intcode
 from aoc2019.src.common.utils import read_program
 
 
-def get_hull_damage(vm: Intcode) -> (int, str):
-    line = []
+def run_springscript(vm: Intcode) -> (int, str):
+    ascii_image = []
     while True:
-        output = vm.run_until_io_or_done()
-        if output > 127:  # ascii table size
-            return output, ''
-        if output is None:
+        ascii_int = vm.run_until_io_or_done()
+        if ascii_int is None:
             break
-        line.append(chr(output))
-    return -1, ''.join(line)
+        if ascii_int > 127:  # ascii table size
+            return ascii_int, ''
+        ascii_image.append(chr(ascii_int))
+    return -1, ''.join(ascii_image)
 
 
 def send_instr(vm: Intcode, instrs: list):
@@ -34,8 +34,16 @@ def send_instr(vm: Intcode, instrs: list):
         vm.run_until_input_or_done()
 
 
+def get_hull_damage(vm: Intcode, instrs: list) -> int:
+    send_instr(vm, instrs)
+    damage, ascii_images = run_springscript(vm)
+    if ascii_images:
+        print(ascii_images)
+    return damage
+
+
 def part_one(filename: str) -> int:
-    vm = Intcode(read_program(filename))
+    # (!A or !B or !C) and D
     instrs = list(map(ord, list(
         'NOT A T\n'
         'NOT B J\n'
@@ -44,8 +52,22 @@ def part_one(filename: str) -> int:
         'OR T J\n'
         'AND D J\n'
         'WALK\n')))
-    send_instr(vm, instrs)
-    damage, ascii_images = get_hull_damage(vm)
-    if ascii_images:
-        print(ascii_images)
-    return damage
+    return get_hull_damage(Intcode(read_program(filename)), instrs)
+
+
+def part_two(filename: str) -> int:
+    instrs = list(map(ord, list(
+        # (!A OR !B OR !C) AND D AND (E OR H)
+        # Inferred experimentally by inspecting the failed scenarios
+        'NOT A T\n'
+        'NOT B J\n'
+        'OR T J\n'
+        'NOT C T\n'
+        'OR T J\n'
+        'AND D J\n'
+        'NOT E T\n'
+        'NOT T T\n'
+        'OR H T\n'
+        'AND T J\n'
+        'RUN\n')))
+    return get_hull_damage(Intcode(read_program(filename)), instrs)
