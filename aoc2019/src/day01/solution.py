@@ -37,8 +37,3 @@ def part_two(filename):
             total_fuel += module_fuel
             module_fuel = _calculate_fuel(module_fuel)
     return total_fuel
-
-
-if __name__ == '__main__':
-    print(part_one('input'))  # 3246455
-    print(part_two('input'))  # 4866824

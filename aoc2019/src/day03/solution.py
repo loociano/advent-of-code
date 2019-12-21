@@ -11,17 +11,15 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
-
 import sys
 
 
-def _get_wires(filename):
+def get_wires(filename: str) -> (list, list):
     with open(filename) as file:
         return list(file.readline().rstrip().split(',')), list(file.readline().rstrip().split(','))
 
 
-def _paint_path(area_dict, delay_dict, wire_data, id, with_delay):
+def paint_path(area_dict: dict, delay_dict: dict, wire_data: list, id: int, with_delay: bool) -> int:
     min_dist = sys.maxsize
     x, y = 0, 0
     step = 0
@@ -47,21 +45,18 @@ def _paint_path(area_dict, delay_dict, wire_data, id, with_delay):
     return min_dist
 
 
-def part_one():
-    wire1, wire2 = _get_wires('input')
+def part_one(filename: str) -> int:
+    wire1, wire2 = get_wires(filename)
     area_dict = {}
     delay_dict = {}
-    _paint_path(area_dict, delay_dict, wire1, 1, False)
-    return _paint_path(area_dict, delay_dict, wire2, 2, False)
+    paint_path(area_dict, delay_dict, wire1, 1, False)
+    return paint_path(area_dict, delay_dict, wire2, 2, False)
 
 
-def part_two():
-    wire1, wire2 = _get_wires('input')
+def part_two(filename: str) -> int:
+    wire1, wire2 = get_wires(filename)
     area_dict = {}
     delay_dict = {}
-    _paint_path(area_dict, delay_dict, wire1, 1, True)
-    return _paint_path(area_dict, delay_dict, wire2, 2, True)
+    paint_path(area_dict, delay_dict, wire1, 1, True)
+    return paint_path(area_dict, delay_dict, wire2, 2, True)
 
-
-print(part_one())  # 1626
-print(part_two())  # 27330

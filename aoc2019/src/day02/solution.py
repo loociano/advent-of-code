@@ -13,12 +13,12 @@
 # limitations under the License.
 
 
-def get_program(file):
+def get_program(file: str) -> list:
     with open(file) as f:
         return list(map(int, f.read().split(',')))
 
 
-def run_program(program, noun, verb):
+def run_program(program: list, noun: int, verb: int) -> int:
     program[1] = noun
     program[2] = verb
     pc = 0
@@ -38,18 +38,15 @@ def run_program(program, noun, verb):
     return program[0]
 
 
-def part_one():
-    return run_program(get_program('input'), 12, 2)
+def part_one(filename: str) -> int:
+    return run_program(get_program(filename), 12, 2)
 
 
-def part_two(output):
-    program = get_program('input')
+def part_two(filename: str, output: int) -> int:
+    program = get_program(filename)
     for noun in range(100):
         for verb in range(100):
             if run_program(program.copy(), noun, verb) == output:
                 return 100 * noun + verb
-    return 'not found'
+    return -1
 
-
-print(part_one())
-print(part_two(19690720))
