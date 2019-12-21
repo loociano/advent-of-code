@@ -27,8 +27,8 @@ def run_springscript(vm: Intcode) -> (int, str):
     return -1, ''.join(ascii_image)
 
 
-def send_instr(vm: Intcode, script: list):
-    ascii_chars = list(map(ord, list(''.join(script))))
+def load_springscript(vm: Intcode, script: list):
+    ascii_chars = list(map(ord, list('\n'.join(script) + '\n')))
     while len(ascii_chars) > 0:
         ascii_int = ascii_chars.pop(0)
         vm.set_input(ascii_int)
@@ -36,7 +36,7 @@ def send_instr(vm: Intcode, script: list):
 
 
 def get_hull_damage(vm: Intcode, script: list) -> int:
-    send_instr(vm, script)
+    load_springscript(vm, script)
     damage, ascii_images = run_springscript(vm)
     if ascii_images:
         print(ascii_images)
@@ -46,13 +46,13 @@ def get_hull_damage(vm: Intcode, script: list) -> int:
 def part_one(filename: str) -> int:
     # (!A or !B or !C) and D
     script = [
-        'NOT A T\n',
-        'NOT B J\n',
-        'OR T J\n',
-        'NOT C T\n',
-        'OR T J\n',
-        'AND D J\n',
-        'WALK\n']
+        'NOT A T',
+        'NOT B J',
+        'OR T J',
+        'NOT C T',
+        'OR T J',
+        'AND D J',
+        'WALK']
     return get_hull_damage(Intcode(read_program(filename)), script)
 
 
@@ -60,15 +60,15 @@ def part_two(filename: str) -> int:
     script = [
         # (!A or !B or !C) and D and (E or H)
         # Inferred experimentally by inspecting the failed scenarios
-        'NOT A T\n',
-        'NOT B J\n',
-        'OR T J\n',
-        'NOT C T\n',
-        'OR T J\n',
-        'AND D J\n',
-        'NOT E T\n',
-        'NOT T T\n',
-        'OR H T\n',
-        'AND T J\n',
-        'RUN\n']
+        'NOT A T',
+        'NOT B J',
+        'OR T J',
+        'NOT C T',
+        'OR T J',
+        'AND D J',
+        'NOT E T',
+        'NOT T T',
+        'OR H T',
+        'AND T J',
+        'RUN']
     return get_hull_damage(Intcode(read_program(filename)), script)
