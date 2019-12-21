@@ -20,6 +20,9 @@ class TestDay20(unittest.TestCase):
     def test_test_case1(self):
         self.assertEqual(23, part_one(get_path(__file__, 'test1.txt')))
 
+    def test_puzzle_input(self):
+        self.assertEqual(-1, part_one(get_path(__file__, 'input.txt')))
+
 
 if __name__ == '__main__':
     unittest.main()

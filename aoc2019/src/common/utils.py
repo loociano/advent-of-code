@@ -19,9 +19,9 @@ def read_program(file) -> list:
         return list(map(int, f.read().split(',')))
 
 
-def read_file(file) -> list:
+def read_map(file) -> list:
     with open(file) as f:
-        return [line.rstrip() for line in f.readlines()]
+        return [list(line.rstrip('\n')) for line in f.readlines()]
 
 
 def get_path(dir_name: str, filename: str) -> str:
