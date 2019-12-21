@@ -1,0 +1,115 @@
+# Copyright 2019 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+from aoc2019.src.common.utils import read_map
+
+
+def find_start(grid: list) -> (int, int):
+    for y in range(0, len(grid)):
+        for x in range(0, len(grid[y])):
+            if grid[y][x] == 'A':
+                if grid[y + 1][x] == 'A' and grid[y + 2][x] == '.':
+                    return x, y + 2
+
+
+def find_portals(grid: list) -> (dict, dict):
+    portals_key_pos = {}
+    portals_key_name = {}
+    width = len(grid[0])
+    height = len(grid)
+    for y in range(0, height):
+        for x in range(0, width):
+            if portals_key_pos.get((x, y)) is not None:
+                continue
+            if grid[y][x].isupper():
+                if y + 1 < height and grid[y + 1][x].isupper():
+                    if y + 2 < height and grid[y + 2][x] == '.':  # down
+                        portal = (grid[y][x], grid[y + 1][x])
+                        pos = (x, y + 1)
+                        portals_key_pos[pos] = portal
+                        if portals_key_name.get(portal) is None:
+                            portals_key_name[portal] = []
+                        portals_key_name[portal].append(pos)
+                    elif y - 1 > 0 and grid[y - 1][x] == '.':  # up
+                        portal = (grid[y][x], grid[y + 1][x])
+                        pos = (x, y)
+                        portals_key_pos[pos] = portal
+                        if portals_key_name.get(portal) is None:
+                            portals_key_name[portal] = []
+                        portals_key_name[portal].append(pos)
+                elif x + 1 < width and grid[y][x + 1].isupper():
+                    if x + 2 < width and grid[y][x + 2] == '.':  # right
+                        portal = (grid[y][x], grid[y][x + 1])
+                        pos = (x + 1, y)
+                        portals_key_pos[pos] = portal
+                        if portals_key_name.get(portal) is None:
+                            portals_key_name[portal] = []
+                        portals_key_name[portal].append(pos)
+                    elif x - 1 > 0 and grid[y][x - 1] == '.':  # left
+                        portal = (grid[y][x], grid[y][x + 1])
+                        pos = (x, y)
+                        portals_key_pos[pos] = portal
+                        if portals_key_name.get(portal) is None:
+                            portals_key_name[portal] = []
+                        portals_key_name[portal].append(pos)
+    return portals_key_pos, portals_key_name
+
+
+def warp_to(grid: list, x: int, y: int) -> (int, int):
+    for dir in [(0, -1), (0, 1), (-1, 0), (1, 0)]:
+        if grid[y + dir[1]][x + dir[0]] == '.':
+            return x + dir[0], y + dir[1]
+
+
+def within_bounds(grid: list, pos: (int, int)) -> bool:
+    width = len(grid[0])
+    height = len(grid)
+    return 0 <= pos[0] < width and 0 <= pos[1] < height
+
+
+def bsf_min_steps(grid: list, portals_key_pos: dict, portals_key_name: dict, x_start: int, y_start: int) -> int:
+    q = [(x_start, y_start)]
+    visited = set()
+    steps = 0
+    while len(q):
+        q_size = len(q)
+        while q_size > 0:
+            x, y = q.pop(0)
+            visited.add((x, y))
+            portal = portals_key_pos.get((x, y))
+            if portal is not None:
+                if portal == ('A', 'A'):
+                    continue
+                if portal == ('Z', 'Z'):
+                    return steps
+                pos_1, pos_2 = portals_key_name.get(portal)
+                if (x, y) == pos_1:
+                    x, y = warp_to(grid, pos_2[0], pos_2[1])
+                else:
+                    x, y = warp_to(grid, pos_1[0], pos_1[1])
+                visited.add((x, y))
+
+            for dir in [(0, -1), (0, 1), (-1, 0), (1, 0)]:
+                new_pos = (x + dir[0], y + dir[1])
+                if within_bounds(grid, new_pos) and new_pos not in visited and grid[y + dir[1]][x + dir[0]] != '#':
+                    q.append((x + dir[0], y + dir[1]))
+            q_size -= 1
+        steps += 1
+    return -1
+
+
+def part_one(filename: str) -> int:
+    grid = read_map(filename)
+    x_start, y_start = find_start(grid)
+    portals_key_pos, portals_key_name = find_portals(grid)
+    return bsf_min_steps(grid, portals_key_pos, portals_key_name, x_start, y_start)
