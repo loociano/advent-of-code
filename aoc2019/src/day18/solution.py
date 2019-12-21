@@ -11,8 +11,8 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-import sys
-from aoc2019.src.common.utils import read_file
+import copy
+from aoc2019.src.common.utils import read_map
 
 
 class TreeNode:
@@ -83,6 +83,6 @@ def min_steps_all_keys(grid: list, num_keys: int, start_x: int, start_y: int) ->
 
 
 def part_one(filename: str) -> int:
-    grid = get_grid(read_file(filename))
+    grid = read_map(filename)
     x, y = find_start(grid)
     return min_steps_all_keys(grid, get_num_keys(grid), x, y)
