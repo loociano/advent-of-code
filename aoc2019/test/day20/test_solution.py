@@ -13,7 +13,7 @@
 # limitations under the License.
 import unittest
 from aoc2019.src.common.utils import get_path
-from aoc2019.src.day20.solution import part_one
+from aoc2019.src.day20.solution import part_one, part_two
 
 
 class TestDay20(unittest.TestCase):
@@ -21,10 +21,13 @@ class TestDay20(unittest.TestCase):
         self.assertEqual(23, part_one(get_path(__file__, 'test1.txt')))
 
     def test_case2(self):
-        self.assertEqual(59, part_one(get_path(__file__, 'test2.txt')))
+        self.assertEqual(58, part_one(get_path(__file__, 'test2.txt')))
 
     def test_puzzle_input(self):
         self.assertEqual(514, part_one(get_path(__file__, 'input.txt')))
+
+    def test_case1_recursive_spaces(self):
+        self.assertEqual(-1, part_two(get_path(__file__, 'test1.txt')))
 
 
 if __name__ == '__main__':
