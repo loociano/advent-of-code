@@ -17,16 +17,14 @@ from aoc2019.src.common.utils import read_map
 def find_start(grid: list) -> (int, int):
     for y in range(0, len(grid)):
         for x in range(0, len(grid[y])):
-            if grid[y][x] == 'A':
-                if grid[y + 1][x] == 'A' and grid[y + 2][x] == '.':
-                    return x, y + 2
+            if grid[y][x] == grid[y + 1][x] == 'A' and grid[y + 2][x] == '.':
+                return x, y + 2
 
 
 def find_portals(grid: list) -> (dict, dict):
     portals_key_pos = {}
     portals_key_name = {}
-    width = len(grid[0])
-    height = len(grid)
+    width, height = len(grid[0]), len(grid)
     for y in range(0, height):
         for x in range(0, width):
             if portals_key_pos.get((x, y)) is not None:
@@ -66,24 +64,22 @@ def find_portals(grid: list) -> (dict, dict):
 
 
 def warp_to(grid: list, x: int, y: int) -> (int, int):
-    for dir in [(0, -1), (0, 1), (-1, 0), (1, 0)]:
-        if grid[y + dir[1]][x + dir[0]] == '.':
-            return x + dir[0], y + dir[1]
+    for dx_y in [(0, -1), (0, 1), (-1, 0), (1, 0)]:
+        if grid[y + dx_y[1]][x + dx_y[0]] == '.':
+            return x + dx_y[0], y + dx_y[1]
 
 
 def within_bounds(grid: list, pos: (int, int)) -> bool:
-    width = len(grid[0])
-    height = len(grid)
-    return 0 <= pos[0] < width and 0 <= pos[1] < height
+    return 0 <= pos[0] < len(grid[0]) and 0 <= pos[1] < len(grid) and grid[pos[1]][pos[0]] != '#'
 
 
-def bsf_min_steps(grid: list, portals_key_pos: dict, portals_key_name: dict, x_start: int, y_start: int) -> int:
-    q = [(x_start, y_start)]
+def bsf_min_steps(grid: list, portals_key_pos: dict, portals_key_name: dict, start: (int, int)) -> int:
+    q = [start]
     visited = set()
     steps = 0
     while len(q):
         q_size = len(q)
-        while q_size > 0:
+        while q_size:
             x, y = q.pop(0)
             visited.add((x, y))
             portal = portals_key_pos.get((x, y))
@@ -99,10 +95,10 @@ def bsf_min_steps(grid: list, portals_key_pos: dict, portals_key_name: dict, x_s
                     x, y = warp_to(grid, pos_1[0], pos_1[1])
                 visited.add((x, y))
 
-            for dir in [(0, -1), (0, 1), (-1, 0), (1, 0)]:
-                new_pos = (x + dir[0], y + dir[1])
-                if within_bounds(grid, new_pos) and new_pos not in visited and grid[y + dir[1]][x + dir[0]] != '#':
-                    q.append((x + dir[0], y + dir[1]))
+            for dx_y in [(0, -1), (0, 1), (-1, 0), (1, 0)]:
+                new_pos = (x + dx_y[0], y + dx_y[1])
+                if within_bounds(grid, new_pos) and new_pos not in visited:
+                    q.append((x + dx_y[0], y + dx_y[1]))
             q_size -= 1
         steps += 1
     return -1
@@ -110,6 +106,5 @@ def bsf_min_steps(grid: list, portals_key_pos: dict, portals_key_name: dict, x_s
 
 def part_one(filename: str) -> int:
     grid = read_map(filename)
-    x_start, y_start = find_start(grid)
     portals_key_pos, portals_key_name = find_portals(grid)
-    return bsf_min_steps(grid, portals_key_pos, portals_key_name, x_start, y_start)
+    return bsf_min_steps(grid, portals_key_pos, portals_key_name, find_start(grid))

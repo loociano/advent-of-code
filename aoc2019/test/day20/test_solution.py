@@ -17,10 +17,10 @@ from aoc2019.src.day20.solution import part_one
 
 
 class TestDay20(unittest.TestCase):
-    def test_test_case1(self):
+    def test_case1(self):
         self.assertEqual(23, part_one(get_path(__file__, 'test1.txt')))
 
-    def test_test_case2(self):
+    def test_case2(self):
         self.assertEqual(59, part_one(get_path(__file__, 'test2.txt')))
 
     def test_puzzle_input(self):
