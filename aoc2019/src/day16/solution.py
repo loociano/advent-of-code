@@ -63,5 +63,4 @@ def part_two(filename: str, target_phases: int) -> str:
     input_num = read_integers(filename) * 10000
     offset = int(''.join(map(str, input_num[:7])))
     output = fft_second_half(input_num, target_phases)
-    return ''.join(map(str, output[offset:offset+8]))
-
+    return ''.join(map(str, output[offset:offset + 8]))

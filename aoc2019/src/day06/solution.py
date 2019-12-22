@@ -59,4 +59,3 @@ def part_two(filename: str) -> int:
         count_you -= 1
         count_san -= 1
     return count_you + count_san + 2
-

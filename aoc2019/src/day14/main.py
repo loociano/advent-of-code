@@ -49,10 +49,10 @@ def count_ores_recursive(totals: dict, formulas: dict, chem_name: str, amount: i
 
 def fuel_produced(totals: dict, formulas: dict):
     budget_ores = 1000000000000
-    low = 1
+    low, mid = 0, 0
     high = 100000000
     while low < high:
-        mid = int((high - low)/2 + low)
+        mid = int((high - low) / 2 + low)
         ores = count_ores_recursive(totals, formulas, 'FUEL', mid)
         if ores == budget_ores:
             return mid
@@ -79,5 +79,5 @@ def part_two(filename: str):
     return fuel_produced(totals, formulas)
 
 
-print(part_one('input'))
-print(part_two('input'))
+print(part_one('input'))  # 220019
+print(part_two('input'))  # 5650230

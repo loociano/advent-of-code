@@ -15,7 +15,6 @@ import math
 
 
 class Universe:
-
     NUM_AXIS = 3
 
     def __init__(self):

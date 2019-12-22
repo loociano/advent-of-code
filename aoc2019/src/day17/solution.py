@@ -19,7 +19,7 @@ def is_intersection(grid: dict, x: int, y: int, width: int, height: int) -> bool
     if x == 0 or y == 0 or x == width - 1 or y == height - 1:
         return False
     return grid[(x - 1, y)] == ord('#') and grid[(x + 1, y)] == ord('#') \
-        and grid[(x, y - 1)] == ord('#') and grid[(x, y + 1)] == ord('#')
+           and grid[(x, y - 1)] == ord('#') and grid[(x, y + 1)] == ord('#')
 
 
 def is_grid_char(num: int) -> bool:

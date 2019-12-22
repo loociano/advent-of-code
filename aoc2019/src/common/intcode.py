@@ -37,7 +37,7 @@ class Intcode:
     def run_until_io_or_done(self) -> int:
         return self.run(True, True)
 
-    def run(self, stop_on_output=True, stop_on_input=False) -> int:
+    def run(self, stop_on_output=True, stop_on_input=False) -> int or None:
         while True:
             opcode_obj = self._decode_opcode()
             opcode = opcode_obj[3] * 10 + opcode_obj[4]

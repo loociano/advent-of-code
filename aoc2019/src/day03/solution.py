@@ -59,4 +59,3 @@ def part_two(filename: str) -> int:
     delay_dict = {}
     paint_path(area_dict, delay_dict, wire1, 1, True)
     return paint_path(area_dict, delay_dict, wire2, 2, True)
-

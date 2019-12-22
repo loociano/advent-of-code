@@ -45,4 +45,3 @@ def part_two(filename: str, output: int) -> int:
             if run_program(program.copy(), noun, verb) == output:
                 return 100 * noun + verb
     return -1
-
