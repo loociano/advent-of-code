@@ -11,8 +11,8 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+from aoc2019.src.common.file_utils import read_intcode
 from aoc2019.src.common.intcode import Intcode
-from aoc2019.src.common.utils import read_program
 
 
 def run_springscript(vm: Intcode) -> (int, str):
@@ -53,7 +53,7 @@ def part_one(filename: str) -> int:
         'OR T J',
         'AND D J',
         'WALK']
-    return get_hull_damage(Intcode(read_program(filename)), script)
+    return get_hull_damage(Intcode(read_intcode(filename)), script)
 
 
 def part_two(filename: str) -> int:
@@ -71,4 +71,4 @@ def part_two(filename: str) -> int:
         'OR H T',
         'AND T J',
         'RUN']
-    return get_hull_damage(Intcode(read_program(filename)), script)
+    return get_hull_damage(Intcode(read_intcode(filename)), script)

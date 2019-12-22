@@ -11,7 +11,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-from aoc2019.src.common.utils import read_program
+from aoc2019.src.common.file_utils import read_intcode
 
 
 def decode_opcode(num):
@@ -90,7 +90,7 @@ def get_phase_permutations(phases: range) -> list:
 
 def part_one(filename: str) -> int:
     max_thruster_signal = 0
-    program = read_program(filename)
+    program = read_intcode(filename)
     phase_perms = get_phase_permutations(range(0, 5))
     for phase_perm in phase_perms:
         output = 0
@@ -119,5 +119,5 @@ def run_with_phase_setting(program: list, phase_setting: list) -> int:
 def part_two(filename: str) -> int:
     max_thruster_signal = 0
     for phase_perm in get_phase_permutations(range(5, 10)):
-        max_thruster_signal = max(max_thruster_signal, run_with_phase_setting(read_program(filename), phase_perm))
+        max_thruster_signal = max(max_thruster_signal, run_with_phase_setting(read_intcode(filename), phase_perm))
     return max_thruster_signal

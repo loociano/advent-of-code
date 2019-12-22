@@ -11,7 +11,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-from aoc2019.src.common.utils import read_program
+from aoc2019.src.common.file_utils import read_intcode
 
 
 def run_program(program: list, noun: int, verb: int) -> int:
@@ -35,11 +35,11 @@ def run_program(program: list, noun: int, verb: int) -> int:
 
 
 def part_one(filename: str) -> int:
-    return run_program(read_program(filename), 12, 2)
+    return run_program(read_intcode(filename), 12, 2)
 
 
 def part_two(filename: str, output: int) -> int:
-    program = read_program(filename)
+    program = read_intcode(filename)
     for noun in range(100):
         for verb in range(100):
             if run_program(program.copy(), noun, verb) == output:

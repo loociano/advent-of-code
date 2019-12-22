@@ -12,8 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 from math import ceil
+
+from aoc2019.src.common.file_utils import read_intcode
 from aoc2019.src.common.intcode import Intcode
-from aoc2019.src.common.utils import read_program
 
 
 def gen_inputs(x1: int, x2: int, y1: int, y2: int) -> list:
@@ -70,7 +71,7 @@ def get_area_points(program: list, grid: list, inputs: list):
 
 
 def part_one(filename: str, width: int, height: int):
-    program = read_program(filename)
+    program = read_intcode(filename)
     grid = gen_grid(width, height)
     inputs = gen_inputs(0, width, 0, height)
     points = get_area_points(program, grid, inputs)
@@ -93,7 +94,7 @@ def binary_search(program: list, slope: float) -> int:
 
 
 def part_two(filename: str):
-    program = read_program(filename)
+    program = read_intcode(filename)
     slope = get_slope(program)
     x = binary_search(program, slope)
     y = ceil(x * slope)

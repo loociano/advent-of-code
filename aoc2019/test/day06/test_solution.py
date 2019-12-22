@@ -13,7 +13,7 @@
 # limitations under the License.
 import unittest
 
-from aoc2019.src.common.utils import get_path
+from aoc2019.src.common.file_utils import get_path
 from aoc2019.src.day06.solution import part_one, part_two
 
 

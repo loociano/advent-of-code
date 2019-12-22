@@ -11,8 +11,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-import copy
-from aoc2019.src.common.utils import read_map
+from aoc2019.src.common.file_utils import read_map
 
 
 class TreeNode:

@@ -11,8 +11,8 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+from aoc2019.src.common.file_utils import read_intcode
 from aoc2019.src.common.intcode import Intcode
-from aoc2019.src.common.utils import read_program
 
 
 def is_intersection(grid: dict, x: int, y: int, width: int, height: int) -> bool:
@@ -60,7 +60,7 @@ def serialize_grid(grid: dict, width: int, height: int):
 
 
 def part_one(filename: str) -> int:
-    vm = Intcode(read_program(filename))
+    vm = Intcode(read_intcode(filename))
     grid, width, height = get_grid(vm)
     return get_alignment_param_sum(grid, width, height)
 
@@ -87,7 +87,7 @@ def get_collected_dust(vm: Intcode) -> int:
 
 
 def part_two(filename: str) -> int:
-    program = read_program(filename)
+    program = read_intcode(filename)
     program[0] = 2
     vm = Intcode(program)
 

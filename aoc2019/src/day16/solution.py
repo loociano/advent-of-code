@@ -11,11 +11,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
-
-def read_file(file: str) -> list:
-    with open(file) as f:
-        return list(map(int, [x for x in f.read()]))
+from aoc2019.src.common.file_utils import read_integers
 
 
 def fft(digits: list, target_phases: int) -> list:
@@ -59,12 +55,12 @@ def fft_second_half(digits: list, target_phases: int) -> list:
 
 
 def part_one(filename: str, target_phases: int) -> str:
-    output = fft(read_file(filename), target_phases)
+    output = fft(read_integers(filename), target_phases)
     return ''.join(map(str, output[:8]))
 
 
 def part_two(filename: str, target_phases: int) -> str:
-    input_num = read_file(filename) * 10000
+    input_num = read_integers(filename) * 10000
     offset = int(''.join(map(str, input_num[:7])))
     output = fft_second_half(input_num, target_phases)
     return ''.join(map(str, output[offset:offset+8]))

@@ -11,7 +11,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-from aoc2019.src.common.utils import read_program
+from aoc2019.src.common.file_utils import read_intcode
 
 
 def _decode_opcode(num: int) -> list:
@@ -72,8 +72,8 @@ def run(program: list, input_id: int) -> int:
 
 
 def part_one(filename: str) -> int:
-    return run(read_program(filename), 1)
+    return run(read_intcode(filename), 1)
 
 
 def part_two(filename: str) -> int:
-    return run(read_program(filename), 5)
+    return run(read_intcode(filename), 5)
