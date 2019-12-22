@@ -58,6 +58,3 @@ def part_two(start, end):
     return len([num for num in range(start, end + 1) if
                 has_a_double_adjacent(num) and is_non_decreasing(num)])
 
-
-print(part_one(256310, 732736))  # 979
-print(part_two(256310, 732736))  # 635

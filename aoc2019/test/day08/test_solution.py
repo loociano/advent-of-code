@@ -14,16 +14,21 @@
 import unittest
 
 from aoc2019.src.common.utils import get_path
-from aoc2019.src.day17.solution import part_one, part_two
+from aoc2019.src.day08.solution import part_one, part_two
 
 
-class TestDay17(unittest.TestCase):
-
+class TestDay08(unittest.TestCase):
     def test_part_one(self):
-        self.assertEqual(6520, part_one(get_path(__file__, 'input.txt')))
+        self.assertEqual(1965, part_one(get_path(__file__, 'input.txt'), 25, 6))
 
     def test_part_two(self):
-        self.assertEqual(1071369, part_two(get_path(__file__, 'input.txt')))
+        self.assertEqual(''.join([
+            ' XX  XXXX X  X   XX X   X\n',
+            'X  X    X X X     X X   X\n',
+            'X      X  XX      X  X X \n',
+            'X XX  X   X X     X   X  \n',
+            'X  X X    X X  X  X   X  \n',
+            ' XXX XXXX X  X  XX    X  ']), part_two(get_path(__file__, 'input.txt'), 25, 6))  # GZKJY
 
 
 if __name__ == '__main__':

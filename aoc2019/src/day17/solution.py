@@ -42,7 +42,7 @@ def get_grid(vm: Intcode) -> (dict, int, int):
             grid[(x, y)] = output
             x += 1
         output = vm.run()
-    height = y - 1  # input ends with newline
+    height = y - 1  # input.txt.txt ends with newline
     return grid, width, height
 
 

@@ -12,18 +12,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 import unittest
-
-from aoc2019.src.common.utils import get_path
-from aoc2019.src.day17.solution import part_one, part_two
+from aoc2019.src.day04.solution import part_one, part_two
 
 
-class TestDay17(unittest.TestCase):
-
+class TestDay03(unittest.TestCase):
     def test_part_one(self):
-        self.assertEqual(6520, part_one(get_path(__file__, 'input.txt')))
+        self.assertEqual(979, part_one(256310, 732736))
 
     def test_part_two(self):
-        self.assertEqual(1071369, part_two(get_path(__file__, 'input.txt')))
+        self.assertEqual(635, part_two(256310, 732736))
 
 
 if __name__ == '__main__':

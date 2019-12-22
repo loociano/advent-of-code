@@ -13,7 +13,7 @@
 # limitations under the License.
 
 
-def get_orbits(file):
+def get_orbits(file: str) -> dict:
     graph = {}
     with open(file) as f:
         orbits = list(f.readlines())
@@ -23,7 +23,7 @@ def get_orbits(file):
     return graph
 
 
-def count_orbits(graph, node):
+def count_orbits(graph: dict, node: str) -> int:
     orbit_count = 0
     curr_node = node
     while graph.get(curr_node) is not None:
@@ -32,7 +32,7 @@ def count_orbits(graph, node):
     return orbit_count
 
 
-def get_path(graph, node):
+def get_path(graph: dict, node: str) -> list:
     orbits = []
     curr_node = node
     while graph.get(curr_node) is not None:
@@ -41,16 +41,16 @@ def get_path(graph, node):
     return orbits
 
 
-def part_one():
-    graph = get_orbits('input')
+def part_one(filename: str) -> int:
+    graph = get_orbits(filename)
     orbit_count = 0
     for node in graph.keys():
         orbit_count += count_orbits(graph, node)
     return orbit_count
 
 
-def part_two():
-    graph = get_orbits('input')
+def part_two(filename: str) -> int:
+    graph = get_orbits(filename)
     ancestors_you = get_path(graph, 'YOU')
     ancestors_santa = get_path(graph, 'SAN')
     count_you = len(ancestors_you) - 1
@@ -60,6 +60,3 @@ def part_two():
         count_san -= 1
     return count_you + count_san + 2
 
-
-print(part_one())  # 333679
-print(part_two())  # 370

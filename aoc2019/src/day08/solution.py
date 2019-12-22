@@ -11,17 +11,15 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
-
 import sys
 
 
-def _get_image_pixels(file):
+def get_image_pixels(file: str) -> list:
     with open(file) as f:
         return list(map(int, f.read()))
 
 
-def _get_layer_with_fewest_zeros(freq_list):
+def get_layer_with_fewest_zeros(freq_list: list) -> list:
     result = -1
     min_zeros = sys.maxsize
     for freq in freq_list:
@@ -31,7 +29,7 @@ def _get_layer_with_fewest_zeros(freq_list):
     return result
 
 
-def _compute_freqs(pixels, width, height):
+def compute_frequencies(pixels: list, width: int, height: int) -> list:
     layer = -1
     freq_list = []
     for i, pixel in enumerate(pixels):
@@ -42,7 +40,7 @@ def _compute_freqs(pixels, width, height):
     return freq_list
 
 
-def _compute_image(pixels, width, height):
+def compute_image(pixels: list, width: int, height: int) -> str:
     num_layers = int(len(pixels) / (width * height))
     message = []
     for row in range(0, height):
@@ -58,22 +56,10 @@ def _compute_image(pixels, width, height):
     return '\n'.join(message)
 
 
-def part_one(filename, width, height):
-    result_layer = _get_layer_with_fewest_zeros(_compute_freqs(_get_image_pixels(filename), width, height))
+def part_one(filename: str, width: int, height: int) -> str:
+    result_layer = get_layer_with_fewest_zeros(compute_frequencies(get_image_pixels(filename), width, height))
     return result_layer[1] * result_layer[2]
 
 
-def part_two(filename, width, height):
-    return _compute_image(_get_image_pixels(filename), width, height)
-
-
-print(part_one('input', 25, 6))  # 1965
-print(part_two('input', 25, 6))  # GZKJY
-"""
- XX  XXXX X  X   XX X   X
-X  X    X X X     X X   X
-X      X  XX      X  X X 
-X XX  X   X X     X   X  
-X  X X    X X  X  X   X  
- XXX XXXX X  X  XX    X  
-"""
+def part_two(filename: str, width: int, height: int) -> str:
+    return compute_image(get_image_pixels(filename), width, height)
