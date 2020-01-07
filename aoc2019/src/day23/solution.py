@@ -12,23 +12,35 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 from aoc2019.src.common.file_utils import read_intcode
+from aoc2019.src.common.nat import NAT
 from aoc2019.src.common.net_intcode import NetIntcode
 
 
-def pending_messages(network) -> bool:
-    for n in network:
-        if n.message_queue:
-            return True
-    return False
+def init_network(program: list, num_computers: int, nat_address: int) -> list:
+    network = []
+    for address in range(num_computers):
+        network.append(NetIntcode(program, address, nat_address, network))
+    return network
 
 
 def part_one(filename: str, num_computers: int, target_address: int) -> int:
-    network = []
-    program = read_intcode(filename)
-    for address in range(num_computers):
-        network.append(NetIntcode(program, address, target_address, network))
+    network = init_network(read_intcode(filename), num_computers, target_address)
     while True:
         for computer in network:
-            y = computer.run_until_io()
-            if y is not None:
-                return y
+            packet = computer.run_until_io()
+            if packet is not None and packet[0] == target_address:
+                return packet[2]  # Y value
+
+
+def part_two(filename: str, num_computers: int, nat_address: int) -> int:
+    network = init_network(read_intcode(filename), num_computers, nat_address)
+    nat = NAT(network)
+    while True:
+        for computer in network:
+            packet = computer.run_until_io()
+            if packet is not None and packet[0] == nat_address:
+                nat.packet = (packet[1], packet[2])
+        if nat.is_network_idle():
+            if nat.is_repeated_y():
+                return nat.lastY
+            nat.send_packet()

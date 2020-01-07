@@ -14,12 +14,15 @@
 import unittest
 
 from aoc2019.src.common.file_utils import get_path
-from aoc2019.src.day23.solution import part_one
+from aoc2019.src.day23.solution import part_one, part_two
 
 
 class TestDay23(unittest.TestCase):
     def test_part_one(self):
         self.assertEqual(20764, part_one(get_path(__file__, 'input.txt'), 50, 255))
+
+    def test_part_two(self):
+        self.assertEqual(14805, part_two(get_path(__file__, 'input.txt'), 50, 255))
 
 
 if __name__ == '__main__':
