@@ -14,14 +14,14 @@
 
 
 class Intcode:
-    pc = 0
-    relative_base = 0
-    mem = [0] * 100000
-    input_val = 0
-    output = None
 
     def __init__(self, program: list):
-        self.program = program
+        self.pc = 0
+        self.relative_base = 0
+        self.input_val = 0
+        self.output = None
+        self.stopped_on_input = False
+        self.mem = [0] * 100000
         for pos, intcode in enumerate(program):
             self.mem[pos] = intcode
 
@@ -38,6 +38,7 @@ class Intcode:
         return self.run(True, True)
 
     def run(self, stop_on_output=True, stop_on_input=False) -> int or None:
+        self.stopped_on_input = False
         while True:
             opcode_obj = self._decode_opcode()
             opcode = opcode_obj[3] * 10 + opcode_obj[4]
@@ -51,6 +52,7 @@ class Intcode:
             elif opcode == 3:
                 self.mem[self._get_op3_address(op1_mode, 1)] = self.input_val
                 self.pc += 2
+                self.stopped_on_input = True
                 if stop_on_input:
                     break
             elif opcode == 4:
