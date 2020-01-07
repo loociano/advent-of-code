@@ -17,7 +17,7 @@ class NAT:
     def __init__(self, network):
         self.network = network
         self.packet = None
-        self.lastY = None
+        self.last_y_delivered = None
 
     def is_network_idle(self):
         for computer in self.network:
@@ -25,17 +25,13 @@ class NAT:
                 return False
         return True
 
+    def has_packet(self):
+        return self.packet is not None
+
     def is_repeated_y(self):
-        if self.packet is None:
-            return False
-        if self.packet[1] == self.lastY:
-            return True
-        self.lastY = None
-        return False
+        return self.packet[1] == self.last_y_delivered
 
     def send_packet(self):
-        if self.packet is None:
-            return
-        self.lastY = self.packet[1]
+        self.last_y_delivered = self.packet[1]
         self.network[0].packet_queue.append(self.packet)
         self.packet = None
