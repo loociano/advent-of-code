@@ -11,7 +11,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-from aoc2019.src.common.file_utils import read_lines
+from aoc2019.src.common.file_utils import read_map
 
 
 def count_adj_bugs(grid: list, line: int, col: int) -> int:
@@ -57,12 +57,8 @@ def calc_biodiversity_rating(serial_state: str) -> int:
 
 
 def part_one(filename: str) -> int:
-    grid = []
-    for line in read_lines(filename):
-        grid.append(list(line))
-
-    states = set()
-    states.add(serialize_state(grid))
+    grid = read_map(filename)
+    states = {serialize_state(grid)}
     while True:
         grid = simulate(grid)
         state = serialize_state(grid)
