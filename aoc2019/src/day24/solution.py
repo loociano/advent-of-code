@@ -14,40 +14,52 @@
 from aoc2019.src.common.file_utils import read_map
 
 
-def count_row_bugs(grid: list, row: int) -> int:
+def count_bugs_in_row(grid: list, row: int) -> int:
     return ''.join(grid[row]).count('#')
 
 
-def count_col_bugs(grid: list, col: int) -> int:
+def count_bugs_in_col(grid: list, col: int) -> int:
     return sum([1 if row[col] == '#' else 0 for row in grid])
 
 
-def count_adj_bugs(grids: dict, level: int, line: int, col: int, recursive=False) -> int:
+def count_bugs_in_deeper_level(grids: dict, level: int, line: int, col: int, size: int) -> int:
+    if line == 1 and col == 2:  # top
+        return count_bugs_in_row(grids[level + 1], 0)
+    elif line == 2 and col == 3:  # right
+        return count_bugs_in_col(grids[level + 1], size - 1)
+    elif line == 3 and col == 2:  # bottom
+        return count_bugs_in_row(grids[level + 1], size - 1)
+    elif line == 2 and col == 1:
+        return count_bugs_in_col(grids[level + 1], 0)
+
+
+def has_bug_in_outer_level(grids: dict, level: int, x: int, y: int, size: int):
+    return (x < 0 and grids[level - 1][2][1] == '#') \
+           or (x >= size and grids[level - 1][2][3] == '#') \
+           or (y < 0 and grids[level - 1][1][2] == '#') \
+           or (y >= size and grids[level - 1][3][2] == '#')
+
+
+def is_middle(x: int, y: int, size: int) -> bool:
+    return x == size // 2 and y == size // 2
+
+
+def count_adj_bugs(grids: dict, level: int, line: int, col: int, is_recursive_grid=False) -> int:
     count = 0
     grid = grids[level]
     size = len(grid)
-    if recursive and (grids.get(level + 1) is None or grids.get(level - 1) is None):
+    if is_recursive_grid and (grids.get(level + 1) is None or grids.get(level - 1) is None):
         return 0
-
     for dxy in [(0, -1), (1, 0), (0, 1), (-1, 0)]:
         x = col + dxy[0]
         y = line + dxy[1]
         if 0 <= x < size and 0 <= y < size:
-            if recursive and x == 2 and y == 2:
-                if line == 1 and col == 2:  # top
-                    count += count_row_bugs(grids[level + 1], 0)
-                elif line == 2 and col == 3:  # right
-                    count += count_col_bugs(grids[level + 1], size - 1)
-                elif line == 3 and col == 2:  # bottom
-                    count += count_row_bugs(grids[level + 1], size - 1)
-                elif line == 2 and col == 1:
-                    count += count_col_bugs(grids[level + 1], 0)
+            if is_recursive_grid and is_middle(x, y, size):
+                count += count_bugs_in_deeper_level(grids, level, line, col, size)
             else:
                 count += 1 if grid[y][x] == '#' else 0
-        elif recursive:
-            if (x < 0 and grids[level - 1][2][1] == '#') or (x >= size and grids[level - 1][2][3] == '#') \
-                    or (y < 0 and grids[level - 1][1][2] == '#') or (y >= size and grids[level - 1][3][2] == '#'):
-                count += 1
+        elif is_recursive_grid and has_bug_in_outer_level(grids, level, x, y, size):
+            count += 1
     return count
 
 
@@ -65,22 +77,22 @@ def get_empty_grid(size: int) -> list:
     return grid
 
 
-def has_life(grids: dict, level: int, x: int, y: int, recursive=False) -> bool:
-    adj_bugs = count_adj_bugs(grids, level, y, x, recursive)
+def has_life(grids: dict, level: int, x: int, y: int, is_recursive_grid=False) -> bool:
+    adj_bugs = count_adj_bugs(grids, level, y, x, is_recursive_grid)
     return (grids[level][y][x] == '#' and adj_bugs == 1) \
            or (grids[level][y][x] == '.' and (adj_bugs == 1 or adj_bugs == 2))
 
 
-def simulate(grids: dict, recursive=False) -> dict:
+def simulate(grids: dict, is_recursive_grid=False) -> dict:
     new_grids = {}
     for level, grid in grids.items():
         size = len(grid)
         new_grid = get_empty_grid(size)
         for y in range(size):
             for x in range(size):
-                if recursive and x == 2 and y == 2:
+                if is_recursive_grid and is_middle(x, y, size):
                     continue
-                if has_life(grids, level, x, y, recursive):
+                if has_life(grids, level, x, y, is_recursive_grid):
                     new_grid[y][x] = '#'
         new_grids[level] = new_grid
     return new_grids
@@ -114,7 +126,8 @@ def part_two(filename: str, minutes: int) -> int:
     grid = read_map(filename)
     size = len(grid)
     grids = {0: grid}
-    for m in range(1, minutes):
+    # We need to allocate minutes/2 levels up and minutes/2 levels down, plus 2 extra boundary levels.
+    for m in range(1, (minutes // 2) + 2):
         grids[m] = get_empty_grid(size)
         grids[-m] = get_empty_grid(size)
     for m in range(minutes):

@@ -24,8 +24,11 @@ class TestDay24(unittest.TestCase):
     def test_part_one(self):
         self.assertEqual(32776479, part_one(get_path(__file__, 'input.txt')))
 
-    def test_part_two(self):
+    def test_case_2(self):
         self.assertEqual(99, part_two(get_path(__file__, 'test1.txt'), 10))
+
+    def test_part_two(self):
+        self.assertEqual(2017, part_two(get_path(__file__, 'input.txt'), 200))
 
 
 if __name__ == '__main__':
