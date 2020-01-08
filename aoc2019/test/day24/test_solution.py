@@ -14,7 +14,7 @@
 import unittest
 
 from aoc2019.src.common.file_utils import get_path
-from aoc2019.src.day24.solution import part_one
+from aoc2019.src.day24.solution import part_one, part_two
 
 
 class TestDay24(unittest.TestCase):
@@ -23,6 +23,9 @@ class TestDay24(unittest.TestCase):
 
     def test_part_one(self):
         self.assertEqual(32776479, part_one(get_path(__file__, 'input.txt')))
+
+    def test_part_two(self):
+        self.assertEqual(99, part_two(get_path(__file__, 'test1.txt'), 10))
 
 
 if __name__ == '__main__':
