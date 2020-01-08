@@ -21,6 +21,9 @@ class TestDay24(unittest.TestCase):
     def test_case_1(self):
         self.assertEqual(2129920, part_one(get_path(__file__, 'test1.txt')))
 
+    def test_part_one(self):
+        self.assertEqual(32776479, part_one(get_path(__file__, 'input.txt')))
+
 
 if __name__ == '__main__':
     unittest.main()
