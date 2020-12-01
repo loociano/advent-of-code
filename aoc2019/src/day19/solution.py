@@ -13,7 +13,7 @@
 # limitations under the License.
 from math import ceil
 
-from aoc2019.src.common.file_utils import read_intcode
+from common.file_utils import read_intcode
 from aoc2019.src.common.intcode import Intcode
 
 

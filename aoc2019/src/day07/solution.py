@@ -11,7 +11,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-from aoc2019.src.common.file_utils import read_intcode
+from common.file_utils import read_intcode
 
 
 def decode_opcode(num):
