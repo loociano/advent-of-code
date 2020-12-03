@@ -13,7 +13,7 @@
 # limitations under the License.
 import unittest
 
-from common.file_utils import get_path, read_lines
+from aoc2019.src.common.file_utils import get_path, read_lines
 from aoc2019.src.day22.solution import part_one, Shuffler
 
 

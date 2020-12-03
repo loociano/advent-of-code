@@ -14,7 +14,6 @@
 import unittest
 
 from aoc2020.test.common.AdventOfCodeTestCase import AdventOfCodeTestCase
-from common.file_utils import get_path, read_lines
 from aoc2020.src.day02.solution import part_one, part_two
 
 
