@@ -7,3 +7,5 @@ My own solutions to [Advent of Code 2020](https://adventofcode.com/2020).
 This year I continue to learn Python 3.
 
 * [Day 1: Report Repair](https://adventofcode.com/2020/day/1) → [solution](https://github.com/loociano/advent-of-code/blob/master/aoc2020/src/day01/solution.py)
+* [Day 2 Password Philosophy](https://adventofcode.com/2020/day/2) → [solution](https://github.com/loociano/advent-of-code/blob/master/aoc2020/src/day02/solution.py)
+* [Day 3: Toboggan Trajectory](https://adventofcode.com/2020/day/3) → [solution](https://github.com/loociano/advent-of-code/blob/master/aoc2020/src/day03/solution.py)
