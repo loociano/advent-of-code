@@ -13,18 +13,19 @@
 # limitations under the License.
 import unittest
 
-from common.file_utils import get_path, read_lines
+from aoc2020.test.common.AdventOfCodeTestCase import AdventOfCodeTestCase
 from aoc2020.src.day03.solution import part_one, part_two
 
 
-class TestDay03(unittest.TestCase):
+class TestDay03(AdventOfCodeTestCase):
+  def __init__(self, *args, **kwargs):
+    super(TestDay03, self).__init__(__file__, *args, **kwargs)
+
   def setUp(self):
-    self.example = read_lines(get_path(__file__, 'example.txt'))
-    self.input = read_lines(get_path(__file__, 'input.txt'))
     self.slopes = [(1, 1), (3, 1), (5, 1), (7, 1), (1, 2)]
 
   def test_part_one_with_example(self):
-    self.assertEqual(7, part_one(tree_map=self.example,
+    self.assertEqual(7, part_one(tree_map=self.examples[0],
                                  slope_right=3, slope_down=1))
 
   def test_part_one_with_input(self):
@@ -32,7 +33,7 @@ class TestDay03(unittest.TestCase):
                                     slope_right=3, slope_down=1))
 
   def test_part_two_with_example(self):
-    self.assertEqual(336, part_two(tree_map=self.example, slopes=self.slopes))
+    self.assertEqual(336, part_two(tree_map=self.examples[0], slopes=self.slopes))
 
   def test_part_two_with_input(self):
     self.assertEqual(5007658656, part_two(tree_map=self.input,

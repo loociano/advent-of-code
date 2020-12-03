@@ -13,14 +13,17 @@
 # limitations under the License.
 import unittest
 
-from common.file_utils import get_path, read_as_ints
+from aoc2020.test.common.AdventOfCodeTestCase import AdventOfCodeTestCase
 from aoc2020.src.day01.solution import part_one, part_two
 
 
-class TestDay01(unittest.TestCase):
+class TestDay01(AdventOfCodeTestCase):
+  def __init__(self, *args, **kwargs):
+    super(TestDay01, self).__init__(__file__, *args, **kwargs)
+
   def setUp(self):
-    self.example = read_as_ints(get_path(__file__, 'example.txt'))
-    self.input = read_as_ints(get_path(__file__, 'input.txt'))
+    self.example = list(map(int, self.examples[0]))
+    self.input = list(map(int, self.input))
 
   def test_part_one_with_example(self):
     self.assertEqual(514579, part_one(self.example))

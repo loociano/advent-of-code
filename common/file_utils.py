@@ -34,10 +34,5 @@ def read_integers(file: str) -> list:
         return list(map(int, [x for x in f.read()]))
 
 
-def read_as_ints(file: str) -> list:
-    with open(file) as f:
-        return list(map(int, [x for x in f.readlines()]))
-
-
 def get_path(dir_name: str, filename: str) -> str:
     return os.path.join(os.path.dirname(dir_name), filename)

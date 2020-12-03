@@ -11,9 +11,10 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+from typing import List
 
 
-def part_one(expense_report: list) -> int:
+def part_one(expense_report: List[int]) -> int:
   seen = {}
   for entry in expense_report:
     if (2020 - entry) in seen:
@@ -22,7 +23,7 @@ def part_one(expense_report: list) -> int:
   raise Exception('Did not find 2 numbers that sum 2020.')
 
 
-def part_two(expense_report: list) -> int:
+def part_two(expense_report: List[int]) -> int:
   precompute = {}
   for i in expense_report:
     for j in expense_report:
