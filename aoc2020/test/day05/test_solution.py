@@ -17,9 +17,9 @@ from aoc2020.test.common.AdventOfCodeTestCase import AdventOfCodeTestCase
 from aoc2020.src.day05.solution import part_one, part_two
 
 
-class TestDay05(AdventOfCodeTestCase):
+class TestSolution(AdventOfCodeTestCase):
   def __init__(self, *args, **kwargs):
-    super(TestDay05, self).__init__(__file__, *args, **kwargs)
+    super(TestSolution, self).__init__(__file__, *args, **kwargs)
 
   def test_part_one_with_examples(self):
     self.assertEqual(357, part_one(boarding_pass_list=['FBFBBFFRLR']))

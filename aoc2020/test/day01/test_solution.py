@@ -17,9 +17,9 @@ from aoc2020.test.common.AdventOfCodeTestCase import AdventOfCodeTestCase
 from aoc2020.src.day01.solution import part_one, part_two
 
 
-class TestDay01(AdventOfCodeTestCase):
+class TestSolution(AdventOfCodeTestCase):
   def __init__(self, *args, **kwargs):
-    super(TestDay01, self).__init__(__file__, *args, **kwargs)
+    super(TestSolution, self).__init__(__file__, *args, **kwargs)
 
   def setUp(self):
     self.example = list(map(int, self.examples[0]))

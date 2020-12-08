@@ -17,9 +17,9 @@ from aoc2020.test.common.AdventOfCodeTestCase import AdventOfCodeTestCase
 from aoc2020.src.day06.solution import part_one, part_two
 
 
-class TestDay06(AdventOfCodeTestCase):
+class TestSolution(AdventOfCodeTestCase):
   def __init__(self, *args, **kwargs):
-    super(TestDay06, self).__init__(__file__, *args, **kwargs)
+    super(TestSolution, self).__init__(__file__, *args, **kwargs)
 
   def test_part_one_with_examples(self):
     self.assertEqual(6, part_one(group_answers=self.examples[0]))
