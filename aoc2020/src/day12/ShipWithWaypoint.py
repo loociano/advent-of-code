@@ -1,6 +1,6 @@
 class ShipWithWaypoint:
   def __init__(self):
-    # Waypoint start coords, 1N,10E
+    # Waypoint start coords: 1N,10E
     self._x = 10
     self._y = -1
     self._ship_x = 0

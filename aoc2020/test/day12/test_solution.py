@@ -25,7 +25,6 @@ class TestSolution(AdventOfCodeTestCase):
     self.assertEqual(25, part_one(instructions=self.examples[0]))
 
   def test_part_one_with_input(self):
-    # 2019 too high
     self.assertEqual(845, part_one(instructions=self.input))
 
   def test_part_two_with_example(self):
