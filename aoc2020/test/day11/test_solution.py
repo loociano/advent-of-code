@@ -29,5 +29,13 @@ class TestSolution(AdventOfCodeTestCase):
     self.assertEqual(2164, part_one(
         grid=[[col for col in row] for row in self.input]))
 
+  def test_part_two_with_example(self):
+    self.assertEqual(26, part_two(
+        grid=[[col for col in row] for row in self.examples[0]]))
+
+  def test_part_two_with_input(self):
+    self.assertEqual(1974, part_two(
+        grid=[[col for col in row] for row in self.input]))
+
 if __name__ == '__main__':
   unittest.main()
