@@ -28,5 +28,11 @@ class TestSolution(AdventOfCodeTestCase):
     # 2019 too high
     self.assertEqual(845, part_one(instructions=self.input))
 
+  def test_part_two_with_example(self):
+    self.assertEqual(286, part_two(instructions=self.examples[0]))
+
+  def test_part_two_with_input(self):
+    self.assertEqual(27016, part_two(instructions=self.input))
+
 if __name__ == '__main__':
   unittest.main()
