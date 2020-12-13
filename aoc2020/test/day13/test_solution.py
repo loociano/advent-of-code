@@ -29,5 +29,24 @@ class TestSolution(AdventOfCodeTestCase):
     self.assertEqual(3966, part_one(timestamp=int(self.input[0]),
                                    bus_ids=self.input[1].split(',')))
 
+  def test_part_two_with_small_example1(self):
+      self.assertEqual(3417, part_two(bus_ids=['17','x','13','19']))
+
+  def test_part_two_with_small_example2(self):
+      self.assertEqual(754018, part_two(bus_ids=['67','7','59','61']))
+
+  def test_part_two_with_small_example3(self):
+      self.assertEqual(779210, part_two(bus_ids=['67','x','7','59','61']))
+
+  def test_part_two_with_small_example4(self):
+      self.assertEqual(1261476, part_two(bus_ids=['67','7','x','59','61']))
+
+  def test_part_two_with_small_example5(self):
+      self.assertEqual(1202161486, part_two(bus_ids=['1789','37','47','1889']))
+
+  def test_part_two_with_example(self):
+      self.assertEqual(1068781,
+                       part_two(bus_ids=self.examples[0][1].split(',')))
+
 if __name__ == '__main__':
   unittest.main()

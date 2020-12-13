@@ -11,11 +11,9 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-from math import ceil
+from math import ceil, floor
 
 from typing import List
-from aoc2020.src.day12.Ship import Ship
-from aoc2020.src.day12.ShipWithWaypoint import ShipWithWaypoint
 
 
 def part_one(timestamp: int, bus_ids: List[str]) -> int:
@@ -39,5 +37,25 @@ def part_one(timestamp: int, bus_ids: List[str]) -> int:
   return earliest_bus_id * (departure_timestamp - timestamp)
 
 
-def part_two():
-  return -1
+def part_two(bus_ids: List[str]) -> int:
+  """
+  Args:
+    bus_ids: comma-separated bus ids, x to skip position. Example 7,13,x,x
+
+  Returns:
+    Earliest timestamp such that all of the listed bus IDs depart at offsets
+    matching their positions in the list.
+  """
+  step = 1
+  while True:
+    found = True
+    guess = step * int(bus_ids[0])
+    for i, bus_id in enumerate(bus_ids):
+      if bus_id != 'x':
+        b = (guess + i) / int(bus_ids[i])
+        if b - floor(b) > 0:
+          found = False
+          break
+    if found:
+      return guess
+    step += 1
