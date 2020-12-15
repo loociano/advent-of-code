@@ -14,22 +14,23 @@
 import unittest
 
 from aoc2020.test.common.AdventOfCodeTestCase import AdventOfCodeTestCase
-from aoc2020.src.day14.solution import apply_mask, part_one, part_two
+from aoc2020.src.day14.solution \
+  import apply_mask, apply_mask2, calculate_addresses, part_one, part_two
 
 
 class TestSolution(AdventOfCodeTestCase):
   def __init__(self, *args, **kwargs):
     super(TestSolution, self).__init__(__file__, *args, **kwargs)
 
-  def test_apply_mask1(self):
+  def test_apply_mask_example1(self):
     self.assertEqual(73, apply_mask(
         mask='XXXXXXXXXXXXXXXXXXXXXXXXXXXXX1XXXX0X', value=11))
 
-  def test_apply_mask2(self):
+  def test_apply_mask_example2(self):
     self.assertEqual(101, apply_mask(
         mask='XXXXXXXXXXXXXXXXXXXXXXXXXXXXX1XXXX0X', value=101))
 
-  def test_apply_mask3(self):
+  def test_apply_mask_example3(self):
     self.assertEqual(64, apply_mask(
         mask='XXXXXXXXXXXXXXXXXXXXXXXXXXXXX1XXXX0X', value=0))
 
@@ -38,6 +39,30 @@ class TestSolution(AdventOfCodeTestCase):
 
   def test_part_one_with_input(self):
     self.assertEqual(11327140210986, part_one(program=self.input))
+
+  def test_apply_mask2_example1(self):
+    self.assertEqual('000000000000000000000000000000X1101X',
+                     apply_mask2(mask='000000000000000000000000000000X1001X',
+                                value=42))
+
+  def test_apply_mask2_example2(self):
+    self.assertEqual('00000000000000000000000000000001X0XX',
+                     apply_mask2(mask='00000000000000000000000000000000X0XX',
+                                value=26))
+
+  def test_calculate_address_example1(self):
+    self.assertCountEqual([26, 27, 58, 59], calculate_addresses(
+        masked_address='000000000000000000000000000000X1101X'))
+
+  def test_calculate_address_example2(self):
+    self.assertCountEqual([16, 17, 18, 19, 24, 25, 26, 27], calculate_addresses(
+        masked_address='00000000000000000000000000000001X0XX'))
+
+  def test_part_two_with_example(self):
+    self.assertEqual(208, part_two(program=self.examples[1]))
+
+  def test_part_two_with_input(self):
+    self.assertEqual(2308180581795, part_two(program=self.input))
 
 
 if __name__ == '__main__':
