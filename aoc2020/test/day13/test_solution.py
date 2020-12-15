@@ -49,7 +49,7 @@ class TestSolution(AdventOfCodeTestCase):
                        part_two(bus_ids=self.examples[0][1].split(',')))
 
   def test_part_two_with_input(self):
-      self.assertEqual(123,
+      self.assertEqual(800177252346225,
                        part_two(bus_ids=self.input[1].split(',')))
 
 if __name__ == '__main__':
