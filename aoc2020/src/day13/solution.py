@@ -46,6 +46,29 @@ def part_two(bus_ids: List[str]) -> int:
     Earliest timestamp such that all of the listed bus IDs depart at offsets
     matching their positions in the list.
   """
+  # Inspired by:
+  # https://github.com/daniel-dara/advent-of-code/blob/master/2020/day13/part2.py
+  timestamp = 0
+  step = 1
+  for i, bus_id in enumerate(bus_ids):
+    if bus_id != 'x':
+      while (timestamp + i) % int(bus_id):
+        timestamp += step
+      step *= int(bus_id)
+  return timestamp
+
+
+def part_two_brute_force(bus_ids: List[str]) -> int:
+  """
+  Brute-force solution. Takes too long to resolve part two.
+
+  Args:
+    bus_ids: comma-separated bus ids, x to skip position. Example 7,13,x,x
+
+  Returns:
+    Earliest timestamp such that all of the listed bus IDs depart at offsets
+    matching their positions in the list.
+  """
   step = 1
   while True:
     found = True
