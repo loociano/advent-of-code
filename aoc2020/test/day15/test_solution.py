@@ -14,7 +14,7 @@
 import unittest
 
 from aoc2020.test.common.AdventOfCodeTestCase import AdventOfCodeTestCase
-from aoc2020.src.day15.solution import part_one
+from aoc2020.src.day15.solution import part_one, part_two
 
 
 class TestSolution(AdventOfCodeTestCase):
@@ -45,6 +45,15 @@ class TestSolution(AdventOfCodeTestCase):
   def test_part_one_with_input(self):
     self.assertEqual(639, part_one(
         starting_numbers=[int(i) for i in self.input[0].split(',')]))
+
+  def test_part_two_with_example1(self):
+    self.assertEqual(175594,
+                     part_two(starting_numbers=[0, 3, 6], stop=30000000))
+
+  def test_part_two_with_input(self):
+    self.assertEqual(266, part_two(
+        starting_numbers=[int(i) for i in self.input[0].split(',')],
+        stop=30000000))
 
 if __name__ == '__main__':
   unittest.main()
