@@ -14,18 +14,28 @@
 import unittest
 
 from aoc2020.test.common.AdventOfCodeTestCase import AdventOfCodeTestCase
-from aoc2020.src.day16.solution import part_one
+from aoc2020.src.day16.solution import part_one, part_two, parse_notes, \
+  find_field_order
 
 
 class TestSolution(AdventOfCodeTestCase):
   def __init__(self, *args, **kwargs):
     super(TestSolution, self).__init__(__file__, *args, **kwargs)
 
-  def test_part_one_with_example(self):
+  def test_part_one_with_example1(self):
     self.assertEqual(71, part_one(notes=self.examples[0]))
 
   def test_part_one_with_input(self):
     self.assertEqual(23954, part_one(notes=self.input))
+
+  def test_find_field_order_with_example2(self):
+    nearby_tickets, your_ticket, rules = parse_notes(self.examples[1])
+    # There are no invalid tickets in this example.
+    self.assertEqual(['row', 'class', 'seat'],
+                     find_field_order(nearby_tickets, rules))
+
+  def test_part_two_with_input(self):
+    self.assertEqual(453459307723, part_two(notes=self.input))
 
 
 if __name__ == '__main__':
