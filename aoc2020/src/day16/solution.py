@@ -21,7 +21,20 @@ def part_one(notes: List[str]) -> int:
   Returns
     Ticket scanning error rate.
   """
+  nearby_tickets, your_ticket, rules = _parse_notes(notes)
+  return _calculate_ticket_scanning_error_rate(nearby_tickets, rules)
+
+
+def _parse_notes(notes: List[str]) \
+    -> Tuple[List[str], str, Dict[str, Tuple[int, int, int, int]]]:
+  """
+  Args:
+    notes: contains rules, your ticket and nearby tickets.
+  Returns:
+    nearby tickets, your ticket and rules
+  """
   rules = {}
+  your_ticket = None
   nearby_tickets = []
   rules_completed = False
   ticket_completed = False
@@ -39,14 +52,14 @@ def part_one(notes: List[str]) -> int:
         range1_bottom, range1_top = range1.split('-')
         range2_bottom, range2_top = range2.split('-')
         rules[str(field)] = (int(range1_bottom), int(range1_top),
-                        int(range2_bottom), int(range2_top))
+                             int(range2_bottom), int(range2_top))
       elif not ticket_completed:
-        # your ticket
-        continue
+        if 'your ticket:' not in line:
+          your_ticket = line
       else:
         if 'nearby tickets:' not in line:
           nearby_tickets.append(line)
-  return _calculate_ticket_scanning_error_rate(nearby_tickets, rules)
+  return nearby_tickets, your_ticket, rules
 
 
 def _calculate_ticket_scanning_error_rate(
