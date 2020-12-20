@@ -22,25 +22,40 @@ def part_one(initial_state: List[List[str]], num_cycles=6) -> int:
   """
   # if start grid is 3x3, default universe is 15x15
   length = len(initial_state) + (2 * num_cycles)
+  universe = _populate_universe(initial_state, num_cycles, length)
+  _print_universe(universe, length)
+  for cycle in range(num_cycles):
+    universe = _simulate(universe, length)
+    print('After {} cycle(s):'.format(cycle + 1))
+    _print_universe(universe, length)
+  return _count_active_cubes(universe, length)
+
+
+def part_two(initial_state: List[List[str]], num_cycles=6) -> int:
+  """
+  Returns:
+    Number of cubes in the active state after the number of cycles.
+  """
+  return -1
+
+
+def _populate_universe(initial_state: List[List[str]], num_cycles: int,
+                       length: int) -> Dict[Tuple[int, int, int], str]:
+  universe = _build_universe(length)
+  for row in range(len(initial_state)):
+    for col in range(len(initial_state[row])):
+      universe[num_cycles + row, num_cycles + col, 0] = initial_state[row][col]
+  return universe
+
+
+def _build_universe(length: int) -> Dict[Tuple[int, int, int], str]:
   diameter = length // 2
-  # Build universe
   universe = {}
   for x in range(length):
     for y in range(length):
       for z in range(-diameter, diameter + 1):
         universe[x, y, z] = '.'  # Fill with inactive cubes
-  # Populate universe
-  for row in range(len(initial_state)):
-    for col in range(len(initial_state[row])):
-      universe[num_cycles + row, num_cycles + col, 0] = initial_state[row][col]
-
-  _print_universe(universe, length)
-
-  for cycle in range(num_cycles):
-    universe = _simulate(universe, length)
-    print('after {} cycle(s):'.format(cycle + 1))
-    _print_universe(universe, length)
-  return _count_active_cubes(universe, length)
+  return universe
 
 
 def _simulate(universe: Dict[Tuple[int, int, int], str],
