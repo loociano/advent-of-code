@@ -33,5 +33,9 @@ class TestSolution(AdventOfCodeTestCase):
     self.assertEqual(848, part_two(
         initial_state=[list(line) for line in self.examples[0]]))
 
+  def test_part_two_with_input(self):
+    self.assertEqual(2308, part_two(
+        initial_state=[list(line) for line in self.input]))
+
 if __name__ == '__main__':
   unittest.main()

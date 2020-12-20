@@ -15,108 +15,123 @@ from typing import List, Dict, Tuple
 from copy import deepcopy
 
 
-def part_one(initial_state: List[List[str]], num_cycles=6) -> int:
+def part_one(initial_state: List[List[str]]) -> int:
   """
   Returns:
     Number of cubes in the active state after the number of cycles.
   """
+  return _active_cubes_after_simulation(initial_state)
+
+
+def part_two(initial_state: List[List[str]]) -> int:
+  """
+  Returns:
+    Number of cubes in the active state after the number of cycles.
+  """
+  return _active_cubes_after_simulation(initial_state, dims=4)
+
+
+def _active_cubes_after_simulation(initial_state: List[List[str]],
+                                   num_cycles=6, dims=3) -> int:
   # if start grid is 3x3, default universe is 15x15
   length = len(initial_state) + (2 * num_cycles)
-  universe = _populate_universe(initial_state, num_cycles, length)
-  _print_universe(universe, length)
+  universe = _populate_universe(initial_state, num_cycles, length, dims)
   for cycle in range(num_cycles):
-    universe = _simulate(universe, length)
-    print('After {} cycle(s):'.format(cycle + 1))
-    _print_universe(universe, length)
-  return _count_active_cubes(universe, length)
-
-
-def part_two(initial_state: List[List[str]], num_cycles=6) -> int:
-  """
-  Returns:
-    Number of cubes in the active state after the number of cycles.
-  """
-  return -1
+    universe = _simulate(universe, length, dims)
+  return _count_active_cubes(universe, length, dims)
 
 
 def _populate_universe(initial_state: List[List[str]], num_cycles: int,
-                       length: int) -> Dict[Tuple[int, int, int], str]:
-  universe = _build_universe(length)
+                       length: int, dims: int) -> Dict[Tuple, str]:
+  universe = _build_universe(length, dims)
   for row in range(len(initial_state)):
     for col in range(len(initial_state[row])):
-      universe[num_cycles + row, num_cycles + col, 0] = initial_state[row][col]
+      if dims == 4:
+        universe[num_cycles + row, num_cycles + col, 0, 0] \
+          = initial_state[row][col]
+      else:
+        universe[num_cycles + row, num_cycles + col, 0] \
+          = initial_state[row][col]
   return universe
 
 
-def _build_universe(length: int) -> Dict[Tuple[int, int, int], str]:
+def _build_universe(length: int, dims: int) -> Dict[Tuple, str]:
   diameter = length // 2
   universe = {}
   for x in range(length):
     for y in range(length):
       for z in range(-diameter, diameter + 1):
-        universe[x, y, z] = '.'  # Fill with inactive cubes
+        if dims == 4:
+          for w in range(-diameter, diameter + 1):
+            universe[x, y, z, w] = '.' # Fill with inactive cubes
+        else:
+          universe[x, y, z] = '.'  # Fill with inactive cubes
   return universe
 
 
-def _simulate(universe: Dict[Tuple[int, int, int], str],
-              length: int) -> Dict[Tuple[int, int, int], str]:
+def _simulate(universe: Dict[Tuple, str],
+              length: int, dims: int) -> Dict[Tuple, str]:
   after = deepcopy(universe)
   diameter = length // 2
   for x in range(length):
     for y in range(length):
       for z in range(-diameter, diameter + 1):
-        num_active_neighbours = \
-          _count_active_neighbours(universe, length, (x, y, z))
-        if universe[x, y, z] == '#' and \
-            not (num_active_neighbours == 2 or num_active_neighbours == 3):
-          after[x, y, z] = '.'  # converts to inactive
-        elif universe[x, y, z] == '.' and num_active_neighbours == 3:
-          after[x, y, z] = '#'  # converts to active
+        if dims == 4:
+          for w in range(-diameter, diameter + 1):
+            _simulate_point(universe, length, (x, y, z, w), after)
+        else:
+          _simulate_point(universe, length, (x, y, z), after)
   return after
 
 
-def _count_active_neighbours(universe: Dict[Tuple[int, int, int], str],
-                             length: int, pos: Tuple[int, int, int]) -> int:
+def _simulate_point(universe: Dict[Tuple, str], length, point: Tuple,
+                    after: Dict[Tuple, str]) -> None:
+  num_active_neighbours = \
+    _count_active_neighbours(universe, length, point)
+  if universe[point] == '#' and \
+      not (num_active_neighbours == 2 or num_active_neighbours == 3):
+    after[point] = '.'  # converts to inactive
+  elif universe[point] == '.' and num_active_neighbours == 3:
+    after[point] = '#'  # converts to active
+
+
+def _count_active_neighbours(universe: Dict[Tuple, str],
+                             length: int, point: Tuple) -> int:
   num_active_neighbours = 0
   diameter = length // 2
-  for x in range(pos[0] - 1, pos[0] + 2):
-    for y in range(pos[1] - 1, pos[1] + 2):
-      for z in range(pos[2] - 1, pos[2] + 2):
-        if x == pos[0] and y == pos[1] and z == pos[2]:
-          continue
+  for x in range(point[0] - 1, point[0] + 2):
+    for y in range(point[1] - 1, point[1] + 2):
+      for z in range(point[2] - 1, point[2] + 2):
         if x < 0 or x >= length:
           continue
         if y < 0 or y >= length:
           continue
         if z < -diameter or z > diameter:
           continue
-        num_active_neighbours += 1 if universe[x, y, z] == '#' else 0
+        if len(point) == 4:
+          for w in range(point[3] - 1, point[3] + 2):
+            if (x, y, z, w) == point:
+              continue
+            if w < -diameter or w > diameter:
+              continue
+            num_active_neighbours += 1 if universe[x, y, z, w] == '#' else 0
+        else:
+          if (x, y, z) == point:
+            continue
+          num_active_neighbours += 1 if universe[x, y, z] == '#' else 0
   return num_active_neighbours
 
 
-def _count_active_cubes(universe: Dict[Tuple[int, int, int], str],
-                        length: int) -> int:
+def _count_active_cubes(universe: Dict[Tuple, str], length: int,
+                        dims: int) -> int:
   num_active_cubes = 0
   diameter = length // 2
   for x in range(length):
     for y in range(length):
       for z in range(-diameter, diameter + 1):
-        num_active_cubes += 1 if universe[x, y, z] == '#' else 0
+        if dims == 4:
+          for w in range(-diameter, diameter + 1):
+            num_active_cubes += 1 if universe[x, y, z, w] == '#' else 0
+        else:
+          num_active_cubes += 1 if universe[x, y, z] == '#' else 0
   return num_active_cubes
-
-
-def _print_universe(universe: Dict[Tuple[int, int, int], str],
-                    length: int) -> None:
-  diameter = length // 2
-  for z in range(-diameter, diameter + 1):
-    _print_layer_z(universe, z, length)
-
-
-def _print_layer_z(universe: Dict, z: int, length: int) -> None:
-  print('z={}'.format(z))
-  for x in range(length):
-    line = []
-    for y in range(length):
-      line.append(universe[x, y, z])
-    print(''.join(line))
-  print('')
