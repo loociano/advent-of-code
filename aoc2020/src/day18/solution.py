@@ -17,9 +17,14 @@ from typing import List, Tuple
 def part_one(expressions: List[str]) -> int:
   """
   Returns:
-    Result of the math expression.
+    Sum of result(s) of the math expression(s).
   """
   return sum(_evaluate(_tokenize_expression(expression), 0)[0]
+             for expression in expressions)
+
+
+def part_two(expressions: List[str]) -> int:
+  return sum(_advanced_evaluate(_tokenize_expression(expression))
              for expression in expressions)
 
 
@@ -32,6 +37,36 @@ def _tokenize_expression(expression: str) -> List[str]:
       tokens.append(token)
   return tokens
 
+
+def _advanced_evaluate(tokens: List[str]) -> int:
+  while '(' in tokens:
+    next_closing = _find_closing_pos(tokens.index('('), tokens)
+    result = _advanced_evaluate(tokens[tokens.index('(') + 1:next_closing])
+    tokens = tokens[:tokens.index('(')] + [result] + tokens[next_closing + 1:]
+
+  while len(tokens) > 1:
+    if '+' in tokens:
+      next_plus = tokens.index('+')
+      result = _op(int(tokens[next_plus - 1]), '+', int(tokens[next_plus + 1]))
+      tokens = tokens[:next_plus - 1] + [result] + tokens[next_plus + 2:]
+    elif '*' in tokens:
+      next_prod = tokens.index('*')
+      result = _op(int(tokens[next_prod - 1]), '*', int(tokens[next_prod + 1]))
+      tokens = tokens[:next_prod - 1] + [result] + tokens[next_prod + 2:]
+  return tokens[0]
+
+
+def _find_closing_pos(open_pos: int, tokens: List[str]) -> int:
+  stack = []
+  i = open_pos
+  while i < len(tokens):
+    if tokens[i] == '(':
+      stack.append(i)
+    elif tokens[i] == ')':
+      stack.pop()
+      if len(stack) == 0:
+        return i
+    i += 1
 
 def _evaluate(tokens: List[str], pos: int) -> Tuple:
   """
