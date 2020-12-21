@@ -42,18 +42,20 @@ def _flatten_rules(original_rules: Dict[int, str]) -> str:
 
 
 def _replace_with_resolved(rule: str, resolved: Dict[int, str]) -> str:
-  new_rule = rule
+  new_rule = []
   for subrule in rule.split(' '):
     if subrule == '|' or subrule == 'a' or subrule == 'b' or '(' in subrule:
+      new_rule.append(subrule)
       continue
     resolved_rule = resolved.get(int(subrule))
     if resolved_rule is not None:
       if resolved_rule == 'a' or resolved_rule == 'b':
-        new_rule = new_rule.replace(subrule, resolved_rule)
+        new_rule.append(resolved_rule)
       else:
-        new_rule = new_rule.replace(subrule,
-                                    '({})'.format(resolved.get(int(subrule))))
-  return new_rule
+        new_rule.append('({})'.format(resolved.get(int(subrule))))
+    else:
+      new_rule.append(subrule)
+  return ' '.join(new_rule)
 
 
 def _matches_rule(message: str, rule: str) -> bool:
