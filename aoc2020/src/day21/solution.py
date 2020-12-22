@@ -19,8 +19,35 @@ def part_one(foods: List[str]) -> int:
   Returns
     Times ingredients without allergens appear.
   """
+  allergen_to_ingredients = _find_ingredients_with_allergen(foods)
+  ingredients_with_allergens = [value
+                               for value in allergen_to_ingredients.values()]
+  # Count occurrences of ingredients that do not contain allergens.
+  count_ingredients = 0
+  for food in foods:
+    ingredient_list, allergen_list = food.split(' (contains ')
+    ingredients = set(ingredient_list.split(' '))
+    for ingredient in ingredients:
+      if ingredient not in ingredients_with_allergens:
+        count_ingredients += 1
+  return count_ingredients
+
+
+def part_two(foods: List[str]) -> str:
+  """
+  Returns:
+    Comma separated, alphabetical list of ingredients that contain allergens.
+  """
+  allergen_to_ingredients = _find_ingredients_with_allergen(foods)
+  allergens = [allergen for allergen in allergen_to_ingredients.keys()]
+  allergens.sort()  # alphabetical allergens
+  return ','.join([allergen_to_ingredients.get(allergen)
+                   for allergen in allergens])
+
+
+def _find_ingredients_with_allergen(foods: List[str]) -> Dict[str, str]:
   allergen_to_ingredients = {}  # holds candidate ingredients
-  # First pass: find the ingredients with allergens
+  # First pass: populate index of allergens with candidate ingredients.
   for food in foods:
     ingredient_list, allergen_list = food.split(' (contains ')
     ingredients = set(ingredient_list.split(' '))
@@ -43,20 +70,13 @@ def part_one(foods: List[str]) -> int:
           if ingredient_with_allergen in other_ingredients:
             other_ingredients.remove(ingredient_with_allergen)
 
-  ingredients_with_allergens = [list(value)[0]
-                                for value in allergen_to_ingredients.values()]
-  # Count pass: find the ingredients that do not contain allergens.
-  count_ingredients = 0
-  for food in foods:
-    ingredient_list, allergen_list = food.split(' (contains ')
-    ingredients = set(ingredient_list.split(' '))
-    for ingredient in ingredients:
-      if ingredient not in ingredients_with_allergens:
-        count_ingredients += 1
-  return count_ingredients
+  # Flatten set of ingredients into single one.
+  for allergen, ingredients in allergen_to_ingredients.items():
+    allergen_to_ingredients[allergen] = list(ingredients)[0]
+  return allergen_to_ingredients
 
 
-def _found_all_allergens(allergen_to_ingredients: Dict[str, Set[str]]):
+def _found_all_allergens(allergen_to_ingredients: Dict[str, Set[str]]) -> bool:
   for allergen, ingredients in allergen_to_ingredients.items():
     if len(ingredients) > 1:
       return False
