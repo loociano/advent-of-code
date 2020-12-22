@@ -14,7 +14,7 @@
 import unittest
 
 from aoc2020.test.common.AdventOfCodeTestCase import AdventOfCodeTestCase
-from aoc2020.src.day20.solution import part_one
+from aoc2020.src.day20.solution import part_one, build_image
 
 
 class TestSolution(AdventOfCodeTestCase):
@@ -26,6 +26,35 @@ class TestSolution(AdventOfCodeTestCase):
 
   def test_part_one_with_input(self):
     self.assertEqual(83775126454273, part_one(self.input))
+
+  def test_build_image(self):
+    self.assertListEqual(
+        ['.#.#..#.##...#.##..#####',
+         '###....#.#....#..#......',
+         '##.##.###.#.#..######...',
+         '###.#####...#.#####.#..#',
+         '##.#....#.##.####...#.##',
+         '...########.#....#####.#',
+         '....#..#...##..#.#.###..',
+         '.####...#..#.....#......',
+         '#..#.##..#..###.#.##....',
+         '#.####..#.####.#.#.###..',
+         '###.#.#...#.######.#..##',
+         '#.####....##..########.#',
+         '##..##.#...#...#.#.#.#..',
+         '...#..#..#.#.##..###.###',
+         '.#.#....#.##.#...###.##.',
+         '###.#...#..#.##.######..',
+         '.#.#.###.##.##.#..#.##..',
+         '.####.###.#...###.#..#.#',
+         '..#.#..#..#.#.#.####.###',
+         '#..####...#.#.#.###.###.',
+         '#####..#####...###....##',
+         '#.##..#..#...#..####...#',
+         '.#.###..##..##..####.##.',
+         '...###...##...#...#..###'],
+        [''.join(line) for line in build_image(self.examples[0])])
+
 
 
 if __name__ == '__main__':

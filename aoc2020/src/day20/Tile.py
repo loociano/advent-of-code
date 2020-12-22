@@ -17,17 +17,55 @@ from typing import Tuple, List
 class Tile:
   def __init__(self, tile_id: int, image: List[List[str]]):
     self.tile_id = tile_id
-    self._image = image
-    self._top_border = ''.join(self._image[0])
-    self._right_border = ''.join([i[len(image) - 1] for i in self._image])
-    self._bottom_border = ''.join(self._image[len(image) - 1])[::-1]
-    self._left_border = ''.join([i[0] for i in self._image])[::-1]
+    self.image = image
+    self._calculate_borders()
 
+  def _calculate_borders(self):
+    self.top_border = ''.join(self.image[0])
+    self.right_border = ''.join([i[len(self.image) - 1] for i in self.image])
+    self.bottom_border = ''.join(self.image[len(self.image) - 1])[::-1]
+    self.left_border = ''.join([i[0] for i in self.image])[::-1]
 
   def get_borders(self) -> Tuple[str, str, str, str]:
-    return self._top_border, self._right_border, self._bottom_border, \
-           self._left_border
+    return self.top_border, self.right_border, self.bottom_border, \
+           self.left_border
 
   def get_flipped_borders(self) -> Tuple[str, str, str, str]:
-    return self._top_border[::-1], self._right_border[::-1], \
-           self._bottom_border[::-1], self._left_border[::-1]
+    return self.top_border[::-1], self.right_border[::-1], \
+           self.bottom_border[::-1], self.left_border[::-1]
+
+  def rotate_clockwise(self, degrees: int):
+    if degrees == 90:
+      self.rotate_right()
+    elif degrees == 180:
+      self.rotate_right()
+      self.rotate_right()
+    elif degrees == 270:
+      self.rotate_right()
+      self.rotate_right()
+      self.rotate_right()
+    else:
+      raise Exception('Unsupported rotation')
+
+
+  def rotate_right(self) -> None:
+    """
+    Rotates 90 degrees to the right, in place
+    """
+    self.image = list(list(dot)[::-1] for dot in zip(*self.image))
+    self._calculate_borders()
+
+  def vertical_flip(self) -> None:
+    """
+    Mirrors image vertically, in place.
+    """
+    for line in self.image:
+      line.reverse()
+    self._calculate_borders()
+
+  def horizontal_flip(self) -> None:
+    """
+    Mirrors image horizontally, in place.
+    """
+    self.vertical_flip()
+    self.rotate_clockwise(180)
