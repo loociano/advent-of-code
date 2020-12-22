@@ -30,10 +30,84 @@ def part_two(input_lines: List[str]) -> int:
   Returns
     Number of # in the full image that are not part of a sea monster.
   """
-  build_image(input_lines)
-  # TODO: find position with monsters
-  # TODO: count number of # that are not part of monsters
-  return -1
+  image = Tile(tile_id=123, image=build_image(input_lines))
+  _find_position_with_monsters(image)
+  return _count_hashes(image.image)
+
+
+def _count_hashes(image: List[List[str]]) -> int:
+  num_hashes = 0
+  for row in range(len(image)):
+    for col in range(len(image[row])):
+      if image[row][col] == '#':
+        num_hashes += 1
+  return num_hashes
+
+
+def _find_position_with_monsters(tile: Tile) -> None:
+  rotations = 0
+  while rotations < 4:
+    if _highlight_monsters(tile.image):
+      return
+    tile.rotate_right()
+    rotations += 1
+  tile.vertical_flip()
+  rotations = 0
+  while rotations < 4:
+    if _highlight_monsters(tile.image):
+      return
+    tile.rotate_right()
+    rotations += 1
+  raise Exception('Did not find position with monsters.')
+
+
+def _highlight_monsters(image: List[List[str]]) -> bool:
+  """
+  Finds monsters and highlight thems with character 'O'.
+  Monster pattern is:
+                      #
+  #    ##    ##    ###
+   #  #  #  #  #  #
+  Returns
+    True if at least one monster was found.
+  """
+  monster_height = 3
+  monster_width = 20
+  has_monsters = False
+  for x in range(len(image) - monster_height - 1):
+    for y in range(len(image[x]) - monster_width - 1):
+      if image[x][y + 18] == '#' \
+          and image[x + 1][y] == '#' \
+          and image[x + 1][y + 5] == '#' \
+          and image[x + 1][y + 6] == '#' \
+          and image[x + 1][y + 11] == '#' \
+          and image[x + 1][y + 12] == '#' \
+          and image[x + 1][y + 17] == '#' \
+          and image[x + 1][y + 18] == '#' \
+          and image[x + 1][y + 19] == '#' \
+          and image[x + 2][y + 1] == '#' \
+          and image[x + 2][y + 4] == '#' \
+          and image[x + 2][y + 7] == '#' \
+          and image[x + 2][y + 10] == '#' \
+          and image[x + 2][y + 13] == '#' \
+          and image[x + 2][y + 16] == '#':
+        has_monsters = True
+        image[x][y + 18] = 'O'
+        image[x + 1][y] = 'O'
+        image[x + 1][y + 5] = 'O'
+        image[x + 1][y + 6] = 'O'
+        image[x + 1][y + 11] = 'O'
+        image[x + 1][y + 12] = 'O'
+        image[x + 1][y + 17] = 'O'
+        image[x + 1][y + 18] = 'O'
+        image[x + 1][y + 19] = 'O'
+        image[x + 2][y + 1] = 'O'
+        image[x + 2][y + 4] = 'O'
+        image[x + 2][y + 7] = 'O'
+        image[x + 2][y + 10] = 'O'
+        image[x + 2][y + 13] = 'O'
+        image[x + 2][y + 16] = 'O'
+  return has_monsters
 
 
 def build_image(input_lines: List[str]) -> List[List[str]]:

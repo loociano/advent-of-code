@@ -14,7 +14,7 @@
 import unittest
 
 from aoc2020.test.common.AdventOfCodeTestCase import AdventOfCodeTestCase
-from aoc2020.src.day20.solution import part_one, build_image
+from aoc2020.src.day20.solution import part_one, part_two, build_image
 
 
 class TestSolution(AdventOfCodeTestCase):
@@ -54,6 +54,9 @@ class TestSolution(AdventOfCodeTestCase):
          '.#.###..##..##..####.##.',
          '...###...##...#...#..###'],
         [''.join(line) for line in build_image(self.examples[0])])
+
+  def test_part_two_with_example(self):
+    self.assertEqual(273, part_two(self.examples[0]))
 
 
 
