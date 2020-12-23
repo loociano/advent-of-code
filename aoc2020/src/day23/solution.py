@@ -11,7 +11,13 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-from typing import List
+from typing import List, Union, Dict, Tuple
+
+
+class Cup:
+  def __init__(self, label: int):
+    self.label = label
+    self.next = None  # type:Union[None, Cup]
 
 
 def part_one(start_cups: str, moves: int) -> str:
@@ -19,9 +25,13 @@ def part_one(start_cups: str, moves: int) -> str:
   Returns:
     Labels on cups after cup one.
   """
-  cups = _play_game(list(map(int, list(start_cups))), moves)
-  cup_one_pos = cups.index(1)
-  return ''.join(str(i) for i in cups[cup_one_pos + 1:] + cups[:cup_one_pos])
+  cups, first_cup = _parse_input(start_cups)
+  cup = _play_game(cups, first_cup, moves)
+  result = []
+  for _ in range(8):
+    cup = cup.next
+    result.append(str(cup.label))
+  return ''.join(result)
 
 
 def part_two(start_cups: str, moves: int) -> int:
@@ -29,65 +39,73 @@ def part_two(start_cups: str, moves: int) -> int:
   Returns:
     Product of two cups situated clockwise immediately after cup 1.
   """
-  cups = list(map(int, list(start_cups)))
+  cups, first_cup = _parse_input(start_cups)
+  last_cup = cups[int(start_cups[-1])]
+  # Break loop
+  last_cup.next = None
   # Insert cups until reaching one million.
-  i = 10
-  while i <= 1000000:
-    cups.append(i)
-    i += 1
-  cups = _play_game(cups, moves)
-  cup_one_pos = cups.index(1)
-  if cup_one_pos == len(cups) - 1:
-    return cups[0] * cups[1]
-  if cup_one_pos == len(cups) - 2:
-    return cups[len(cups) - 1] * cups[0]
-  return cups[cup_one_pos + 1] * cups[cup_one_pos + 2]
+  for label in range(10, 1000001):
+    cup = Cup(label)
+    cups[label] = cup
+    last_cup.next = cup
+    last_cup = cup
+  # Link last cup to first cup.
+  last_cup.next = first_cup
+
+  cup1 = _play_game(cups, first_cup, moves)
+  return cup1.next.label * cup1.next.next.label
 
 
-def _play_game(cups: List[int], moves: int) -> List[int]:
+def _parse_input(start_cups: str) -> Tuple[Dict[int, Cup], Cup]:
+  mem = {}
+  last_cup = None
+  # Create cups and link them.
+  for label in list(map(int, list(start_cups))):
+    cup = Cup(label)
+    if last_cup:
+      last_cup.next = cup
+    last_cup = cup
+    mem[label] = cup
+  # Link last cup to first cup.
+  first_cup = mem[int(start_cups[0])]
+  last_cup.next = first_cup
+  return mem, first_cup
+
+def _play_game(cups: Dict[int, Cup], current_cup: Cup, moves: int) -> Cup:
   """
   Plays game for a number of moves.
   Args:
-    cups: initial position of cups
+    cups: index of cups.
+    current_cup: starting cup
+    moves: game turns
   Returns:
-    Cups after n moves.
+    Cap labeled 1.
   """
-  move = 0
-  current_cup = cups[0]
-  while move < moves:
+  for _ in range(moves):
     # Extract 3 cups after current cup
-    pos_curr = cups.index(current_cup)
-    left_cups = cups[:pos_curr + 1]
-    right_cups = cups[pos_curr + 1:]
-    picked = 0
-    picked_cups = []
-    while picked < 3:
-      if len(right_cups):
-        picked_cups.append(right_cups.pop(0))
-      else:
-        picked_cups.append(left_cups.pop(0))
-      picked += 1
-    if current_cup > 1:
-      destination_cup = current_cup - 1
-    else:
-      destination_cup = 9
-    cups = left_cups + right_cups
+    first_picked_cup = current_cup.next
+    right_cup = first_picked_cup
+    picked_labels = []
+    for _ in range(3):
+      picked_labels.append(right_cup.label)
+      right_cup = right_cup.next
+    current_cup.next = right_cup
 
     # Find destination cup
-    while destination_cup in picked_cups:
-      destination_cup -= 1
-      if destination_cup == 0:
-        destination_cup = 9
-    pos_destination_cup = cups.index(destination_cup)
+    if current_cup.label > 1:
+      destination_label = current_cup.label - 1
+    else:
+      destination_label = len(cups)
+    while destination_label in picked_labels:
+      destination_label -= 1
+      if destination_label == 0:
+        destination_label = len(cups)
+    destination_cup = cups[destination_label]
 
     # Re-insert picked cups
-    left_cups = cups[:pos_destination_cup + 1]
-    right_cups = cups[pos_destination_cup + 1:]
-    cups = left_cups + picked_cups + right_cups
-    current_cup_pos = cups.index(current_cup)
-    if current_cup_pos < len(cups) - 1:
-      current_cup = cups[current_cup_pos + 1]
-    else:
-      current_cup = cups[0]
-    move += 1
-  return cups
+    first_picked_cup.next.next.next = destination_cup.next
+    destination_cup.next = first_picked_cup
+
+    # Update current
+    current_cup = current_cup.next
+  return cups[1]
