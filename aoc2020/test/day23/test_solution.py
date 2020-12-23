@@ -13,7 +13,7 @@
 # limitations under the License.
 import unittest
 
-from aoc2020.src.day23.solution import part_one
+from aoc2020.src.day23.solution import part_one, part_two
 from aoc2020.test.common.AdventOfCodeTestCase import AdventOfCodeTestCase
 
 
@@ -29,6 +29,9 @@ class TestSolution(AdventOfCodeTestCase):
 
   def test_part_one_with_input_100_moves(self):
     self.assertEqual('68245739', part_one(self.input[0], moves=100))
+
+  def test_part_two_with_example(self):
+    self.assertEqual(149245887792, part_two('389125467', moves=10000000))
 
 
 if __name__ == '__main__':

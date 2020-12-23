@@ -11,6 +11,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+from typing import List
 
 
 def part_one(start_cups: str, moves: int) -> str:
@@ -18,7 +19,39 @@ def part_one(start_cups: str, moves: int) -> str:
   Returns:
     Labels on cups after cup one.
   """
+  cups = _play_game(list(map(int, list(start_cups))), moves)
+  cup_one_pos = cups.index(1)
+  return ''.join(str(i) for i in cups[cup_one_pos + 1:] + cups[:cup_one_pos])
+
+
+def part_two(start_cups: str, moves: int) -> int:
+  """
+  Returns:
+    Product of two cups situated clockwise immediately after cup 1.
+  """
   cups = list(map(int, list(start_cups)))
+  # Insert cups until reaching one million.
+  i = 10
+  while i <= 1000000:
+    cups.append(i)
+    i += 1
+  cups = _play_game(cups, moves)
+  cup_one_pos = cups.index(1)
+  if cup_one_pos == len(cups) - 1:
+    return cups[0] * cups[1]
+  if cup_one_pos == len(cups) - 2:
+    return cups[len(cups) - 1] * cups[0]
+  return cups[cup_one_pos + 1] * cups[cup_one_pos + 2]
+
+
+def _play_game(cups: List[int], moves: int) -> List[int]:
+  """
+  Plays game for a number of moves.
+  Args:
+    cups: initial position of cups
+  Returns:
+    Cups after n moves.
+  """
   move = 0
   current_cup = cups[0]
   while move < moves:
@@ -57,5 +90,4 @@ def part_one(start_cups: str, moves: int) -> str:
     else:
       current_cup = cups[0]
     move += 1
-  cup_one_pos = cups.index(1)
-  return ''.join(str(i) for i in cups[cup_one_pos + 1:] + cups[:cup_one_pos])
+  return cups
