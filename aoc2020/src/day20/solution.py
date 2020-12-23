@@ -218,12 +218,8 @@ def _position_top_left_tile(top_and_left: Tile, right_border: str, bottom_border
     else:
       top_and_left.rotate_right()
       rotations += 1
-
-  if top_and_left.bottom_border != bottom_border:
-    # It means that the image it upside-down. Flip horizontally.
+  if top_and_left.top_border == bottom_border:
     top_and_left.horizontal_flip()
-  if top_and_left.bottom_border != bottom_border[::-1]:
-    raise Exception('Could not position top-left tile')
 
 
 def _find_matching_border(tile: Tile, other: Tile) -> str:
