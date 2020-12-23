@@ -33,6 +33,9 @@ class TestSolution(AdventOfCodeTestCase):
   def test_part_two_with_example(self):
     self.assertEqual(149245887792, part_two('389125467', moves=10000000))
 
+  def test_part_two_with_input(self):
+    self.assertEqual(219634632000, part_two(self.input[0], moves=10000000))
+
 
 if __name__ == '__main__':
   unittest.main()

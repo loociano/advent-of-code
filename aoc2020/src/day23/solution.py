@@ -11,7 +11,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-from typing import List, Union, Dict, Tuple
+from typing import Union, Dict, Tuple
 
 
 class Cup:
@@ -28,7 +28,7 @@ def part_one(start_cups: str, moves: int) -> str:
   cups, first_cup = _parse_input(start_cups)
   cup = _play_game(cups, first_cup, moves)
   result = []
-  for _ in range(8):
+  for _ in range(len(cups) - 1):
     cup = cup.next
     result.append(str(cup.label))
   return ''.join(result)
@@ -43,15 +43,14 @@ def part_two(start_cups: str, moves: int) -> int:
   last_cup = cups[int(start_cups[-1])]
   # Break loop
   last_cup.next = None
-  # Insert cups until reaching one million.
-  for label in range(10, 1000001):
+  # Insert cups until reaching cup one million.
+  for label in range(len(cups) + 1, 1000001):
     cup = Cup(label)
     cups[label] = cup
     last_cup.next = cup
     last_cup = cup
   # Link last cup to first cup.
   last_cup.next = first_cup
-
   cup1 = _play_game(cups, first_cup, moves)
   return cup1.next.label * cup1.next.next.label
 
@@ -92,10 +91,8 @@ def _play_game(cups: Dict[int, Cup], current_cup: Cup, moves: int) -> Cup:
     current_cup.next = right_cup
 
     # Find destination cup
-    if current_cup.label > 1:
-      destination_label = current_cup.label - 1
-    else:
-      destination_label = len(cups)
+    destination_label = current_cup.label - 1 \
+      if current_cup.label > 1 else len(cups)
     while destination_label in picked_labels:
       destination_label -= 1
       if destination_label == 0:
