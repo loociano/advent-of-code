@@ -21,14 +21,15 @@ from typing import List
 class AdventOfCodeTestCase(unittest.TestCase):
   EXAMPLE_TEMPLATE = 'example{}.txt'
 
-
   def __init__(self, test_dir: str, *args, **kwargs):
     super(AdventOfCodeTestCase, self).__init__(*args, **kwargs)
     self.test_dir = test_dir
     self.examples = [self._read_as_list(
         self._get_path(self.EXAMPLE_TEMPLATE.format(num)))
         for num in range(1, self._get_num_examples() + 1)]
-    self.input = self._read_as_list(self._get_path('input.txt'))
+    input_path = self._get_path('input.txt')
+    self.input = self._read_as_list(input_path) \
+      if path.exists(input_path) else None
 
   def _get_num_examples(self) -> int:
     num = 1
