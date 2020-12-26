@@ -13,25 +13,38 @@
 # limitations under the License.
 
 
-def part_one(card_public_key: int, door_public_key: int, card_subject=7) -> int:
+def part_one(card_public_key: int, door_public_key: int) -> int:
   """
+  Args:
+    card_public_key: card's public key
+    door_public_key: door's public key
   Returns:
-    Encryption key
+    Encryption key.
   """
-  card_loop_size = find_loop_size(card_public_key, card_subject)
-  return _calculate(door_public_key, card_loop_size)
+  card_loop_size = find_loop_size(card_public_key)
+  door_loop_size = find_loop_size(door_public_key)
+  encryption_key = _calculate(door_public_key, card_loop_size)
+  assert _calculate(card_public_key, door_loop_size) == encryption_key
+  return encryption_key
 
 
-def find_loop_size(public_key: int, subject_number=7) -> int:
+def find_loop_size(public_key: int) -> int:
   """
+  Finds the number of loops required to generate a public key with subject
+  number 7.
+  Args:
+    public_key: an integer representing a public key.
   Returns:
-    Loop size.
+    Number of loops.
   """
+  subject_number = 7
+  value = 1
   loop_size = 1
   while True:
-    if loop_size > public_key:
-      raise Exception('Could not find loop size for: {}'.format(public_key))
-    if _calculate(subject_number, loop_size) == public_key:
+    # Faster approach; instead of calling calculate()
+    # https://github.com/r0f1/adventofcode2020/blob/master/day25/main.py
+    value = (value * subject_number) % 20201227
+    if value == public_key:
       return loop_size
     loop_size += 1
 
