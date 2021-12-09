@@ -30,3 +30,4 @@ This year I am learning Python 3 and familiarizing myself with [Google's Python 
 * [Day 22: Slam Shuffle](https://adventofcode.com/2019/day/22) [[solution](https://github.com/loociano/advent-of-code/blob/master/aoc2019/src/day22/solution.py)]
 * [Day 23: Category Six](https://adventofcode.com/2019/day/23) [[solution](https://github.com/loociano/advent-of-code/blob/master/aoc2019/src/day23/solution.py)]
 * [Day 24: Planet of Discord](https://adventofcode.com/2019/day/24) [[solution](https://github.com/loociano/advent-of-code/blob/master/aoc2019/src/day24/solution.py)]
+* [Day 25: Cryostasis](https://adventofcode.com/2019/day/25): I did not finish 😩
