@@ -13,9 +13,9 @@
 # limitations under the License.
 import unittest
 
-from aoc2020.test.common.AdventOfCodeTestCase import AdventOfCodeTestCase
 from aoc2020.src.day16.solution import part_one, part_two, parse_notes, \
   find_field_order
+from common.python3.AdventOfCodeTestCase import AdventOfCodeTestCase
 
 
 class TestSolution(AdventOfCodeTestCase):

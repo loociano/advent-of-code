@@ -11,11 +11,10 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-from random import shuffle
 import unittest
 
-from aoc2020.test.common.AdventOfCodeTestCase import AdventOfCodeTestCase
 from aoc2020.src.day10.solution import part_one, part_two
+from common.python3.AdventOfCodeTestCase import AdventOfCodeTestCase
 
 
 class TestSolution(AdventOfCodeTestCase):

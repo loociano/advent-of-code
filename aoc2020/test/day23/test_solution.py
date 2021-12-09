@@ -14,7 +14,7 @@
 import unittest
 
 from aoc2020.src.day23.solution import part_one, part_two
-from aoc2020.test.common.AdventOfCodeTestCase import AdventOfCodeTestCase
+from common.python3.AdventOfCodeTestCase import AdventOfCodeTestCase
 
 
 class TestSolution(AdventOfCodeTestCase):

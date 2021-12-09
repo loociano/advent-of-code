@@ -14,7 +14,7 @@
 import unittest
 
 from aoc2020.src.day25.solution import find_loop_size, part_one
-from aoc2020.test.common.AdventOfCodeTestCase import AdventOfCodeTestCase
+from common.python3.AdventOfCodeTestCase import AdventOfCodeTestCase
 
 
 class TestSolution(AdventOfCodeTestCase):

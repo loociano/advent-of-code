@@ -13,18 +13,18 @@
 # limitations under the License.
 import unittest
 
-from aoc2020.test.common.AdventOfCodeTestCase import AdventOfCodeTestCase
 from aoc2020.src.day14.solution \
-  import apply_mask, apply_mask2, calculate_addresses, part_one, part_two
+    import apply_mask, apply_mask2, calculate_addresses, part_one, part_two
+from common.python3.AdventOfCodeTestCase import AdventOfCodeTestCase
 
 
 class TestSolution(AdventOfCodeTestCase):
-  def __init__(self, *args, **kwargs):
-    super(TestSolution, self).__init__(__file__, *args, **kwargs)
+    def __init__(self, *args, **kwargs):
+        super(TestSolution, self).__init__(__file__, *args, **kwargs)
 
-  def test_apply_mask_example1(self):
-    self.assertEqual(73, apply_mask(
-        mask='XXXXXXXXXXXXXXXXXXXXXXXXXXXXX1XXXX0X', value=11))
+    def test_apply_mask_example1(self):
+        self.assertEqual(73, apply_mask(
+            mask='XXXXXXXXXXXXXXXXXXXXXXXXXXXXX1XXXX0X', value=11))
 
   def test_apply_mask_example2(self):
     self.assertEqual(101, apply_mask(

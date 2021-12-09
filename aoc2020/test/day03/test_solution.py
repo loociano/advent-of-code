@@ -13,8 +13,8 @@
 # limitations under the License.
 import unittest
 
-from aoc2020.test.common.AdventOfCodeTestCase import AdventOfCodeTestCase
 from aoc2020.src.day03.solution import part_one, part_two
+from common.python3.AdventOfCodeTestCase import AdventOfCodeTestCase
 
 
 class TestSolution(AdventOfCodeTestCase):
