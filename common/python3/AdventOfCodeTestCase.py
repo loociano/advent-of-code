@@ -15,7 +15,12 @@ import os
 import unittest
 
 from os import path
-from typing import List
+from typing import Tuple
+
+
+def _read(file_path: str) -> Tuple:
+  with open(file_path) as file:
+    return tuple(x.strip() for x in file.readlines())
 
 
 class AdventOfCodeTestCase(unittest.TestCase):
@@ -24,12 +29,11 @@ class AdventOfCodeTestCase(unittest.TestCase):
   def __init__(self, test_dir: str, *args, **kwargs):
     super(AdventOfCodeTestCase, self).__init__(*args, **kwargs)
     self.test_dir = test_dir
-    self.examples = [self._read_as_list(
+    self.examples = tuple(_read(
         self._get_path(self.EXAMPLE_TEMPLATE.format(num)))
-        for num in range(1, self._get_num_examples() + 1)]
+        for num in range(1, self._get_num_examples() + 1))
     input_path = self._get_path('input.txt')
-    self.input = self._read_as_list(input_path) \
-      if path.exists(input_path) else None
+    self.input = _read(input_path) if path.exists(input_path) else None
 
   def _get_num_examples(self) -> int:
     num = 1
@@ -38,11 +42,6 @@ class AdventOfCodeTestCase(unittest.TestCase):
         num += 1
       else:
         return num - 1
-
-  @staticmethod
-  def _read_as_list(file_path: str) -> List:
-    with open(file_path) as file:
-      return [x.strip() for x in file.readlines()]
 
   def _get_path(self, filename: str) -> str:
     return os.path.join(os.path.dirname(self.test_dir), filename)

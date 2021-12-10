@@ -33,5 +33,6 @@ class TestSolution(AdventOfCodeTestCase):
   def test_part_two_with_input(self):
     self.assertEqual(1688, part_two(boot_code=self.input))
 
+
 if __name__ == '__main__':
   unittest.main()

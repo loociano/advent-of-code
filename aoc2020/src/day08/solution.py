@@ -80,14 +80,14 @@ def part_two(boot_code: List[str]) -> int:
   """
   for line_num, line in enumerate(boot_code):
     if 'nop' in line:
-      copy = boot_code.copy()
+      copy = list(boot_code)
       copy[line_num] = line.replace('nop', 'jmp')  # Attempt to fix.
       try:
         Computer(copy).run_until_repeat_instruction()
       except Exception as e:
         return int(str(e))
     if 'jmp' in line:
-      copy = boot_code.copy()
+      copy = list(boot_code)
       copy[line_num] = line.replace('jmp', 'nop')  # Attempt to fix.
       try:
         Computer(copy).run_until_repeat_instruction()

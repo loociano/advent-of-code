@@ -22,8 +22,8 @@ class TestSolution(AdventOfCodeTestCase):
         super(TestSolution, self).__init__(__file__, *args, **kwargs)
 
     def setUp(self):
-        self._example = tuple(self.examples[0])
-        self._input = tuple(self.input)
+        self._example = self.examples[0]
+        self._input = self.input
 
     def test_part_one_with_example(self):
         self.assertEqual(150, part_one(self._example))
