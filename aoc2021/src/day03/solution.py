@@ -32,9 +32,8 @@ def part_one(diagnostic_report: Sequence[str]) -> int:
     if not diagnostic_report:
         raise ValueError('Missing diagnostic report!')
     num_bits = len(diagnostic_report[0])
-    most_common_bits = []
-    for position in range(0, num_bits):
-        most_common_bits.append(_most_common_bit(diagnostic_report, position))
+    most_common_bits = [_most_common_bit(diagnostic_report, position) for
+                        position in range(0, num_bits)]
     gamma_rate = ''.join('1' if bit else '0' for bit in most_common_bits)
     epsilon_rate = ''.join('0' if bit else '1' for bit in most_common_bits)
     return int(gamma_rate, 2) * int(epsilon_rate, 2)
