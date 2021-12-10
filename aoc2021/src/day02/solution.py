@@ -42,7 +42,7 @@ class Submarine:
         Args:
             instruction: A raw input instruction.
         """
-        command, value = _parse(instruction)
+        command, value = _parse(instruction=instruction)
         if command == 'forward':
             self.horizontal_position += value
         elif command == 'down':
@@ -51,6 +51,17 @@ class Submarine:
             self.depth -= value
         else:
             raise ValueError(f'Unrecognized command {command}.')
+
+
+def _run(planned_course: Sequence[str], submarine: Submarine) -> int:
+    """Runs the planned course and computes result.
+
+    Returns:
+      Final horizontal position multiplied by final depth.
+    """
+    for instruction in planned_course:
+        submarine.execute(instruction=instruction)
+    return submarine.horizontal_position * submarine.depth
 
 
 def part_one(planned_course: Sequence[str]) -> int:
@@ -62,12 +73,9 @@ def part_one(planned_course: Sequence[str]) -> int:
       - 'down X' increases the depth by X units.
       - 'up X' decreases the depth by X units.
     Returns:
-      Number of times a depth measurement increases.
+      Final horizontal position multiplied by final depth.
     """
-    submarine = Submarine()
-    for instruction in planned_course:
-        submarine.execute(instruction)
-    return submarine.horizontal_position * submarine.depth
+    return _run(planned_course=planned_course, submarine=Submarine())
 
 
 def part_two() -> int:
