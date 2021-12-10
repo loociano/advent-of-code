@@ -11,7 +11,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-from abc import abstractmethod
+from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from typing import Sequence, Tuple
 
@@ -33,7 +33,7 @@ def _parse(instruction: str) -> Tuple[str, int]:
 
 
 @dataclass
-class Submarine:
+class Submarine(ABC):
     """Represents a generic submarine."""
     horizontal_position: int = 0
     depth: int = 0
