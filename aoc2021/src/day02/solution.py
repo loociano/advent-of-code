@@ -1,0 +1,74 @@
+# Copyright 2021 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+from dataclasses import dataclass
+from typing import Sequence, Tuple
+
+
+def _parse(instruction: str) -> Tuple[str, int]:
+    """Parses an instruction.
+    Args:
+        instruction: A raw input instruction.
+    Returns:
+        command and command value.
+    """
+    command, value = instruction.split(' ')
+    # TODO: handle incorrect instructions.
+    if not command:
+        raise ValueError('Missing command!')
+    if not value:
+        raise ValueError('Missing value!')
+    return command, int(value)
+
+
+@dataclass
+class Submarine:
+    """Represents a submarine's position."""
+    horizontal_position: int = 0
+    depth: int = 0
+
+    def execute(self, instruction: str) -> None:
+        """Executes an instruction.
+        Args:
+            instruction: A raw input instruction.
+        """
+        command, value = _parse(instruction)
+        if command == 'forward':
+            self.horizontal_position += value
+        elif command == 'down':
+            self.depth += value
+        elif command == 'up':
+            self.depth -= value
+        else:
+            raise ValueError(f'Unrecognized command {command}.')
+
+
+def part_one(planned_course: Sequence[str]) -> int:
+    """AOC 2021 Day 2 Part 1.
+
+    Args:
+      planned_course: sequence of instructions:
+      - 'forward X' increases the horizontal position by X units.
+      - 'down X' increases the depth by X units.
+      - 'up X' decreases the depth by X units.
+    Returns:
+      Number of times a depth measurement increases.
+    """
+    submarine = Submarine()
+    for instruction in planned_course:
+        submarine.execute(instruction)
+    return submarine.horizontal_position * submarine.depth
+
+
+def part_two() -> int:
+    return 0
