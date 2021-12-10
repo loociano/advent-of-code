@@ -21,21 +21,17 @@ class TestSolution(AdventOfCodeTestCase):
     def __init__(self, *args, **kwargs):
         super(TestSolution, self).__init__(__file__, *args, **kwargs)
 
-    def setUp(self):
-        self._example = self.examples[0]
-        self._input = self.input
-
     def test_part_one_with_example(self):
-        self.assertEqual(150, part_one(self._example))
+        self.assertEqual(150, part_one(self.examples[0]))
 
     def test_part_one_with_input(self):
-        self.assertEqual(2147104, part_one(self._input))
+        self.assertEqual(2147104, part_one(self.input))
 
     def test_part_two_with_example(self):
-        self.assertEqual(900, part_two(self._example))
+        self.assertEqual(900, part_two(self.examples[0]))
 
     def test_part_two_with_input(self):
-        self.assertEqual(2044620088, part_two(self._input))
+        self.assertEqual(2044620088, part_two(self.input))
 
 
 if __name__ == '__main__':
