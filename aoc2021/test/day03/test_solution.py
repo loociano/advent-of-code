@@ -13,7 +13,7 @@
 # limitations under the License.
 import unittest
 
-from aoc2021.src.day03.solution import part_one
+from aoc2021.src.day03.solution import part_one, part_two
 from common.python3.AdventOfCodeTestCase import AdventOfCodeTestCase
 
 
@@ -24,8 +24,14 @@ class TestSolution(AdventOfCodeTestCase):
     def test_part_one_with_example(self):
         self.assertEqual(198, part_one(self.examples[0]))
 
-    def test_part_two_with_example(self):
+    def test_part_one_with_input(self):
         self.assertEqual(852500, part_one(self.input))
+
+    def test_part_two_with_example(self):
+        self.assertEqual(230, part_two(self.examples[0]))
+
+    def test_part_two_with_input(self):
+        self.assertEqual(1007985, part_two(self.input))
 
 
 if __name__ == '__main__':
