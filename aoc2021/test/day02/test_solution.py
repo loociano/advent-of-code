@@ -31,6 +31,12 @@ class TestSolution(AdventOfCodeTestCase):
     def test_part_one_with_input(self):
         self.assertEqual(2147104, part_one(self._input))
 
+    def test_part_two_with_example(self):
+        self.assertEqual(900, part_two(self._example))
+
+    def test_part_two_with_input(self):
+        self.assertEqual(2044620088, part_two(self._input))
+
 
 if __name__ == '__main__':
     unittest.main()
