@@ -106,7 +106,22 @@ def part_one(bingo: str) -> int:
     raise Exception('No board won!')
 
 
-def part_two(report: Sequence[str]) -> int:
+def part_two(bingo: str) -> int:
     """AOC 2021 Day 4 Part 2.
+
+    Args:
+        bingo: The bingo input. First line contains comma-separated numbers to
+        be drawn, next lines contain 5x5 bingo boards.
+    Returns:
+      Score of the last winning board. It is the sum of all unmarked numbers on
+      that board multiplied by the number last called.
     """
-    return 0
+    drawing_numbers, boards = _parse_bingo(bingo)
+    winning_boards = [False] * len(boards)
+    for drawing_number in drawing_numbers:
+        for board_no, board in enumerate(boards):
+            if board.mark(drawing_number=drawing_number):
+                winning_boards[board_no] = True
+                if winning_boards.count(False) == 0:  # Last winning board.
+                    return drawing_number * board.sum_unmarked()
+    raise Exception('No board won!')

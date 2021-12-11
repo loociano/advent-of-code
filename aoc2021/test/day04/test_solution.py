@@ -13,7 +13,7 @@
 # limitations under the License.
 import unittest
 
-from aoc2021.src.day04.solution import BingoBoard, part_one
+from aoc2021.src.day04.solution import BingoBoard, part_one, part_two
 from common.python3.AdventOfCodeTestCase import AdventOfCodeTestCase
 
 
@@ -58,6 +58,12 @@ class TestSolution(AdventOfCodeTestCase):
 
     def test_part_one_with_input(self):
         self.assertEqual(87456, part_one(bingo=self.input))
+
+    def test_part_two_with_example(self):
+        self.assertEqual(1924, part_two(bingo=self.examples[0]))
+
+    def test_part_two_with_input(self):
+        self.assertEqual(15561, part_two(bingo=self.input))
 
 
 if __name__ == '__main__':
