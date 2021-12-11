@@ -11,7 +11,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-from typing import List
+from typing import Sequence, List, Tuple
 
 
 class Segment:
@@ -58,14 +58,7 @@ class Grid:
         return total
 
 
-def part_one(segment_lines: str) -> int:
-    """AOC 2021 Day 5 Part 1.
-
-    Args:
-        segment_lines: List of segments with format x1,y1 -> x2,y2.
-    Returns:
-        Number of points where at least 2 segments overlap.
-    """
+def _process_input(segment_lines: str) -> Tuple[Sequence[Segment], int]:
     segments = []
     max_position = -1
     # Process input.
@@ -83,6 +76,18 @@ def part_one(segment_lines: str) -> int:
             max_position = x2
         if y2 > max_position:
             max_position = y2
+    return tuple(segments), max_position
+
+
+def part_one(segment_lines: str) -> int:
+    """AOC 2021 Day 5 Part 1.
+
+    Args:
+        segment_lines: List of segments with format x1,y1 -> x2,y2.
+    Returns:
+        Number of points where at least 2 segments overlap.
+    """
+    segments, max_position = _process_input(segment_lines=segment_lines)
     grid = Grid(width=max_position + 1)  # Index between 0 and max_position.
     for segment in segments:
         if segment.is_horizontal():
