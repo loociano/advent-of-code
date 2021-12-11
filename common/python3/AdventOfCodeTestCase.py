@@ -18,7 +18,7 @@ from os import path
 from typing import Tuple
 
 
-def _read(file_path: str) -> Tuple:
+def _read(file_path: str) -> Tuple[str]:
   with open(file_path) as file:
     return tuple(x.strip() for x in file.readlines())
 
