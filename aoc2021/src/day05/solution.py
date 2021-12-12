@@ -156,7 +156,7 @@ def part_one(segment_lines: str) -> int:
 
 
 def part_two(segment_lines: str) -> int:
-    """AOC 2021 Day 4 Part 2.
+    """AOC 2021 Day 5 Part 2.
 
     Args:
         segment_lines: List of segments with format x1,y1 -> x2,y2.
