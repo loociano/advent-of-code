@@ -13,7 +13,7 @@
 # limitations under the License.
 import unittest
 
-from aoc2021.src.day05.solution import Grid, part_one
+from aoc2021.src.day05.solution import Grid, part_one, part_two
 from common.python3.AdventOfCodeTestCase import AdventOfCodeTestCase
 
 
@@ -32,11 +32,34 @@ class TestSolution(AdventOfCodeTestCase):
         grid.populate_horizontal(x_start=0, x_end=8, y=1)
         self.assertEqual(1, grid.count_overlap_points())
 
+    def test_grid_diagonals_overlap(self):
+        grid = Grid(width=9)
+        # Descending onwards
+        grid.populate_diagonal(x_start=0, x_end=8, y_start=0, y_end=8)
+        # Ascending onwards.
+        grid.populate_diagonal(x_start=0, x_end=8, y_start=8, y_end=0)
+        self.assertEqual(1, grid.count_overlap_points())
+
+    def test_grid_diagonals(self):
+        grid = Grid(width=9)
+        # Descending backwards.
+        grid.populate_diagonal(x_start=8, x_end=0, y_start=8, y_end=0)
+        self.assertEqual(0, grid.count_overlap_points())
+        # Ascending backwards.
+        grid.populate_diagonal(x_start=8, x_end=0, y_start=0, y_end=8)
+        self.assertEqual(1, grid.count_overlap_points())
+
     def test_part_one_with_example(self):
         self.assertEqual(5, part_one(segment_lines=self.examples[0]))
 
     def test_part_one_with_input(self):
         self.assertEqual(7436, part_one(segment_lines=self.input))
+
+    def test_part_two_with_example(self):
+        self.assertEqual(12, part_two(segment_lines=self.examples[0]))
+
+    def test_part_two_with_input(self):
+        self.assertEqual(21104, part_two(segment_lines=self.input))
 
 
 if __name__ == '__main__':
