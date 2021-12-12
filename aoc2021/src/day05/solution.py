@@ -114,35 +114,12 @@ def _process_input(segment_lines: str) -> Tuple[Sequence[Segment], int]:
     return tuple(segments), max_position
 
 
-def part_one(segment_lines: str) -> int:
-    """AOC 2021 Day 5 Part 1.
-
-    Part 1 only considers horizontal and vertical segments.
+def _populate_lines(segment_lines: str, ignore_diagonals: bool = True) -> int:
+    """Populates lines in grid.
 
     Args:
         segment_lines: List of segments with format x1,y1 -> x2,y2.
-    Returns:
-        Number of points where at least 2 segments overlap.
-    """
-    segments, max_position = _process_input(segment_lines=segment_lines)
-    grid = Grid(width=max_position + 1)  # Index between 0 and max_position.
-    for segment in segments:
-        if segment.is_horizontal():
-            grid.populate_horizontal(x_start=min(segment.x1, segment.x2),
-                                     x_end=max(segment.x1, segment.x2),
-                                     y=segment.y1)
-        elif segment.is_vertical():
-            grid.populate_vertical(y_start=min(segment.y1, segment.y2),
-                                   y_end=max(segment.y1, segment.y2),
-                                   x=segment.x1)
-    return grid.count_overlap_points()
-
-
-def part_two(segment_lines: str) -> int:
-    """AOC 2021 Day 4 Part 2.
-
-    Args:
-        segment_lines: List of segments with format x1,y1 -> x2,y2.
+        ignore_diagonals: Whether to ignore diagonal segments.
     Returns:
         Number of points where at least 2 segments overlap.
     """
@@ -159,6 +136,31 @@ def part_two(segment_lines: str) -> int:
                                    x=segment.x1)
         else:
             # Must be diagonal.
-            grid.populate_diagonal(x_start=segment.x1, x_end=segment.x2,
-                                   y_start=segment.y1, y_end=segment.y2)
+            if not ignore_diagonals:
+                grid.populate_diagonal(x_start=segment.x1, x_end=segment.x2,
+                                       y_start=segment.y1, y_end=segment.y2)
     return grid.count_overlap_points()
+
+
+def part_one(segment_lines: str) -> int:
+    """AOC 2021 Day 5 Part 1.
+
+    Part 1 only considers horizontal and vertical segments.
+
+    Args:
+        segment_lines: List of segments with format x1,y1 -> x2,y2.
+    Returns:
+        Number of points where at least 2 segments overlap.
+    """
+    return _populate_lines(segment_lines=segment_lines)
+
+
+def part_two(segment_lines: str) -> int:
+    """AOC 2021 Day 4 Part 2.
+
+    Args:
+        segment_lines: List of segments with format x1,y1 -> x2,y2.
+    Returns:
+        Number of points where at least 2 segments overlap.
+    """
+    return _populate_lines(segment_lines=segment_lines, ignore_diagonals=False)
