@@ -14,7 +14,7 @@
 import unittest
 from typing import Sequence
 
-from aoc2021.src.day07.solution import part_one
+from aoc2021.src.day07.solution import part_one, part_two
 from common.python3.AdventOfCodeTestCase import AdventOfCodeTestCase
 
 
@@ -35,6 +35,12 @@ class TestSolution(AdventOfCodeTestCase):
 
     def test_part_one_with_input(self):
         self.assertEqual(352254, part_one(positions=self._input))
+
+    def test_part_two_with_example(self):
+        self.assertEqual(168, part_two(positions=self._example))
+
+    def test_part_two_with_input(self):
+        self.assertEqual(999, part_two(positions=self._input))
 
 
 if __name__ == '__main__':
