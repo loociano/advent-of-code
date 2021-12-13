@@ -40,7 +40,7 @@ class TestSolution(AdventOfCodeTestCase):
         self.assertEqual(168, part_two(positions=self._example))
 
     def test_part_two_with_input(self):
-        self.assertEqual(999, part_two(positions=self._input))
+        self.assertEqual(99053143, part_two(positions=self._input))
 
 
 if __name__ == '__main__':
