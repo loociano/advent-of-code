@@ -13,23 +13,42 @@
 # limitations under the License.
 from typing import Sequence
 
+def _count_calories_by_elf(calories_list: Sequence[str]) -> Sequence[int]:
+  """Computes total calories carred by each elf.
+
+  Args:
+    calories_list: A list of calories carried by each elf,
+    separated by blank lines.
+  Returns:
+    List of calories, order by elf.
+  """
+  calories_sums = []
+  elf_counter = 0
+  for calories in calories_list:
+    if calories == '':
+      elf_counter += 1  # Next elf.
+    else:
+      if elf_counter == len(calories_sums):
+        calories_sums.append(0)
+      calories_sums[elf_counter] += int(calories)
+  return calories_sums
+
 
 def find_max_calories(calories_list: Sequence[str]) -> int:
-    """AoC 2022 Day 1 Part 1.
+  """AoC 2022 Day 1 Part 1.
 
-    Args:
-      calories_list: A list of calories carried by each elf,
-      separated by blank lines.
-    Returns:
-      Max calories carried by one elf.
-    """
-    calories_sums = []
-    elf_counter = 0
-    for calories in calories_list:
-        if calories == '':
-            elf_counter += 1  # Next elf.
-        else:
-            if elf_counter == len(calories_sums):
-                calories_sums.append(0)
-            calories_sums[elf_counter] += int(calories)
-    return max(calories_sums)
+  Args:
+    calories_list: A list of calories carried by each elf,
+    separated by blank lines.
+  Returns:
+    Max calories carried by one elf.
+  """
+  return max(_count_calories_by_elf(calories_list))
+
+
+def find_top3_max_calories(calories_list: Sequence[str]) -> int:
+  top = 3
+  sorted_calories_sums = sorted(_count_calories_by_elf(calories_list), reverse=True)
+  if len(sorted_calories_sums) < top:
+    return sum(sorted_calories_sums)
+  return sum(sorted_calories_sums[:top])

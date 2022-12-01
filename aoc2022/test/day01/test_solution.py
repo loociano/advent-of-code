@@ -13,7 +13,7 @@
 # limitations under the License.
 import unittest
 
-from aoc2022.src.day01.solution import find_max_calories
+from aoc2022.src.day01.solution import find_max_calories, find_top3_max_calories
 from common.python3.AdventOfCodeTestCase import AdventOfCodeTestCase
 
 
@@ -29,6 +29,12 @@ class TestSolution(AdventOfCodeTestCase):
 
   def test_day01_withPuzzleInput_findsMaximumCalories(self):
     self.assertEqual(69528, find_max_calories(self.input))
+
+  def test_day01_withExampleInput_findsTop3MaximumCalories(self):
+    self.assertEqual(45000, find_top3_max_calories(self.examples[0]))
+
+  def test_day01_withPuzzleInput_findsTop3MaximumCalories(self):
+    self.assertEqual(206152, find_top3_max_calories(self.input))
 
 
 if __name__ == '__main__':
