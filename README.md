@@ -1,6 +1,6 @@
 # 🎄 Advent of Code 🎄
 
-![example workflow](https://github.com/loociano/advent-of-code/actions/workflows/run-python-tests.yml/badge.svg)
+[![Run Python tests](https://github.com/loociano/advent-of-code/actions/workflows/run-python-tests.yml/badge.svg)](https://github.com/loociano/advent-of-code/actions/workflows/run-python-tests.yml)
 
 My own solutions to [Advent of Code](https://adventofcode.com/).
 
