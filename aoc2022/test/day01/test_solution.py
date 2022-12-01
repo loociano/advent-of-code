@@ -21,17 +21,18 @@ class TestSolution(AdventOfCodeTestCase):
   def __init__(self, *args, **kwargs):
     super(TestSolution, self).__init__(__file__, *args, **kwargs)
 
-  def setUp(self):
-    pass
 
   def test_day01_withExampleInput_findsMaximumCalories(self):
     self.assertEqual(24000, find_max_calories(self.examples[0]))
 
+
   def test_day01_withPuzzleInput_findsMaximumCalories(self):
     self.assertEqual(69528, find_max_calories(self.input))
 
+
   def test_day01_withExampleInput_findsTop3MaximumCalories(self):
     self.assertEqual(45000, find_top3_max_calories(self.examples[0]))
+
 
   def test_day01_withPuzzleInput_findsTop3MaximumCalories(self):
     self.assertEqual(206152, find_top3_max_calories(self.input))

@@ -13,6 +13,7 @@
 # limitations under the License.
 from typing import Sequence
 
+
 def _count_calories_by_elf(calories_list: Sequence[str]) -> Sequence[int]:
   """Computes total calories carred by each elf.
 
@@ -48,5 +49,6 @@ def find_max_calories(calories_list: Sequence[str]) -> int:
 
 def find_top3_max_calories(calories_list: Sequence[str]) -> int:
   top = 3
-  sorted_calories_sums = sorted(_count_calories_by_elf(calories_list), reverse=True)
+  sorted_calories_sums = sorted(_count_calories_by_elf(calories_list),
+                                reverse=True)
   return sum(sorted_calories_sums[:top])
