@@ -10,3 +10,5 @@ My own solutions to [Advent of Code](https://adventofcode.com/).
   → [solutions in Python 3](https://github.com/loociano/advent-of-code/tree/master/aoc2020)
 * [Advent of Code 2021](https://adventofcode.com/2021)
   → [solutions in Python 3](https://github.com/loociano/advent-of-code/tree/master/aoc2021)
+* [Advent of Code 2022](https://adventofcode.com/2022)
+  → [solutions in Python 3](https://github.com/loociano/advent-of-code/tree/master/aoc2022)
