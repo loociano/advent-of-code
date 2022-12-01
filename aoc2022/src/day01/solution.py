@@ -49,6 +49,4 @@ def find_max_calories(calories_list: Sequence[str]) -> int:
 def find_top3_max_calories(calories_list: Sequence[str]) -> int:
   top = 3
   sorted_calories_sums = sorted(_count_calories_by_elf(calories_list), reverse=True)
-  if len(sorted_calories_sums) < top:
-    return sum(sorted_calories_sums)
   return sum(sorted_calories_sums[:top])
