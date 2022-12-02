@@ -73,11 +73,7 @@ def _get_round_score2(opponent: str, you: str) -> int:
 
 def _get_score(rounds: Sequence[str],
                score_fn: Callable[[str, str], int]) -> int:
-  total = 0
-  for a_round in rounds:
-    opponent, you = a_round.split(' ')
-    total += score_fn(opponent, you)
-  return total
+  return sum([score_fn(*r.split(' ')) for r in rounds])
 
 
 def get_score(rounds: Sequence[str]) -> int:
