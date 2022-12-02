@@ -11,7 +11,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-from typing import Callable, Sequence
+from typing import Dict, Sequence
 
 _SCORE_TABLE = [
   [3, 6, 0],  # Rock:Rock, Rock:Paper, Rock:Scissors
@@ -19,66 +19,45 @@ _SCORE_TABLE = [
   [6, 0, 3]  # Scissors:Rock, Scissors:Paper, Scissors:Scissors
 ]
 
-_SHAPE_SCORE = {
-  'X': 1,
-  'Y': 2,
-  'Z': 3
-}
-
 _SCORE_TABLE2 = [
   [3, 1, 2],  # Rock:Lose, Rock:Draw, Rock:Win
   [1, 2, 3],  # Paper:Lose, Paper:Draw, Paper:Win
   [2, 3, 1]  # Scissors:Lose, Scissors:Draw, Scissors:Win
 ]
 
+_MOVE_SCORE = {
+  'X': 1,
+  'Y': 2,
+  'Z': 3
+}
 
-def _play_round(opponent: str, you: str) -> int:
-  if opponent == 'A':
-    i = 0
-  elif opponent == 'B':
-    i = 1
-  else:
-    i = 2
-  if you == 'X':
-    j = 0
-  elif you == 'Y':
-    j = 1
-  else:
-    j = 2
-  return _SCORE_TABLE[i][j]
+_MOVE_SCORE2 = {
+  'X': 0,
+  'Y': 3,
+  'Z': 6
+}
 
 
-def _get_round_score(opponent: str, you: str) -> int:
-  return _play_round(opponent, you) + _SHAPE_SCORE[you]
+def _get_round_score(score_table: Sequence[Sequence[int]],
+                     move_score: Dict[str, int], opponent: str,
+                     you: str) -> int:
+  return (
+      score_table[ord(opponent) - ord('A')][ord(you) - ord('X')]
+      + move_score[you]
+  )
 
 
-def _get_round_score2(opponent: str, you: str) -> int:
-  if opponent == 'A':
-    i = 0
-  elif opponent == 'B':
-    i = 1
-  else:
-    i = 2
-  if you == 'X':
-    j = 0
-    result_score = 0  # Lose.
-  elif you == 'Y':
-    j = 1
-    result_score = 3  # Draw.
-  else:
-    j = 2
-    result_score = 6  # Win.
-  return _SCORE_TABLE2[i][j] + result_score
-
-
-def _get_score(rounds: Sequence[str],
-               score_fn: Callable[[str, str], int]) -> int:
-  return sum([score_fn(*r.split(' ')) for r in rounds])
+def _get_score(score_table: Sequence[Sequence[int]], rounds: Sequence[str],
+               move_score: Dict[str, int]) -> int:
+  return sum(
+    [_get_round_score(score_table, move_score, *r.split(' ')) for r in rounds])
 
 
 def get_score(rounds: Sequence[str]) -> int:
-  return _get_score(rounds, _get_round_score)
+  return _get_score(rounds=rounds, score_table=_SCORE_TABLE,
+                    move_score=_MOVE_SCORE)
 
 
 def get_score2(rounds: Sequence[str]) -> int:
-  return _get_score(rounds, _get_round_score2)
+  return _get_score(rounds=rounds, score_table=_SCORE_TABLE2,
+                    move_score=_MOVE_SCORE2)
