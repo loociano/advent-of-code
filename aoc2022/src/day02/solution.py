@@ -11,8 +11,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-from typing import Sequence
-
+from typing import Callable, Sequence
 
 _SCORE_TABLE = [
   [3, 6, 0],  # Rock:Rock, Rock:Paper, Rock:Scissors
@@ -72,17 +71,18 @@ def _get_round_score2(opponent: str, you: str) -> int:
   return _SCORE_TABLE2[i][j] + result_score
 
 
-def get_score(rounds: Sequence[str]) -> int:
+def _get_score(rounds: Sequence[str],
+               score_fn: Callable[[str, str], int]) -> int:
   total = 0
   for a_round in rounds:
     opponent, you = a_round.split(' ')
-    total += _get_round_score(opponent, you)
+    total += score_fn(opponent, you)
   return total
+
+
+def get_score(rounds: Sequence[str]) -> int:
+  return _get_score(rounds, _get_round_score)
 
 
 def get_score2(rounds: Sequence[str]) -> int:
-  total = 0
-  for a_round in rounds:
-    opponent, you = a_round.split(' ')
-    total += _get_round_score2(opponent, you)
-  return total
+  return _get_score(rounds, _get_round_score2)
