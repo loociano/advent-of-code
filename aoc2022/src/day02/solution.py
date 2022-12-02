@@ -26,6 +26,12 @@ _SHAPE_SCORE = {
   'Z': 3
 }
 
+_SCORE_TABLE2 = [
+  [3, 1, 2],  # Rock:Lose, Rock:Draw, Rock:Win
+  [1, 2, 3],  # Paper:Lose, Paper:Draw, Paper:Win
+  [2, 3, 1]  # Scissors:Lose, Scissors:Draw, Scissors:Win
+]
+
 
 def _play_round(opponent: str, you: str) -> int:
   if opponent == 'A':
@@ -47,9 +53,36 @@ def _get_round_score(opponent: str, you: str) -> int:
   return _play_round(opponent, you) + _SHAPE_SCORE[you]
 
 
+def _get_round_score2(opponent: str, you: str) -> int:
+  if opponent == 'A':
+    i = 0
+  elif opponent == 'B':
+    i = 1
+  else:
+    i = 2
+  if you == 'X':
+    j = 0
+    result_score = 0  # Lose.
+  elif you == 'Y':
+    j = 1
+    result_score = 3  # Draw.
+  else:
+    j = 2
+    result_score = 6  # Win.
+  return _SCORE_TABLE2[i][j] + result_score
+
+
 def get_score(rounds: Sequence[str]) -> int:
   total = 0
   for a_round in rounds:
     opponent, you = a_round.split(' ')
     total += _get_round_score(opponent, you)
+  return total
+
+
+def get_score2(rounds: Sequence[str]) -> int:
+  total = 0
+  for a_round in rounds:
+    opponent, you = a_round.split(' ')
+    total += _get_round_score2(opponent, you)
   return total
