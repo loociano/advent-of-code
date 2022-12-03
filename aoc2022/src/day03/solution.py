@@ -15,17 +15,16 @@ from typing import List, Sequence, Set
 
 
 def _get_item_pos(item: str) -> int:
-  if ord('a') <= ord(item) <= ord('z'):
+  if 'a' <= item <= 'z':
     return ord(item) - ord('a')
-  elif ord('A') <= ord(item) <= ord('Z'):
-    return ord(item) - ord('A') + 26
+  elif 'A' <= item <= 'Z':
+    return ord(item) - ord('A') + (ord('z') - ord('a') + 1)
   raise ValueError('Item is not [a-zA-Z], was %s', item)
 
 
 def _calculate_priorities(rucksack: str) -> int:
   items = [0] * 52  # a-z + A-Z
   compartment_length = len(rucksack) // 2
-
   # First compartment.
   for i in range(0, compartment_length):
     items[_get_item_pos(rucksack[i])] = 1
