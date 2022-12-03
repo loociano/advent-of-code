@@ -23,15 +23,15 @@ def _get_item_pos(item: str) -> int:
 
 
 def _calculate_priorities(rucksack: str) -> int:
-  items = [0] * 52  # a-z + A-Z
+  items = [False] * 52  # a-z + A-Z
   compartment_length = len(rucksack) // 2
   # First compartment.
   for i in range(0, compartment_length):
-    items[_get_item_pos(rucksack[i])] = 1
+    items[_get_item_pos(rucksack[i])] = True
   # Second compartment.
   for i in range(compartment_length, len(rucksack)):
     item_pos = _get_item_pos(rucksack[i])
-    if items[item_pos] == 1:
+    if items[item_pos]:
       return item_pos + 1  # Item priority.
   raise ValueError('Did not find a repeated item.')
 
