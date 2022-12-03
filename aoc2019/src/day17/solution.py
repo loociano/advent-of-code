@@ -55,10 +55,6 @@ def get_alignment_param_sum(grid: dict, width: int, height: int) -> int:
     return alignment_param_sum
 
 
-def serialize_grid(grid: dict, width: int, height: int):
-    return '\n'.join([''.join(map(chr, [grid[(x, y)] for x in range(0, width)])) for y in range(0, height)])
-
-
 def part_one(filename: str) -> int:
     vm = Intcode(read_intcode(filename))
     grid, width, height = get_grid(vm)
@@ -90,7 +86,4 @@ def part_two(filename: str) -> int:
     program = read_intcode(filename)
     program[0] = 2
     vm = Intcode(program)
-
-    grid, width, height = get_grid(vm)
-    print(serialize_grid(grid, width, height))
     return get_collected_dust(vm)

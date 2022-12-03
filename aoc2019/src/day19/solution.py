@@ -32,10 +32,6 @@ def gen_grid(width: int, height: int) -> list:
     return grid
 
 
-def serialize_grid(grid: list, width: int, height: int):
-    return '\n'.join([''.join([grid[y][x] for x in range(0, width)]) for y in range(0, height)])
-
-
 def is_in_beam(program: list, x: int, y: int):
     vm = Intcode(program)
     vm.set_input(x)
@@ -75,7 +71,6 @@ def part_one(filename: str, width: int, height: int):
     grid = gen_grid(width, height)
     inputs = gen_inputs(0, width, 0, height)
     points = get_area_points(program, grid, inputs)
-    print(serialize_grid(grid, width, height))
     return points
 
 
