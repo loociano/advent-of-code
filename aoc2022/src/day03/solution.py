@@ -14,6 +14,9 @@
 from typing import List, Sequence, Set
 
 
+_ELF_GROUP_SIZE = 3
+
+
 def _get_item_pos(item: str) -> int:
   if 'a' <= item <= 'z':
     return ord(item) - ord('a')
@@ -36,9 +39,11 @@ def _calculate_priorities(rucksack: str) -> int:
   raise ValueError('Did not find a repeated item.')
 
 
-def _find_common_item_priority(sets: List[Set]) -> int:
-  result = sets[0].intersection(sets[1])
-  result = result.intersection(sets[2])
+def _find_common_item_priority(group_items: List[Set]) -> int:
+  if len(group_items) != _ELF_GROUP_SIZE:
+    raise ValueError(f'Wrong group size, was {len(group_items)}.')
+  result = group_items[0].intersection(group_items[1])
+  result = result.intersection(group_items[2])
   return _get_item_pos(list(result).pop()) + 1
 
 
@@ -49,14 +54,13 @@ def sum_priorities_common_types(rucksacks: Sequence[str]) -> int:
 def sum_priorities_by_group(rucksacks: Sequence[str]) -> int:
   priorities = 0
   elf_ordinal = 0
-  group_size = 3
-  sets = [set()] * group_size
+  group_items = [set()] * _ELF_GROUP_SIZE
   for rucksack in rucksacks:
-    if elf_ordinal == group_size:
-      priorities += _find_common_item_priority(sets)
+    if elf_ordinal == _ELF_GROUP_SIZE:
+      priorities += _find_common_item_priority(group_items)
       elf_ordinal = 0
-    sets[elf_ordinal] = set(rucksack)
+    group_items[elf_ordinal] = set(rucksack)
     elf_ordinal += 1
   # Last rucksack.
-  priorities += _find_common_item_priority(sets)
+  priorities += _find_common_item_priority(group_items)
   return priorities
