@@ -13,25 +13,25 @@
 # limitations under the License.
 import unittest
 
-from aoc2022.src.day02.solution import get_score, get_score2
+from aoc2022.src.day03.python.solution import sum_priorities_common_types, sum_priorities_by_group
 from common.python3.AdventOfCodeTestCase import AdventOfCodeTestCase
 
 
-class TestDay02Solution(AdventOfCodeTestCase):
+class TestDay03Solution(AdventOfCodeTestCase):
   def __init__(self, *args, **kwargs):
-    super(TestDay02Solution, self).__init__(__file__, *args, **kwargs)
+    super(TestDay03Solution, self).__init__(__file__, *args, **kwargs)
 
-  def test_part1_withExampleInput_getsScore(self):
-    self.assertEqual(15, get_score(self.examples[0]))
+  def test_part1_withExampleInput_returnsPriorities(self):
+    self.assertEqual(157, sum_priorities_common_types(self.examples[0]))
 
-  def test_part1_withPuzzleInput_getsScore(self):
-    self.assertEqual(11603, get_score(self.input))
+  def test_part1_withPuzzleInput_returnsPriorities(self):
+    self.assertEqual(7746, sum_priorities_common_types(self.input))
 
-  def test_part2_withExampleInput_getsScore(self):
-    self.assertEqual(12, get_score2(self.examples[0]))
+  def test_part2_withExampleInput_returnsPriorities(self):
+    self.assertEqual(70, sum_priorities_by_group(self.examples[0]))
 
-  def test_part2_withPuzzleInput_getsScore(self):
-    self.assertEqual(12725, get_score2(self.input))
+  def test_part2_withExampleInput_returnsPriorities(self):
+    self.assertEqual(2604, sum_priorities_by_group(self.input))
 
 
 if __name__ == '__main__':

@@ -13,25 +13,25 @@
 # limitations under the License.
 import unittest
 
-from aoc2022.src.day03.solution import sum_priorities_common_types, sum_priorities_by_group
+from aoc2022.src.day04.python.solution import count_fully_contained_pairs, count_overlapping_pairs
 from common.python3.AdventOfCodeTestCase import AdventOfCodeTestCase
 
 
-class TestDay03Solution(AdventOfCodeTestCase):
+class TestDay04Solution(AdventOfCodeTestCase):
   def __init__(self, *args, **kwargs):
-    super(TestDay03Solution, self).__init__(__file__, *args, **kwargs)
+    super(TestDay04Solution, self).__init__(__file__, *args, **kwargs)
 
   def test_part1_withExampleInput_returnsPriorities(self):
-    self.assertEqual(157, sum_priorities_common_types(self.examples[0]))
+    self.assertEqual(2, count_fully_contained_pairs(self.examples[0]))
 
   def test_part1_withPuzzleInput_returnsPriorities(self):
-    self.assertEqual(7746, sum_priorities_common_types(self.input))
+    self.assertEqual(509, count_fully_contained_pairs(self.input))
 
   def test_part2_withExampleInput_returnsPriorities(self):
-    self.assertEqual(70, sum_priorities_by_group(self.examples[0]))
+    self.assertEqual(4, count_overlapping_pairs(self.examples[0]))
 
-  def test_part2_withExampleInput_returnsPriorities(self):
-    self.assertEqual(2604, sum_priorities_by_group(self.input))
+  def test_part2_withPuzzleInput_returnsPriorities(self):
+    self.assertEqual(870, count_overlapping_pairs(self.input))
 
 
 if __name__ == '__main__':
