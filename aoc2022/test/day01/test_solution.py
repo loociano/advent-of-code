@@ -13,7 +13,7 @@
 # limitations under the License.
 import unittest
 
-from aoc2022.src.day01.solution import find_max_calories, find_top3_max_calories
+from aoc2022.src.day01.python.solution import find_max_calories, find_top3_max_calories
 from common.python3.AdventOfCodeTestCase import AdventOfCodeTestCase
 
 

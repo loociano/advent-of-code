@@ -1,2 +1,13 @@
 /.idea/
 /venv/
+
+# GBDK2020
+*.lst
+*.o
+*.sym
+*.asm
+*.ihx
+*.map
+
+# Binaries
+*.gb
