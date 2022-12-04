@@ -13,7 +13,7 @@
 # limitations under the License.
 import unittest
 
-from aoc2022.src.day04.solution import count_fully_contained_pairs
+from aoc2022.src.day04.solution import count_fully_contained_pairs, count_overlapping_pairs
 from common.python3.AdventOfCodeTestCase import AdventOfCodeTestCase
 
 
@@ -26,6 +26,12 @@ class TestDay04Solution(AdventOfCodeTestCase):
 
   def test_part1_withPuzzleInput_returnsPriorities(self):
     self.assertEqual(509, count_fully_contained_pairs(self.input))
+
+  def test_part2_withExampleInput_returnsPriorities(self):
+    self.assertEqual(4, count_overlapping_pairs(self.examples[0]))
+
+  def test_part2_withPuzzleInput_returnsPriorities(self):
+    self.assertEqual(870, count_overlapping_pairs(self.input))
 
 
 if __name__ == '__main__':

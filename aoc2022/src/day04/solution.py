@@ -30,6 +30,19 @@ def _is_fully_contained(first: str, second: str) -> bool:
   return begin1 == begin2 and end1 == end2
 
 
+def _overlaps(first: str, second: str) -> bool:
+  begin1, end1 = map(int, first.split('-'))
+  begin2, end2 = map(int, second.split('-'))
+  if end1 < begin2 or begin2 > end1 or end2 < begin1 or begin1 > end2:
+    return False
+  return True
+
+
 def count_fully_contained_pairs(pairs: Sequence[str]) -> int:
   return sum(
     [1 if _is_fully_contained(*pair.split(',')) else 0 for pair in pairs])
+
+
+def count_overlapping_pairs(pairs: Sequence[str]) -> int:
+  return sum(
+    [1 if _overlaps(*pair.split(',')) else 0 for pair in pairs])
