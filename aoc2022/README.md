@@ -6,4 +6,4 @@ My own solutions to [Advent of Code 2022](https://adventofcode.com/2022).
 
 This year I continue to learn Python 3.
 
-* [Day 1: Calorie Counting](https://adventofcode.com/2022/day/1) → [my solution](https://github.com/loociano/advent-of-code/blob/master/aoc2022/src/day01/solution.py)
+* [Day 1: Calorie Counting](https://adventofcode.com/2022/day/1) → [my solution](https://github.com/loociano/advent-of-code/blob/master/aoc2022/src/day01/python/solution.py)
