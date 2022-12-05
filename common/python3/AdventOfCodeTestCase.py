@@ -15,25 +15,36 @@ import os
 import unittest
 
 from os import path
-from typing import Tuple
+from typing import Tuple, Union
 
 
-def _read(file_path: str) -> Tuple[str]:
+def _read(file_path: str, raw: bool = False) -> Union[Tuple[str], str]:
+  """Reads an ASCII file.
+
+  Args
+    file_path: location of the file to read.
+    strip: whether to strip lines or not. True by default.
+  Returns:
+    File content lines.
+  """
   with open(file_path) as file:
+    if raw:
+      return file.read()
     return tuple(x.strip() for x in file.readlines())
 
 
 class AdventOfCodeTestCase(unittest.TestCase):
   EXAMPLE_TEMPLATE = 'example{}.txt'
 
-  def __init__(self, test_dir: str, *args, **kwargs):
+  def __init__(self, test_dir: str, raw: bool = False, *args, **kwargs):
     super(AdventOfCodeTestCase, self).__init__(*args, **kwargs)
     self.test_dir = test_dir
     self.examples = tuple(_read(
-        self._get_path(self.EXAMPLE_TEMPLATE.format(num)))
-        for num in range(1, self._get_num_examples() + 1))
+      file_path=self._get_path(self.EXAMPLE_TEMPLATE.format(num)), raw=raw)
+                          for num in range(1, self._get_num_examples() + 1))
     input_path = self._get_path('input.txt')
-    self.input = _read(input_path) if path.exists(input_path) else None
+    if path.exists(input_path):
+      self.input = _read(file_path=input_path, raw=raw)
 
   def _get_num_examples(self) -> int:
     num = 1
