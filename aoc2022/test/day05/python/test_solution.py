@@ -30,6 +30,14 @@ class TestDay05Solution(AdventOfCodeTestCase):
   def test_part1_withPuzzleInput_returnsMessage(self):
     self.assertEqual('LBLVVTVLP', read_message_at_top(self.input))
 
+  def test_part2_withExampleInput_returnsMessage(self):
+    self.assertEqual('MCD',
+                     read_message_at_top(self.examples[0], keep_order=True))
+
+  def test_part2_withPuzzleInput_returnsMessage(self):
+    self.assertEqual('TPFFBDRJD',
+                     read_message_at_top(self.input, keep_order=True))
+
 
 if __name__ == '__main__':
   unittest.main()
