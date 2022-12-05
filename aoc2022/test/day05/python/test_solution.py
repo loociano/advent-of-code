@@ -21,7 +21,7 @@ class TestDay05Solution(AdventOfCodeTestCase):
   def __init__(self, *args, **kwargs):
     super(TestDay05Solution, self).__init__(
       __file__,
-      True,  # raw.
+      read_raw=True,
       *args, **kwargs)
 
   def test_part1_withExampleInput_returnsMessage(self):
