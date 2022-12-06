@@ -12,11 +12,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# Number of different characters that indicate the position of a marker.
 _MARKER_SIZE = 4
 
 
 def find_marker_position(buffer: str, marker_size: int = _MARKER_SIZE) -> int:
-  seen = [False] * 26  # a-z.
+  seen = [False] * 26  # Input only contains a-z.
   for pos in range(len(buffer)):
     if pos >= marker_size - 1:
       for window_pos in range(pos - marker_size + 1, pos + 1):
