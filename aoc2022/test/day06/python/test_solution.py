@@ -22,7 +22,7 @@ class TestDay06Solution(AdventOfCodeTestCase):
     super(TestDay06Solution, self).__init__(
       __file__, read_raw=True, *args, **kwargs)
 
-  def test_part1_withExampleInput_returnsMessage(self):
+  def test_part1_withExampleInput1_returnsMessage(self):
     self.assertEqual(7, find_marker_position(self.examples[0]))
 
   # TODO: parameterize.
@@ -40,6 +40,25 @@ class TestDay06Solution(AdventOfCodeTestCase):
 
   def test_part1_withPuzzleInput_returnsMessage(self):
     self.assertEqual(1833, find_marker_position(self.input))
+
+  def test_part2_withExampleInput1_returnsMessage(self):
+    self.assertEqual(19, find_marker_position(self.examples[0], marker_size=14))
+
+  # TODO: parameterize.
+  def test_part2_withExampleInput2_returnsMessage(self):
+    self.assertEqual(23, find_marker_position(self.examples[1], marker_size=14))
+
+  def test_part2_withExampleInput3_returnsMessage(self):
+    self.assertEqual(23, find_marker_position(self.examples[2], marker_size=14))
+
+  def test_part2_withExampleInput4_returnsMessage(self):
+    self.assertEqual(29, find_marker_position(self.examples[3], marker_size=14))
+
+  def test_part2_withExampleInput5_returnsMessage(self):
+    self.assertEqual(26, find_marker_position(self.examples[4], marker_size=14))
+
+  def test_part2_withPuzzleInput_returnsMessage(self):
+    self.assertEqual(3425, find_marker_position(self.input, marker_size=14))
 
 
 if __name__ == '__main__':
