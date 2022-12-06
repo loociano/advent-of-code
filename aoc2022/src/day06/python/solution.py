@@ -19,8 +19,8 @@ def find_marker_position(buffer: str, marker_size: int = _MARKER_SIZE) -> int:
   seen = [False] * 26  # a-z.
   for pos in range(len(buffer)):
     if pos >= marker_size - 1:
-      for i in range(pos - marker_size + 1, pos + 1):
-        seen[ord(buffer[i]) - ord('a')] = True
+      for window_pos in range(pos - marker_size + 1, pos + 1):
+        seen[ord(buffer[window_pos]) - ord('a')] = True
       if seen.count(True) == marker_size:
         return pos + 1
       else:
