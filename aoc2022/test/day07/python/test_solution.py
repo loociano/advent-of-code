@@ -13,7 +13,8 @@
 # limitations under the License.
 import unittest
 
-from aoc2022.src.day07.python.solution import sum_directory_sizes
+from aoc2022.src.day07.python.solution import sum_directory_sizes, \
+  smallest_dir_size_to_delete
 from common.python3.AdventOfCodeTestCase import AdventOfCodeTestCase
 
 
@@ -26,6 +27,12 @@ class TestDay07Solution(AdventOfCodeTestCase):
 
   def test_part1_withPuzzleInput_returnsSize(self):
     self.assertEqual(1513699, sum_directory_sizes(self.input))
+
+  def test_part2_withExampleInput_returnsSize(self):
+    self.assertEqual(24933642, smallest_dir_size_to_delete(self.examples[0]))
+
+  def test_part2_withPuzzleInput_returnsSize(self):
+    self.assertEqual(7991939, smallest_dir_size_to_delete(self.input))
 
 
 if __name__ == '__main__':

@@ -14,6 +14,8 @@
 import logging
 from typing import Any, Dict, Sequence, Tuple, Union
 
+_FILESYSTEM_SIZE = 70_000_000
+_REQUIRED_EMPTY_SPACE = 30_000_000
 
 
 class File:
@@ -90,3 +92,13 @@ def sum_directory_sizes(terminal_output: Sequence[str],
   logging.debug(f'{path}: {total_size}')
   return sum([size if size <= max_directory_size else 0 for size in
               dir_sizes.values()])
+
+
+def smallest_dir_size_to_delete(terminal_output: Sequence[str]) -> int:
+  dir_sizes = {}
+  path, total_size = _traverse(root=_parse(terminal_output), path='',
+                               dir_sizes=dir_sizes)
+  unused_space = _FILESYSTEM_SIZE - total_size
+  target_delete_size = _REQUIRED_EMPTY_SPACE - unused_space
+  return min(
+    filter(lambda size: size >= target_delete_size, dir_sizes.values()))
