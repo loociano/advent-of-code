@@ -14,8 +14,8 @@
 from typing import Sequence, Tuple
 
 
-def _reaches_edge(forest: Sequence[Sequence[int]], x: int, y: int,
-                  direction: Tuple[int, int]) -> bool:
+def _is_visible_from_edge(forest: Sequence[Sequence[int]], x: int, y: int,
+                          direction: Tuple[int, int]) -> bool:
   curr_x = x
   curr_y = y
   while 0 < curr_x < len(forest) - 1 and 0 < curr_y < len(forest[0]) - 1:
@@ -30,7 +30,7 @@ def _is_visible(forest: Sequence[Sequence[int]], x: int, y: int) -> bool:
   if x == 0 or y == 0 or x == len(forest) - 1 or y == len(forest[0]) - 1:
     return True  # Edge trees are visible.
   for direction in [(-1, 0), (0, 1), (1, 0), (0, -1)]:
-    if _reaches_edge(forest, x, y, direction):
+    if _is_visible_from_edge(forest, x, y, direction):
       return True
   return False
 
