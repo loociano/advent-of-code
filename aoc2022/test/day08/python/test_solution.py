@@ -13,7 +13,8 @@
 # limitations under the License.
 import unittest
 
-from aoc2022.src.day08.python.solution import count_visible_trees
+from aoc2022.src.day08.python.solution import count_visible_trees, \
+  find_max_scenic_score
 from common.python3.AdventOfCodeTestCase import AdventOfCodeTestCase
 
 
@@ -26,6 +27,12 @@ class TestDay08Solution(AdventOfCodeTestCase):
 
   def test_part1_withPuzzleInput_returnsVisibleTrees(self):
     self.assertEqual(1809, count_visible_trees(self.input))
+
+  def test_part2_withExampleInput_returnsMaxScenicScore(self):
+    self.assertEqual(8, find_max_scenic_score(self.examples[0]))
+
+  def test_part2_withPuzzleInput_returnsMaxScenicScore(self):
+    self.assertEqual(479400, find_max_scenic_score(self.input))
 
 
 if __name__ == '__main__':

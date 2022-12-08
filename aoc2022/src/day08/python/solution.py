@@ -35,6 +35,29 @@ def _is_visible(forest: Sequence[Sequence[int]], x: int, y: int) -> bool:
   return False
 
 
+def _calc_scenic_score_in_dir(forest: Sequence[Sequence[int]], x: int, y: int,
+                              direction: Tuple[int, int]) -> int:
+  curr_x = x
+  curr_y = y
+  count_trees = 0
+  while 0 < curr_x < len(forest) - 1 and 0 < curr_y < len(forest[0]) - 1:
+    count_trees += 1
+    if forest[curr_x + direction[0]][curr_y + direction[1]] >= forest[x][y]:
+      return count_trees
+    curr_x += direction[0]
+    curr_y += direction[1]
+  return count_trees
+
+
+def _calc_scenic_score(forest: Sequence[Sequence[int]], x: int, y: int) -> int:
+  if x == 0 or y == 0 or x == len(forest) - 1 or y == len(forest[0]) - 1:
+    return 0
+  scenic_score = 1
+  for direction in [(-1, 0), (0, 1), (1, 0), (0, -1)]:
+    scenic_score *= _calc_scenic_score_in_dir(forest, x, y, direction)
+  return scenic_score
+
+
 def count_visible_trees(forest_rows: Sequence[str]) -> int:
   forest = [list(map(int, list(row))) for row in forest_rows]
   visible_trees = 0
@@ -42,3 +65,14 @@ def count_visible_trees(forest_rows: Sequence[str]) -> int:
     for y in range(len(forest[x])):
       visible_trees += 1 if _is_visible(forest, x, y) else 0
   return visible_trees
+
+
+def find_max_scenic_score(forest_rows: Sequence[str]) -> int:
+  forest = [list(map(int, list(row))) for row in forest_rows]
+  max_scenic_score = 0
+  for x in range(len(forest)):
+    for y in range(len(forest[x])):
+      scenic_score = _calc_scenic_score(forest, x, y)
+      if scenic_score > max_scenic_score:
+        max_scenic_score = scenic_score
+  return max_scenic_score
