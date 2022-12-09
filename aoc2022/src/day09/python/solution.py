@@ -14,15 +14,17 @@
 from typing import List, Sequence, Tuple
 
 
-def _is_tail_touching_head(head_pos: List[int], tail_pos: List[int]) -> bool:
-  if head_pos[0] == tail_pos[0] and head_pos[1] == tail_pos[1]:
+def _is_touching(prev_knot_pos: List[int], knot_pos: List[int]) -> bool:
+  if prev_knot_pos[0] == knot_pos[0] and prev_knot_pos[1] == knot_pos[1]:
     return True  # Overlap.
-  if head_pos[0] == tail_pos[0] and abs(head_pos[1] - tail_pos[1]) == 1:
+  if prev_knot_pos[0] == knot_pos[0] and abs(
+      prev_knot_pos[1] - knot_pos[1]) == 1:
     return True  # Same column.
-  if head_pos[1] == tail_pos[1] and abs(head_pos[0] - tail_pos[0]) == 1:
+  if prev_knot_pos[1] == knot_pos[1] and abs(
+      prev_knot_pos[0] - knot_pos[0]) == 1:
     return True  # Same row.
-  if (abs(head_pos[0] - tail_pos[0]) == 1 and abs(
-      head_pos[1] - tail_pos[1]) == 1):
+  if (abs(prev_knot_pos[0] - knot_pos[0]) == 1 and abs(
+      prev_knot_pos[1] - knot_pos[1]) == 1):
     return True  # Diagonal
   return False
 
@@ -40,45 +42,49 @@ def _update_head(direction: str, head_pos: List[int]) -> None:
     raise ValueError('Unknown direction %s', direction)
 
 
-def _move_tail(head_pos: List[int], tail_pos: List[int]) -> List[int]:
-  if head_pos[0] == tail_pos[0]:  # Same column?
-    if head_pos[1] > tail_pos[1]:
-      tail_pos[1] += 1
+def _move_knot(prev_knot_pos: List[int], knot_pos: List[int]) -> List[int]:
+  if prev_knot_pos[0] == knot_pos[0]:  # Same column?
+    if prev_knot_pos[1] > knot_pos[1]:
+      knot_pos[1] += 1
     else:
-      tail_pos[1] -= 1
-    return tail_pos
-  elif head_pos[1] == tail_pos[1]:  # Same row?
-    if head_pos[0] > tail_pos[0]:
-      tail_pos[0] += 1
+      knot_pos[1] -= 1
+    return knot_pos
+  elif prev_knot_pos[1] == knot_pos[1]:  # Same row?
+    if prev_knot_pos[0] > knot_pos[0]:
+      knot_pos[0] += 1
     else:
-      tail_pos[0] -= 1
-    return tail_pos
+      knot_pos[0] -= 1
+    return knot_pos
   else:  # Diagonal.
-    right_up = [tail_pos[0] + 1, tail_pos[1] - 1]
-    right_down = [tail_pos[0] + 1, tail_pos[1] + 1]
-    left_up = [tail_pos[0] - 1, tail_pos[1] - 1]
-    left_down = [tail_pos[0] - 1, tail_pos[1] + 1]
-    if _is_tail_touching_head(head_pos, right_up):
+    right_up = [knot_pos[0] + 1, knot_pos[1] - 1]
+    right_down = [knot_pos[0] + 1, knot_pos[1] + 1]
+    left_up = [knot_pos[0] - 1, knot_pos[1] - 1]
+    left_down = [knot_pos[0] - 1, knot_pos[1] + 1]
+    if _is_touching(prev_knot_pos, right_up):
       return right_up
-    elif _is_tail_touching_head(head_pos, right_down):
+    elif _is_touching(prev_knot_pos, right_down):
       return right_down
-    elif _is_tail_touching_head(head_pos, left_up):
+    elif _is_touching(prev_knot_pos, left_up):
       return left_up
-    elif _is_tail_touching_head(head_pos, left_down):
+    elif _is_touching(prev_knot_pos, left_down):
       return left_down
     else:
       raise ValueError('Cannot find tail move to touch head!')
 
 
-def count_tail_visited_positions(motions: Sequence[str]) -> int:
+def count_tail_visited_positions(motions: Sequence[str], knots: int = 2) -> int:
   tail_visited_pos = set()
-  head_pos = [0, 0]
-  tail_pos = [0, 0]
+  positions = [[0, 0] for _ in range(knots)]
   for motion in motions:
     direction, steps = motion.split()
     for _ in range(int(steps)):
-      _update_head(direction, head_pos)
-      if not _is_tail_touching_head(head_pos, tail_pos):
-        tail_pos = _move_tail(head_pos, tail_pos)
-      tail_visited_pos.add(tuple(tail_pos))
+      for count, knot_pos in enumerate(positions):
+        if count == 0:  # Head.
+          _update_head(direction, knot_pos)
+        else:  # Rest of knots.
+          prev_knot_pos = positions[count - 1]
+          if not _is_touching(prev_knot_pos, knot_pos):
+            positions[count] = _move_knot(prev_knot_pos, knot_pos)
+          if count == len(positions) - 1:
+            tail_visited_pos.add(tuple(positions[count]))
   return len(tail_visited_pos)

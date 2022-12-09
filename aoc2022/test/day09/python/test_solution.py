@@ -27,6 +27,17 @@ class TestDay09Solution(AdventOfCodeTestCase):
   def test_part1_withPuzzleInput_returnsVisibleTrees(self):
     self.assertEqual(6175, count_tail_visited_positions(self.input))
 
+  def test_part2_withExampleInput_returnsVisibleTrees(self):
+    self.assertEqual(1,
+                     count_tail_visited_positions(self.examples[0], knots=10))
+
+  def test_part2_withExampleInput2_returnsVisibleTrees(self):
+    self.assertEqual(36,
+                     count_tail_visited_positions(self.examples[1], knots=10))
+
+  def test_part2_withPuzzleInput_returnsVisibleTrees(self):
+    self.assertEqual(2578, count_tail_visited_positions(self.input, knots=10))
+
 
 if __name__ == '__main__':
   unittest.main()
