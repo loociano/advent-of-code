@@ -14,41 +14,6 @@
 from typing import List, Sequence, Tuple
 
 
-def _find_grid_size(motions: Sequence[str]) -> int:
-  x = 0
-  y = 0
-  min_x = 100000000
-  min_y = 100000000
-  max_x = -100000000
-  max_y = -100000000
-  for motion in motions:
-    direction, steps = motion.split()
-    if direction == 'R':
-      x += int(steps)
-    elif direction == 'L':
-      x -= int(steps)
-    elif direction == 'U':
-      y -= int(steps)
-    elif direction == 'D':
-      y += int(steps)
-    else:
-      raise ValueError('Unknown direction [%s]', direction)
-    if x > max_x:
-      max_x = x
-    if x < min_x:
-      min_x = x
-    if y > max_y:
-      max_y = y
-    if y < min_y:
-      min_y = y
-  return max(max_x - min_x + 1, max_y - min_y + 1)
-
-
-def _parse(motion: str) -> Tuple[str, int]:
-  direction, steps = motion.split()
-  return direction, int(steps)
-
-
 def _is_tail_touching_head(head_pos: List[int], tail_pos: List[int]) -> bool:
   if head_pos[0] == tail_pos[0] and head_pos[1] == tail_pos[1]:
     return True  # Overlap.
