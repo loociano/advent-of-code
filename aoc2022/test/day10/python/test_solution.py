@@ -25,7 +25,7 @@ class TestDay10Solution(AdventOfCodeTestCase):
     self.assertEqual(13140, sum_six_signal_strengths(self.examples[0]))
 
   def test_part1_withPuzzleInput_returnsVisibleTrees(self):
-    self.assertEqual(-1, sum_six_signal_strengths(self.input))
+    self.assertEqual(17380, sum_six_signal_strengths(self.input))
 
 
 if __name__ == '__main__':
