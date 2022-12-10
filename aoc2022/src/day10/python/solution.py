@@ -13,40 +13,44 @@
 # limitations under the License.
 from typing import Sequence
 
-_INSTR_CYCLES = {
-  'noop': 1,
-  'addx': 2
-}
 
-_SIGNAL_STRENGTHS = {
-  20: None,
-  60: None,
-  100: None,
-  140: None,
-  180: None,
-  220: None
-}
+class CPU:
+  def __init__(self, instructions: Sequence[str]) -> None:
+    self._instructions = instructions
+    self._register_x = 1
+    self._cycle = 0
+    self._historical_x = {
+      20: None,
+      60: None,
+      100: None,
+      140: None,
+      180: None,
+      220: None
+    }
 
+  def _incr_cycle(self) -> None:
+    self._cycle += 1
+    if self._cycle in self._historical_x:
+      self._historical_x[self._cycle] = self._register_x
 
-def _eval_cycle(cycle: int, register_x: int) -> None:
-  if cycle in _SIGNAL_STRENGTHS:
-    _SIGNAL_STRENGTHS[cycle] = register_x * cycle
+  def run(self) -> None:
+    for instr in self._instructions:
+      if instr == 'noop':
+        self._incr_cycle()
+      elif instr.startswith('addx'):
+        _, amount = instr.split()
+        self._incr_cycle()
+        self._incr_cycle()
+        self._register_x += int(amount)
+      else:
+        raise ValueError('Unknown instruction [%s]', instr)
+
+  def calc_signal_strengths(self) -> int:
+    return sum(
+      [cycle * register_x for cycle, register_x in self._historical_x.items()])
 
 
 def sum_six_signal_strengths(instructions: Sequence[str]) -> int:
-  cycle = 0
-  register_x = 1
-  for instr in instructions:
-    if instr == 'noop':
-      cycle += 1
-      _eval_cycle(cycle, register_x)
-    elif instr.startswith('addx'):
-      _, amount = instr.split()
-      cycle += 1
-      _eval_cycle(cycle, register_x)
-      cycle += 1
-      _eval_cycle(cycle, register_x)
-      register_x += int(amount)
-    else:
-      raise ValueError('Unknown instruction [%s]', instr)
-  return sum([strength for strength in _SIGNAL_STRENGTHS.values()])
+  cpu = CPU(instructions)
+  cpu.run()
+  return cpu.calc_signal_strengths()
