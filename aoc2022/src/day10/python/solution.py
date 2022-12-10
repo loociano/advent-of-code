@@ -13,6 +13,9 @@
 # limitations under the License.
 from typing import Sequence
 
+_SCREEN_WIDTH = 40
+_SCREEN_HEIGHT = 6
+
 
 class CPU:
   def __init__(self, instructions: Sequence[str]) -> None:
@@ -27,11 +30,25 @@ class CPU:
       180: None,
       220: None
     }
+    self._screen = []
+    for _ in range(0, _SCREEN_HEIGHT):
+      self._screen.append([''] * _SCREEN_WIDTH)
+    self._screen_y_pos = -1
 
   def _incr_cycle(self) -> None:
     self._cycle += 1
     if self._cycle in self._historical_x:
       self._historical_x[self._cycle] = self._register_x
+    # Draw screen pixel.
+    if (self._cycle - 1) % _SCREEN_WIDTH == 0:
+      self._screen_y_pos += 1
+    screen_x_pos = (self._cycle - 1) % _SCREEN_WIDTH
+    pixel_has_sprite = (
+        screen_x_pos == self._register_x - 1
+        or screen_x_pos == self._register_x
+        or screen_x_pos == self._register_x + 1)
+    self._screen[self._screen_y_pos][
+      screen_x_pos] = '#' if pixel_has_sprite else '.'
 
   def run(self) -> None:
     for instr in self._instructions:
@@ -45,6 +62,10 @@ class CPU:
       else:
         raise ValueError('Unknown instruction [%s]', instr)
 
+  def get_screen(self) -> str:
+    return '\n'.join(
+      [''.join(self._screen[line]) for line in range(len(self._screen))])
+
   def calc_signal_strengths(self) -> int:
     return sum(
       [cycle * register_x for cycle, register_x in self._historical_x.items()])
@@ -54,3 +75,9 @@ def sum_six_signal_strengths(instructions: Sequence[str]) -> int:
   cpu = CPU(instructions)
   cpu.run()
   return cpu.calc_signal_strengths()
+
+
+def show_screen(instructions: Sequence[str]) -> str:
+  cpu = CPU(instructions)
+  cpu.run()
+  return cpu.get_screen()

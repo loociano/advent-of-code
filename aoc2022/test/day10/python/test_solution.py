@@ -12,8 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 import unittest
+from textwrap import dedent
 
-from aoc2022.src.day10.python.solution import sum_six_signal_strengths
+from aoc2022.src.day10.python.solution import sum_six_signal_strengths, show_screen
 from common.python3.AdventOfCodeTestCase import AdventOfCodeTestCase
 
 
@@ -21,11 +22,32 @@ class TestDay10Solution(AdventOfCodeTestCase):
   def __init__(self, *args, **kwargs):
     super(TestDay10Solution, self).__init__(__file__, *args, **kwargs)
 
-  def test_part1_withExampleInput_returnsVisibleTrees(self):
+  def test_part1_withExampleInput_returnsSumSignalStrengths(self):
     self.assertEqual(13140, sum_six_signal_strengths(self.examples[0]))
 
-  def test_part1_withPuzzleInput_returnsVisibleTrees(self):
+  def test_part1_withPuzzleInput_returnsSumSignalStrengths(self):
     self.assertEqual(17380, sum_six_signal_strengths(self.input))
+
+  def test_part1_withExampleInput_showsScreen(self):
+    expected = dedent("""\
+    ##..##..##..##..##..##..##..##..##..##..
+    ###...###...###...###...###...###...###.
+    ####....####....####....####....####....
+    #####.....#####.....#####.....#####.....
+    ######......######......######......####
+    #######.......#######.......#######.....""")
+    self.assertEqual(expected, show_screen(self.examples[0]))
+
+  def test_part1_withPuzzleInput_showsScreen(self):
+    # FGCUZREC
+    expected = dedent("""\
+    ####..##...##..#..#.####.###..####..##..
+    #....#..#.#..#.#..#....#.#..#.#....#..#.
+    ###..#....#....#..#...#..#..#.###..#....
+    #....#.##.#....#..#..#...###..#....#....
+    #....#..#.#..#.#..#.#....#.#..#....#..#.
+    #.....###..##...##..####.#..#.####..##..""")
+    self.assertEqual(expected, show_screen(self.input))
 
 
 if __name__ == '__main__':
