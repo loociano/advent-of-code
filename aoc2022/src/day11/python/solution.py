@@ -12,11 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 import re
-from typing import Any, Callable, List, Sequence, Tuple
-from dataclasses import dataclass
+from typing import List, Sequence, Tuple
 
 
-@dataclass
 class Monkey:
   """A Monkey:
 
@@ -24,23 +22,15 @@ class Monkey:
   operation: an operation to apply to items.
   test: boolean check whose outcome determines which monkey to pass to.
   """
-  items: List[int] = None
-  operation: Callable[[Any, int], int] = None
-  inspected_count: int = 0
-  sum_amount: int = 0
-  product_amount: int = 1
-  divisor: int = 0
-  true_monkey: int = -1
-  false_monkey: int = -1
 
-  def operation_sum(self, old: int):
-    return old + self.sum_amount
-
-  def operation_product(self, old: int):
-    return old * self.product_amount
-
-  def operation_power(self, old: int):
-    return old * old
+  def __init__(self, items: List[int], operation_body: str, divisor: int,
+               true_monkey: int, false_monkey: int):
+    self.items = items
+    self.operation = lambda old: eval(operation_body)
+    self.inspected_count = 0
+    self.divisor = divisor
+    self.true_monkey = true_monkey
+    self.false_monkey = false_monkey
 
   def test(self, item: int):
     return self.true_monkey if item % self.divisor == 0 else self.false_monkey
@@ -48,37 +38,27 @@ class Monkey:
 
 def _parse(monkey_notes: Sequence[str]) -> List[Monkey]:
   monkeys = []
-  curr_monkey = None
   i = 0
   while i < len(monkey_notes):
     note = monkey_notes[i]
-    if note.startswith('Monkey '):
-      curr_monkey = Monkey()
-      monkeys.append(curr_monkey)
-    elif note.lstrip().startswith('Starting items: '):
-      curr_monkey.items = list(
+    if note.lstrip().startswith('Starting items: '):
+      items = list(
         map(int, note.lstrip()[len('Starting items: '):].split(', ')))
     elif note.lstrip().startswith('Operation: '):
-      matches = re.search(
-        r'Operation: new = (.*) ([+*]) (.*)', note.lstrip())
-      if matches.group(2) == '+':
-        curr_monkey.sum_amount = int(matches.group(3))
-        curr_monkey.operation = Monkey.operation_sum
-      else:
-        if matches.group(3) == 'old':
-          curr_monkey.operation = Monkey.operation_power
-        else:
-          curr_monkey.product_amount = int(matches.group(3))
-          curr_monkey.operation = Monkey.operation_product
+      operation_body = note.lstrip()[len('Operation: new = '):]
     elif note.lstrip().startswith('Test: divisible by '):
-      curr_monkey.divisor = int(
+      divisor = int(
         re.search(r'Test: divisible by (\d+)', note.lstrip()).group(1))
-      curr_monkey.true_monkey = int(
+      true_monkey = int(
         re.search(r'If true: throw to monkey (\d+)',
                   monkey_notes[i + 1].lstrip()).group(1))
-      curr_monkey.false_monkey = int(
+      false_monkey = int(
         re.search(r'If false: throw to monkey (\d+)',
                   monkey_notes[i + 2].lstrip()).group(1))
+      curr_monkey = Monkey(items=items, operation_body=operation_body,
+                           divisor=divisor, true_monkey=true_monkey,
+                           false_monkey=false_monkey)
+      monkeys.append(curr_monkey)
       i += 2  # Skip already parsed lines.
     i += 1  # Next line.
   return monkeys
@@ -90,7 +70,7 @@ def _simulate(monkeys: List[Monkey], rounds: int) -> None:
       while len(monkey.items) > 0:
         monkey.inspected_count += 1
         item = monkey.items.pop(0)
-        updated_item = monkey.operation(monkey, item)
+        updated_item = monkey.operation(item)
         updated_item //= 3  # Relief
         to_monkey = monkey.test(updated_item)
         monkeys[to_monkey].items.append(updated_item)
