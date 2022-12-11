@@ -48,39 +48,39 @@ class Monkey:
 
 def _parse(monkey_notes: Sequence[str]) -> List[Monkey]:
   monkeys = []
-  curr_monkey = -1
+  curr_monkey = None
   i = 0
   while i < len(monkey_notes):
     note = monkey_notes[i]
     if note.startswith('Monkey '):
-      monkeys.append(Monkey())
-      curr_monkey += 1
+      curr_monkey = Monkey()
+      monkeys.append(curr_monkey)
     elif note.lstrip().startswith('Starting items: '):
-      monkeys[curr_monkey].items = list(
+      curr_monkey.items = list(
         map(int, note.lstrip()[len('Starting items: '):].split(', ')))
     elif note.lstrip().startswith('Operation: '):
       matches = re.search(
         r'Operation: new = (.*) ([+*]) (.*)', note.lstrip())
       if matches.group(2) == '+':
-        monkeys[curr_monkey].sum_amount = int(matches.group(3))
-        monkeys[curr_monkey].operation = Monkey.operation_sum
+        curr_monkey.sum_amount = int(matches.group(3))
+        curr_monkey.operation = Monkey.operation_sum
       else:
         if matches.group(3) == 'old':
-          monkeys[curr_monkey].operation = Monkey.operation_power
+          curr_monkey.operation = Monkey.operation_power
         else:
-          monkeys[curr_monkey].product_amount = int(matches.group(3))
-          monkeys[curr_monkey].operation = Monkey.operation_product
+          curr_monkey.product_amount = int(matches.group(3))
+          curr_monkey.operation = Monkey.operation_product
     elif note.lstrip().startswith('Test: divisible by '):
-      monkeys[curr_monkey].divisor = int(
+      curr_monkey.divisor = int(
         re.search(r'Test: divisible by (\d+)', note.lstrip()).group(1))
-      monkeys[curr_monkey].true_monkey = int(
+      curr_monkey.true_monkey = int(
         re.search(r'If true: throw to monkey (\d+)',
                   monkey_notes[i + 1].lstrip()).group(1))
-      monkeys[curr_monkey].false_monkey = int(
+      curr_monkey.false_monkey = int(
         re.search(r'If false: throw to monkey (\d+)',
                   monkey_notes[i + 2].lstrip()).group(1))
-      i += 2
-    i += 1
+      i += 2  # Skip already parsed lines.
+    i += 1  # Next line.
   return monkeys
 
 
