@@ -90,7 +90,8 @@ def _simulate(monkeys: List[Monkey], rounds: int) -> None:
       while len(monkey.items) > 0:
         monkey.inspected_count += 1
         item = monkey.items.pop(0)
-        updated_item = monkey.operation(monkey, item) // 3
+        updated_item = monkey.operation(monkey, item)
+        updated_item //= 3  # Relief
         to_monkey = monkey.test(updated_item)
         monkeys[to_monkey].items.append(updated_item)
 
