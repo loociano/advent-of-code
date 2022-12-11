@@ -96,20 +96,9 @@ def _simulate(monkeys: List[Monkey], rounds: int) -> None:
         monkeys[to_monkey].items.append(updated_item)
 
 
-def _find_top2_inspection_times(monkeys: List[Monkey]) -> Tuple[int, int]:
-  top1 = 0
-  top2 = 0
-  for monkey in monkeys:
-    if monkey.inspected_count > top1:
-      top2 = top1
-      top1 = monkey.inspected_count
-    elif monkey.inspected_count > top2:
-      top2 = monkey.inspected_count
-  return top1, top2
-
-
 def calc_monkey_business(monkey_notes: Sequence[str], rounds: int = 20) -> int:
   monkeys = _parse(monkey_notes)
   _simulate(monkeys, rounds)
-  times1, times2 = _find_top2_inspection_times(monkeys)
-  return times1 * times2
+  inspected_counts = sorted((monkey.inspected_count for monkey in monkeys),
+                            reverse=True)
+  return inspected_counts[0] * inspected_counts[1]
