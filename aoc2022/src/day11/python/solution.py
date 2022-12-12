@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 import re
-from typing import List, Sequence, Tuple
+from typing import List, Optional, Sequence
 
 
 class Monkey:
@@ -64,21 +64,37 @@ def _parse(monkey_notes: Sequence[str]) -> List[Monkey]:
   return monkeys
 
 
-def _simulate(monkeys: List[Monkey], rounds: int) -> None:
+def _simulate(monkeys: List[Monkey], rounds: int,
+              reducer: Optional[int]) -> None:
   for _ in range(0, rounds):
     for monkey in monkeys:
       while len(monkey.items) > 0:
         monkey.inspected_count += 1
+        # Process item.
         item = monkey.items.pop(0)
         updated_item = monkey.operation(item)
-        updated_item //= 3  # Relief
+        if reducer == 3:
+          updated_item //= 3
+        else:
+          updated_item %= reducer
         to_monkey = monkey.test(updated_item)
+        # Throw item.
         monkeys[to_monkey].items.append(updated_item)
 
 
-def calc_monkey_business(monkey_notes: Sequence[str], rounds: int = 20) -> int:
+def _product(numbers: Sequence[int]) -> int:
+  result = 1
+  for num in numbers:
+    result *= num
+  return result
+
+
+def calc_monkey_business(monkey_notes: Sequence[str], rounds: int = 20,
+                         reducer: Optional[int] = None) -> int:
   monkeys = _parse(monkey_notes)
-  _simulate(monkeys, rounds)
+  if reducer is None:
+    reducer = _product([monkey.divisor for monkey in monkeys])
+  _simulate(monkeys, rounds, reducer)
   inspected_counts = sorted((monkey.inspected_count for monkey in monkeys),
                             reverse=True)
   return inspected_counts[0] * inspected_counts[1]

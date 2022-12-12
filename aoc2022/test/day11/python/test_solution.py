@@ -22,10 +22,20 @@ class TestDay11Solution(AdventOfCodeTestCase):
     super(TestDay11Solution, self).__init__(__file__, *args, **kwargs)
 
   def test_part1_withExampleInput_returnsMonkeyBusiness(self):
-    self.assertEqual(10605, calc_monkey_business(self.examples[0]))
+    self.assertEqual(10605, calc_monkey_business(self.examples[0], reducer=3))
 
   def test_part1_withPuzzleInput_returnsMonkeyBusiness(self):
-    self.assertEqual(57838, calc_monkey_business(self.input))
+    self.assertEqual(57838, calc_monkey_business(self.input, reducer=3))
+
+  def test_part2_withExampleInput_returnsMonkeyBusiness(self):
+    self.assertEqual(2713310158,
+                     calc_monkey_business(monkey_notes=self.examples[0],
+                                          rounds=10000))
+
+  def test_part2_withPuzzleInput_returnsMonkeyBusiness(self):
+    self.assertEqual(15050382231,
+                     calc_monkey_business(monkey_notes=self.input,
+                                          rounds=10000))
 
 
 if __name__ == '__main__':
