@@ -12,11 +12,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 from collections import defaultdict, deque
-from typing import Dict, List, Tuple
+from typing import Dict, List, Tuple, TypeAlias
+
+Coord: TypeAlias = Tuple[int, int]
+Graph: TypeAlias = Dict[Coord, List[Coord]]
 
 
-def _build_graph(grid: Tuple[Tuple[str]]):
+def _build_graph(grid: Tuple[Tuple[str]]) -> Tuple[Graph, Coord, Coord]:
   graph = defaultdict(list)
+  start = None
+  end = None
   for row in range(len(grid)):
     for col in range(len(grid[0])):
       point = (row, col)
@@ -53,8 +58,7 @@ def _build_graph(grid: Tuple[Tuple[str]]):
   return graph, start, end
 
 
-def _bfs(graph: Dict[Tuple[int, int], List[Tuple[int, int]]],
-         start: Tuple[int, int], end: Tuple[int, int]) -> int:
+def _bfs(graph: Graph, start: Coord, end: Coord) -> int:
   shortest_path_seen = {start: 0}
   queue = deque()
   queue.append((start, 0))
