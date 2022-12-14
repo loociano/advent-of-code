@@ -18,7 +18,7 @@ Coord: TypeAlias = Tuple[int, int]
 Graph: TypeAlias = Dict[Coord, List[Coord]]
 
 
-def _build_graph(grid: Tuple[Tuple[str]]) -> Tuple[Graph, Coord, Coord]:
+def _build_graph(grid: Tuple[Tuple[str, ...]]) -> Tuple[Graph, Coord, Coord]:
   graph = defaultdict(list)
   start = None
   end = None
@@ -73,10 +73,28 @@ def _bfs(graph: Graph, start: Coord, end: Coord) -> int:
         shortest_path_seen[neighbour] = current_steps
         if neighbour != end:
           queue.append((neighbour, current_steps))
+  if shortest_path_seen.get(end) is None:
+    # Top cannot be reached from every point.
+    return 100_000_000
   return shortest_path_seen[end]
 
 
-def min_steps_to_top(heightmap: Tuple[Tuple[str, ...]]) -> int:
+def _find_coords(grid: Tuple[Tuple[str, ...]],
+                 search: str = 'a') -> List[Coord]:
+  result = []
+  for row in range(len(grid)):
+    for col in range(len(grid[0])):
+      if grid[row][col] == search:
+        result.append((row, col))
+  return result
+
+
+def min_steps_to_top(heightmap: Tuple[Tuple[str, ...]],
+                     start_char: str = 'S') -> int:
   grid = tuple([tuple(list(line)) for line in heightmap])
   graph, start, end = _build_graph(grid)
+  if start_char != 'S':
+    starting_coords = _find_coords(grid=grid, search=start_char) + [start]
+    return min([_bfs(graph=graph, start=start_coord, end=end)
+                for start_coord in starting_coords])
   return _bfs(graph=graph, start=start, end=end)

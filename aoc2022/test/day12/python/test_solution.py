@@ -27,6 +27,12 @@ class TestDay12Solution(AdventOfCodeTestCase):
   def test_part1_withPuzzleInput_returnsMinSteps(self):
     self.assertEqual(462, min_steps_to_top(self.input))
 
+  def test_part2_withExampleInput_returnsMinSteps(self):
+    self.assertEqual(29, min_steps_to_top(self.examples[0], start_char='a'))
+
+  def test_part2_withPuzzleInput_returnsMinSteps(self):
+    self.assertEqual(451, min_steps_to_top(self.input, start_char='a'))
+
 
 if __name__ == '__main__':
   unittest.main()
