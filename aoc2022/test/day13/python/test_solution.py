@@ -14,7 +14,7 @@
 import unittest
 
 from aoc2022.src.day13.python.solution import is_correct_order, \
-  sum_indices_correct_order
+  sum_indices_correct_order, calc_decoder_key
 from common.python3.AdventOfCodeTestCase import AdventOfCodeTestCase
 
 
@@ -60,6 +60,12 @@ class TestDay13Solution(AdventOfCodeTestCase):
 
   def test_part1_withPuzzleInput_detectsCorrectPairs(self):
     self.assertEqual(6428, sum_indices_correct_order(self.input))
+
+  def test_part2_withExampleInput_findsDecoderKey(self):
+    self.assertEqual(140, calc_decoder_key(self.examples[0]))
+
+  def test_part2_withPuzzleInput_findsDecoderKey(self):
+    self.assertEqual(22464, calc_decoder_key(self.input))
 
 
 if __name__ == '__main__':
