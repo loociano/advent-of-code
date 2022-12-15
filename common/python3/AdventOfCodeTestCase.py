@@ -15,10 +15,9 @@ import os
 import unittest
 
 from os import path
-from typing import Tuple, Union
 
 
-def _read(file_path: str, read_raw: bool = False) -> Union[Tuple[str], str]:
+def _read(file_path: str, read_raw: bool = False) -> tuple[str, ...] | str:
   """Reads an ASCII file.
 
   Args
@@ -36,7 +35,7 @@ def _read(file_path: str, read_raw: bool = False) -> Union[Tuple[str], str]:
 class AdventOfCodeTestCase(unittest.TestCase):
   EXAMPLE_TEMPLATE = 'example{}.txt'
 
-  def __init__(self, test_dir: str, *args, **kwargs):
+  def __init__(self, test_dir: str, *args, **kwargs) -> None:
     """Initializes AoC Test Case, reading example(s) and puzzle input.
 
     Args:
