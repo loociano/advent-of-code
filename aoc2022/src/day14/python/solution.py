@@ -30,7 +30,11 @@ def _calc_min_max(rock_paths: Sequence[str]) -> tuple[Range, Range]:
 
 
 def _paint_paths(rock_paths: Sequence[str],
-                 grid: list[list[str, ...]], min_x: int) -> None:
+                 grid: list[list[str, ...]], min_x: int,
+                 infinite_floor: bool) -> None:
+  if infinite_floor:
+    for i in range(len(grid[0])):
+      grid[len(grid) - 1][i] = '#'  # Rock.
   for rock_path in rock_paths:
     last_x = None
     last_y = None
@@ -56,6 +60,9 @@ def _drop_sand_unit(grid: list[list[str]], min_x: int,
                     start_x: int) -> bool:
   target_x = start_x
   target_y = None
+  if grid[0][target_x - min_x] == 'o':
+    # Full, cannot add more sand.
+    return False
   for i in range(len(grid)):
     if target_x - min_x - 1 < 0 or target_x - min_x + 1 >= len(grid[0]):
       # Reached abysm!
@@ -76,13 +83,19 @@ def _drop_sand_unit(grid: list[list[str]], min_x: int,
   return True
 
 
-def _build_grid(rock_paths: Sequence[str]) -> tuple[list[list[str]], int]:
+def _build_grid(rock_paths: Sequence[str],
+                infinite_floor: bool) -> tuple[list[list[str]], int]:
   x_range, y_range = _calc_min_max(rock_paths)
+  if infinite_floor:
+    new_height = y_range[1] + 2
+    y_range = (y_range[0], new_height)  # Two extra levels
+    x_range = (x_range[0] - new_height, x_range[1] + + new_height)
   width = x_range[1] - x_range[0] + 1
   grid = []
   for _ in range(y_range[1] + 1):
     grid.append(['.'] * width)
-  _paint_paths(rock_paths=rock_paths, grid=grid, min_x=x_range[0])
+  _paint_paths(rock_paths=rock_paths, grid=grid, min_x=x_range[0],
+               infinite_floor=infinite_floor)
   return grid, x_range[0]
 
 
@@ -90,10 +103,12 @@ def _count_sand_units(grid: list[list[str]]) -> int:
   return sum([line.count('o') for line in grid])
 
 
-def count_resting_sand_units(rock_paths: Sequence[str]) -> int:
+def count_resting_sand_units(rock_paths: Sequence[str],
+                             infinite_floor: bool = False) -> int:
   rested = True
-  grid, min_x = _build_grid(rock_paths)
-  # Drop units of sand until one does not rest (reaches abysm).
+  grid, min_x = _build_grid(rock_paths=rock_paths,
+                            infinite_floor=infinite_floor)
+  # Drop units of sand until no more can rest.
   while rested:
     rested = _drop_sand_unit(grid=grid, min_x=min_x, start_x=500)
   return _count_sand_units(grid)

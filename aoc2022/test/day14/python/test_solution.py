@@ -27,6 +27,14 @@ class TestDay14Solution(AdventOfCodeTestCase):
   def test_simulateSandFall_withPuzzleExample_correctCount(self):
     self.assertEqual(843, count_resting_sand_units(self.input))
 
+  def test_simulateSandFall_withExampleAndInfiniteFloor_correctCount(self):
+    self.assertEqual(93, count_resting_sand_units(self.examples[0],
+                                                  infinite_floor=True))
+
+  def test_simulateSandFall_withPuzzleInputAndInfiniteFloor_correctCount(self):
+    self.assertEqual(27625, count_resting_sand_units(self.input,
+                                                  infinite_floor=True))
+
 
 if __name__ == '__main__':
   unittest.main()
