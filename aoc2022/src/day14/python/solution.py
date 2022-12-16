@@ -96,5 +96,4 @@ def count_resting_sand_units(rock_paths: Sequence[str]) -> int:
   # Drop units of sand until one does not rest (reaches abysm).
   while rested:
     rested = _drop_sand_unit(grid=grid, min_x=min_x, start_x=500)
-    print(_count_sand_units(grid))
   return _count_sand_units(grid)
