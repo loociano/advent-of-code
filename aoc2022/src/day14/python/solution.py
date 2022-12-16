@@ -11,10 +11,20 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-from typing import Sequence, TypeAlias
+from enum import Enum, unique
 from collections import deque
+from typing import Sequence, TypeAlias
+
+
+@unique
+class Material(Enum):
+  EMPTY = '.'
+  ROCK = '#'
+  SAND = 'o'
+
 
 Range: TypeAlias = tuple[int, int]
+Grid: TypeAlias = list[list[Material, ...]]
 
 
 def _calc_min_max(rock_paths: Sequence[str]) -> tuple[Range, Range]:
@@ -29,12 +39,11 @@ def _calc_min_max(rock_paths: Sequence[str]) -> tuple[Range, Range]:
   return (width[0], width[1]), (height[0], height[1])
 
 
-def _paint_paths(rock_paths: Sequence[str],
-                 grid: list[list[str, ...]], min_x: int,
+def _paint_paths(rock_paths: Sequence[str], grid: Grid, min_x: int,
                  infinite_floor: bool) -> None:
   if infinite_floor:
     for i in range(len(grid[0])):
-      grid[len(grid) - 1][i] = '#'  # Rock.
+      grid[len(grid) - 1][i] = Material.ROCK
   for rock_path in rock_paths:
     last_x = None
     last_y = None
@@ -48,19 +57,18 @@ def _paint_paths(rock_paths: Sequence[str],
       # Paint.
       range_x = range(last_x, x + 1) if x >= last_x else range(x, last_x + 1)
       for i in range_x:
-        grid[last_y][i - min_x] = '#'  # Rock.
+        grid[last_y][i - min_x] = Material.ROCK
       range_y = range(last_y, y + 1) if y >= last_y else range(y, last_y + 1)
       for i in range_y:
-        grid[i][last_x - min_x] = '#'  # Rock.
+        grid[i][last_x - min_x] = Material.ROCK
       last_x = x
       last_y = y
 
 
-def _drop_sand_unit(grid: list[list[str]], min_x: int,
-                    start_x: int) -> bool:
+def _drop_sand_unit(grid: Grid, min_x: int, start_x: int) -> bool:
   target_x = start_x
   target_y = None
-  if grid[0][target_x - min_x] == 'o':
+  if grid[0][target_x - min_x] == Material.SAND:
     # Full, cannot add more sand.
     return False
   for i in range(len(grid)):
@@ -68,23 +76,23 @@ def _drop_sand_unit(grid: list[list[str]], min_x: int,
       # Reached abysm!
       return False
     else:
-      if i > 0 and grid[i][target_x - min_x] != '.':
+      if i > 0 and grid[i][target_x - min_x] != Material.EMPTY:
         # Found a blocker at i.
-        if grid[i][target_x - min_x - 1] == '.':  # Try left
+        if grid[i][target_x - min_x - 1] == Material.EMPTY:  # Try left
           target_x -= 1
-        elif grid[i][target_x - min_x + 1] == '.':  # Try right
+        elif grid[i][target_x - min_x + 1] == Material.EMPTY:  # Try right
           target_x += 1
         else:
           target_y = i - 1
           break
   if target_y is None:
     return False
-  grid[target_y][target_x - min_x] = 'o'  # Rest at target.
+  grid[target_y][target_x - min_x] = Material.SAND  # Rest at target.
   return True
 
 
 def _build_grid(rock_paths: Sequence[str],
-                infinite_floor: bool) -> tuple[list[list[str]], int]:
+                infinite_floor: bool) -> tuple[Grid, int]:
   x_range, y_range = _calc_min_max(rock_paths)
   if infinite_floor:
     new_height = y_range[1] + 2
@@ -93,14 +101,14 @@ def _build_grid(rock_paths: Sequence[str],
   width = x_range[1] - x_range[0] + 1
   grid = []
   for _ in range(y_range[1] + 1):
-    grid.append(['.'] * width)
+    grid.append([Material.EMPTY] * width)
   _paint_paths(rock_paths=rock_paths, grid=grid, min_x=x_range[0],
                infinite_floor=infinite_floor)
   return grid, x_range[0]
 
 
-def _count_sand_units(grid: list[list[str]]) -> int:
-  return sum([line.count('o') for line in grid])
+def _count_sand_units(grid: Grid) -> int:
+  return sum([line.count(Material.SAND) for line in grid])
 
 
 def count_resting_sand_units(rock_paths: Sequence[str],
