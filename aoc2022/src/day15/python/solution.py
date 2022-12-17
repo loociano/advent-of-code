@@ -43,15 +43,6 @@ class Sensor:
         positions.add(position)
     return positions
 
-  def is_within_beacon(self, position: Position) -> bool:
-    return position in self.positions_at_row
-
-  def min_x(self) -> int:
-    return self._sensor_pos[0] - self._distance
-
-  def max_x(self) -> int:
-    return self._sensor_pos[0] + self._distance
-
 
 def _parse_sensors_data(sensors_data: Sequence[str], row: int) -> tuple[Sensor]:
   sensors: list[Sensor] = []
