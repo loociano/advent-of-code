@@ -13,7 +13,8 @@
 # limitations under the License.
 import unittest
 
-from aoc2022.src.day15.python.solution import get_manhattan_distance, count_not_beacon_positions
+from aoc2022.src.day15.python.solution import get_manhattan_distance, \
+  count_not_beacon_positions, find_tuning_frequency
 from common.python3.AdventOfCodeTestCase import AdventOfCodeTestCase
 
 
@@ -22,13 +23,20 @@ class TestDay15Solution(AdventOfCodeTestCase):
     super(TestDay15Solution, self).__init__(__file__, *args, **kwargs)
 
   def test_manhattanDistance_success(self):
-    self.assertEqual(7, get_manhattan_distance(position_a=(2, 18), position_b=(-2, 15)))
-    self.assertEqual(1, get_manhattan_distance(position_a=(9, 16), position_b=(10, 16)))
-    self.assertEqual(3, get_manhattan_distance(position_a=(13, 2), position_b=(15, 3)))
-    self.assertEqual(4, get_manhattan_distance(position_a=(12, 14), position_b=(10, 16)))
-    self.assertEqual(4, get_manhattan_distance(position_a=(10, 20), position_b=(10, 16)))
-    self.assertEqual(5, get_manhattan_distance(position_a=(14, 17), position_b=(10, 16)))
-    self.assertEqual(9, get_manhattan_distance(position_a=(8, 7), position_b=(2, 10)))
+    self.assertEqual(7, get_manhattan_distance(position_a=(2, 18),
+                                               position_b=(-2, 15)))
+    self.assertEqual(1, get_manhattan_distance(position_a=(9, 16),
+                                               position_b=(10, 16)))
+    self.assertEqual(3, get_manhattan_distance(position_a=(13, 2),
+                                               position_b=(15, 3)))
+    self.assertEqual(4, get_manhattan_distance(position_a=(12, 14),
+                                               position_b=(10, 16)))
+    self.assertEqual(4, get_manhattan_distance(position_a=(10, 20),
+                                               position_b=(10, 16)))
+    self.assertEqual(5, get_manhattan_distance(position_a=(14, 17),
+                                               position_b=(10, 16)))
+    self.assertEqual(9, get_manhattan_distance(position_a=(8, 7),
+                                               position_b=(2, 10)))
     # Also...
     # Sensor at x=2, y=0: closest beacon is at x=2, y=10
     # Sensor at x=0, y=11: closest beacon is at x=2, y=10
@@ -42,7 +50,17 @@ class TestDay15Solution(AdventOfCodeTestCase):
     self.assertEqual(26, count_not_beacon_positions(self.examples[0], row=10))
 
   def test_part2_withPuzzleInput_correctCount(self):
-    self.assertEqual(5112034, count_not_beacon_positions(self.input, row=2000000))
+    self.assertEqual(5112034,
+                     count_not_beacon_positions(self.input, row=2000000))
+
+  def test_part2_withExample_success(self):
+    self.assertEqual(56000011, find_tuning_frequency(self.examples[0],
+                                                     known_range=(0, 20)))
+
+  def test_part2_withPuzzleInput_success(self):
+    self.assertEqual(13172087230812,
+                     find_tuning_frequency(self.input,
+                                           known_range=(0, 4000000)))
 
 
 if __name__ == '__main__':

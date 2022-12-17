@@ -23,15 +23,15 @@ def get_manhattan_distance(position_a: Position, position_b: Position) -> int:
 
 
 class Sensor:
-  def __init__(self, x: int, y: int, bx: int, by: int, row: int):
+  def __init__(self, x: int, y: int, bx: int, by: int):
     self._sensor_pos = (x, y)
     self._closest_beacon_pos = (bx, by)
     self._distance = get_manhattan_distance(position_a=self._sensor_pos,
                                             position_b=self._closest_beacon_pos)
-    self.intervals_at_row: tuple[Interval, ...] = self._calc_intervals_at_row(
-      row=row)
+    # Will be calculated later.
+    self.intervals_at_row: Optional[tuple[Interval, ...]] = None
 
-  def _calc_intervals_at_row(self, row: int) -> Optional[tuple[Interval, ...]]:
+  def calc_intervals_at_row(self, row: int) -> Optional[tuple[Interval, ...]]:
     if (row < self._sensor_pos[1] - self._distance
         or row > self._sensor_pos[1] + self._distance):
       return None
@@ -62,19 +62,23 @@ class Sensor:
       )
 
 
-def _parse_sensors_data(sensors_data: Sequence[str], row: int) -> tuple[Sensor]:
+def _parse_sensors_data(sensors_data: Sequence[str],
+                        ) -> tuple[tuple[Sensor, ...], set[Position]]:
   sensors: list[Sensor] = []
+  beacon_positions = set()
   for sensor_data in sensors_data:
     matches = re.search(
       r'Sensor at x=(-?\d+), y=(-?\d+): closest beacon is at x=(-?\d+), y=(-?\d+)',
       sensor_data)
+    bx = int(matches.group(3))
+    by = int(matches.group(4))
     sensors.append(Sensor(
       x=int(matches.group(1)),
       y=int(matches.group(2)),
-      bx=int(matches.group(3)),
-      by=int(matches.group(4)),
-      row=row))
-  return tuple(sensors)
+      bx=bx,
+      by=by))
+    beacon_positions.add((bx, by))
+  return tuple(sensors), beacon_positions
 
 
 def _merge_intervals(intervals: tuple[Interval, ...]) -> tuple[Interval, ...]:
@@ -85,9 +89,9 @@ def _merge_intervals(intervals: tuple[Interval, ...]) -> tuple[Interval, ...]:
     else:
       merged.append([begin, end])
   copy = []
-  for i in merged:
-    copy.append(tuple(i))
-  return tuple(merged)
+  for interval in merged:
+    copy.append((interval[0], interval[1]))
+  return tuple(copy)
 
 
 def _count_positions(intervals: tuple[Interval, ...]) -> int:
@@ -97,13 +101,32 @@ def _count_positions(intervals: tuple[Interval, ...]) -> int:
   return count
 
 
-def count_not_beacon_positions(sensors_data: Sequence[str], row: int) -> int:
-  sensors: tuple[Sensor] = _parse_sensors_data(sensors_data, row)
-  print('Parsed all!')
+def _calc_merged_intervals_at_row(
+    sensors: tuple[Sensor, ...]) -> tuple[Interval, ...]:
   intervals = []
   for sensor in sensors:
     if sensor.intervals_at_row is not None:
       for interval_at_row in sensor.intervals_at_row:
         intervals.append(interval_at_row)
-  merged_intervals = _merge_intervals(tuple(intervals))
-  return _count_positions(merged_intervals)
+  return _merge_intervals(tuple(intervals))
+
+
+def count_not_beacon_positions(sensors_data: Sequence[str], row: int) -> int:
+  sensors, _ = _parse_sensors_data(sensors_data)
+  for sensor in sensors:
+    sensor.intervals_at_row = sensor.calc_intervals_at_row(row)
+  return _count_positions(_calc_merged_intervals_at_row(sensors))
+
+
+def find_tuning_frequency(sensors_data: Sequence[str],
+                          known_range: Interval) -> int:
+  sensors, beacon_positions = _parse_sensors_data(sensors_data)
+  for row in range(known_range[0], known_range[1] + 1):
+    for sensor in sensors:
+      sensor.intervals_at_row = sensor.calc_intervals_at_row(row)
+    merged = _calc_merged_intervals_at_row(sensors)
+    if len(merged) > 1:
+      x = merged[0][1] + 1
+      if (x, row) not in beacon_positions:
+        return 4000000 * x + row
+  raise ValueError('Did not find frequency!')
