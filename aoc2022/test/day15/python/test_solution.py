@@ -38,10 +38,10 @@ class TestDay15Solution(AdventOfCodeTestCase):
     # Sensor at x=14, y=3: closest beacon is at x=15, y=3
     # Sensor at x=20, y=1: closest beacon is at x=15, y=3
 
-  def test_simulateSandFall_withExample_correctCount(self):
+  def test_part1_withExample_correctCount(self):
     self.assertEqual(26, count_not_beacon_positions(self.examples[0], row=10))
 
-  def test_simulateSandFall_withPuzzleInput_correctCount(self):
+  def test_part2_withPuzzleInput_correctCount(self):
     self.assertEqual(5112034, count_not_beacon_positions(self.input, row=2000000))
 
 
