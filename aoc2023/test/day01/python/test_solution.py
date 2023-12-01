@@ -27,6 +27,15 @@ class TestDay01Solution(AdventOfCodeTestCase):
   def test_part1_withInput_sumsCalibrationValues(self):
     self.assertEqual(53334, sum_calibration_values(self.input))
 
+  def test_part2_withExampleInput_sumsCalibrationValues(self):
+    self.assertEqual(281,
+                     sum_calibration_values(self.examples[1],
+                                            read_spelled=True))
+
+  def test_part2_withInput_sumsCalibrationValues(self):
+    self.assertEqual(52834,
+                     sum_calibration_values(self.input, read_spelled=True))
+
 
 if __name__ == '__main__':
   unittest.main()
