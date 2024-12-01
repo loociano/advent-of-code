@@ -14,10 +14,10 @@
 from collections import defaultdict
 from typing import Sequence
 
-type LocationIds = Sequence[int]
+type _LocationIds = Sequence[int]
 
-def _parse_input(input: Sequence[str]) -> tuple[LocationIds, LocationIds]:
-  """Converts puzzle input into 2 lists of location IDs.
+def _parse_input(input: Sequence[str]) -> tuple[_LocationIds, _LocationIds]:
+  """Converts puzzle input into 2 sequences of location IDs.
 
   n = len(input)
   Time complexity: O(n)
@@ -52,8 +52,8 @@ def calculate_distance(input: Sequence[str]) -> int:
   location_ids1.sort()  # t:O(nlogn)
   location_ids2.sort()  # t:O(nlogn)
   return sum(
-    abs(location_ids1[i] - location_ids2[i])
-    for i in range(0, len(location_ids1)))  # t:O(n)
+    abs(id1 - id2)
+    for id1, id2 in zip(location_ids1, location_ids2))  # t:O(n)
 
 def calculate_similarity_score(input: Sequence[str]) -> int:
   """
