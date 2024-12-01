@@ -29,7 +29,7 @@ def _parse_input(input: Sequence[str]) -> tuple[_LocationIds, _LocationIds]:
   # Parse input:
   for line in input:  # t:O(n)
     # Line format is: '<int>\s\s\s<int>'
-    id1, id2 = map(int, line.split('   ')) # Assumes valid input.
+    id1, id2 = map(int, line.split())
     location_ids1.append(id1)
     location_ids2.append(id2)
   return location_ids1, location_ids2
