@@ -12,9 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 from collections import Counter
-from typing import Sequence
+from typing import Sequence, TypeAlias
 
-type _LocationIds = Sequence[int]
+_LocationIds: TypeAlias = Sequence[int]
 
 def _parse_input(input: Sequence[str]) -> tuple[_LocationIds, _LocationIds]:
   """Converts puzzle input into 2 sequences of location IDs.
