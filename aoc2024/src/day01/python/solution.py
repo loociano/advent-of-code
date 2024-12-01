@@ -11,7 +11,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-from collections import defaultdict
+from collections import Counter
 from typing import Sequence
 
 type _LocationIds = Sequence[int]
@@ -68,9 +68,6 @@ def calculate_similarity_score(input: Sequence[str]) -> int:
     Total distance.
   """
   location_ids1, location_ids2 = _parse_input(input)  # t:O(n)
-  histogram = defaultdict(int)
-  # Generate histogram:
-  for id in location_ids2:  # t:O(n)
-    histogram[id] += 1
+  counter = Counter(location_ids2)
   # Calculate similarity score:
-  return sum(id * histogram.get(id, 0) for id in location_ids1)  # t:O(n)
+  return sum(id * counter.get(id, 0) for id in location_ids1)  # t:O(n)
