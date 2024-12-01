@@ -32,7 +32,7 @@ def _parse_input(input: Sequence[str]) -> tuple[_LocationIds, _LocationIds]:
     id1, id2 = map(int, line.split())
     location_ids1.append(id1)
     location_ids2.append(id2)
-  return location_ids1, location_ids2
+  return tuple(location_ids1), tuple(location_ids2)
 
 def calculate_distance(input: Sequence[str]) -> int:
   """
@@ -49,11 +49,10 @@ def calculate_distance(input: Sequence[str]) -> int:
   """
   location_ids1, location_ids2 = _parse_input(input)  # O(n)
   # Calculate total distance:
-  location_ids1.sort()  # t:O(nlogn)
-  location_ids2.sort()  # t:O(nlogn)
+  sorted_ids1, sorted_ids2 = sorted(location_ids1), sorted(location_ids2)  # t: O(2nlogn)
   return sum(
     abs(id1 - id2)
-    for id1, id2 in zip(location_ids1, location_ids2))  # t:O(n)
+    for id1, id2 in zip(sorted_ids1, sorted_ids2))  # t:O(n)
 
 def calculate_similarity_score(input: Sequence[str]) -> int:
   """
