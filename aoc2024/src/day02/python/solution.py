@@ -19,8 +19,9 @@ type Report = tuple[int, ...]
 def _parse_input(input: Sequence[str]) -> Sequence[Report]:
     """Converts puzzle input into a sequence of reports.
 
-    Time complexity: O(kn) where n=reports, k=levels in reports
-    Space complexity: O(n)
+    n=len(input), k=len(report)
+    Time complexity: O(kn)
+    Space complexity: O(kn)
     """
     return tuple(tuple(int(level) for level in line.split()) for line in input)
 
@@ -49,18 +50,33 @@ def _are_adj_diff_safe(report: Report, safety_range = (1, 3)) -> bool:
         last = curr
     return True
 
-def _is_safe(report: Report) -> bool:
+def _could_be_safe(report: Report) -> bool:
+    """Returns true if a report could be safe by removing one level."""
+    for i in range(len(report)):
+        # Drop element and test report safety.
+        test_report = report[:i] + report[i+1:]
+        if _is_inc_or_dec(test_report) and _are_adj_diff_safe(test_report):
+            return True
+    return False
+
+
+def _is_safe(report: Report, tolerate_bad_level) -> bool:
     """Returns true if a report is safe.
 
     A report is safe the two conditions are true:
     a) The levels are either all increasing or all decreasing.
     b) Any two adjacent levels differ by at least one and at most three.
-
-    Time complexity: O(2n) = O(n)
-    Space complexity: O(1)
     """
-    return _is_inc_or_dec(report) and _are_adj_diff_safe(report)
+    is_safe = _is_inc_or_dec(report) and _are_adj_diff_safe(report)
+    if not is_safe and tolerate_bad_level:
+        return _could_be_safe(report)
+    return is_safe
 
-def num_safe_reports(input: Sequence[str]) -> int:
-    """Returns the number of safe reports."""
-    return sum(_is_safe(report) for report in _parse_input(input))
+def num_safe_reports(input: Sequence[str], tolerate_bad_level=False) -> int:
+    """Returns the number of safe reports.
+
+    n=len(input), k=len(report)
+    Time complexity: O(3k^2n) = O(k^2n)
+    Space complexity: O(n+k)
+    """
+    return sum(_is_safe(report, tolerate_bad_level) for report in _parse_input(input))

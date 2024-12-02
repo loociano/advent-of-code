@@ -27,6 +27,12 @@ class TestDay01Solution(AdventOfCodeTestCase):
   def test_part1_withPuzzleInput_getsNumSafeReports(self):
     self.assertEqual(299, num_safe_reports(self.input))
 
+  def test_part2_withExample_getsNumSafeReports(self):
+    self.assertEqual(4, num_safe_reports(self.examples[0], tolerate_bad_level=True))
+
+  def test_part2_withPuzzleInput_getsNumSafeReports(self):
+    self.assertEqual(364, num_safe_reports(self.input, tolerate_bad_level=True))
+
 
 if __name__ == '__main__':
   unittest.main()
