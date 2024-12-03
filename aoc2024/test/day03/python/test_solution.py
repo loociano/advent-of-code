@@ -13,7 +13,7 @@
 # limitations under the License.
 import unittest
 
-from aoc2024.src.day03.python.solution import calculate
+from aoc2024.src.day03.python.solution import calculate, calculate2
 from common.python3.AdventOfCodeTestCase import AdventOfCodeTestCase
 
 
@@ -27,6 +27,15 @@ class TestDay03Solution(AdventOfCodeTestCase):
 
   def test_part1_withPuzzleInput_calculates(self):
     self.assertEqual(170807108, calculate(self.input))
+
+  def test_part2_withExample_calculates(self):
+    self.assertEqual(48, calculate2(self.examples[1]))
+
+  def test_part2_withCraftedExample_calculates(self):
+    self.assertEqual(50, calculate2(self.examples[2]))
+
+  def test_part2_withPuzzleInput_calculates(self):
+    self.assertEqual(74838033, calculate2(self.input))
 
 
 if __name__ == '__main__':
