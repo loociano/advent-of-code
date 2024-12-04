@@ -65,10 +65,10 @@ def count_xmas_words(input: Sequence[str]) -> int:
 def count_xmas_shapes(input: Sequence[str]) -> int:
   """Counts occurrences of the X-MAS shape in a grid.
 
-  There are 4 possible X-MAS shapes:
-  M S  S S  M M  S M
-   A    A    A    A
-  M S  M M  S S  S M
+  An X-MAS shape consists two 'MAS' crossing words that looks like this:
+  M S
+   A
+  M S
 
   Time complexity: O(nm)
   Space complexity: O(1)
@@ -80,6 +80,10 @@ def count_xmas_shapes(input: Sequence[str]) -> int:
     for x in range(width):
       # X-MAS shape must fit within bounds.
       if 0 < y < height - 1 and 0 < x < width - 1 and input[y][x] == 'A':
+        # There are 4 possible X-MAS shapes:
+        # M S  S S  M M  S M
+        #  A    A    A    A
+        # M S  M M  S S  S M
         found_shape = (((input[y - 1][x - 1] == 'M' and input[y + 1][x + 1] == 'S')
                         or (input[y - 1][x - 1] == 'S' and input[y + 1][x + 1] == 'M'))
                        and ((input[y + 1][x - 1] == 'M' and input[y - 1][x + 1] == 'S')
