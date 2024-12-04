@@ -42,8 +42,8 @@ def _get_round_score(score_table: Sequence[Sequence[int]],
                      move_score: Dict[str, int], opponent: str,
                      you: str) -> int:
   return (
-      score_table[ord(opponent) - ord('A')][ord(you) - ord('X')]
-      + move_score[you]
+          score_table[ord(opponent) - ord('A')][ord(you) - ord('X')]
+          + move_score[you]
   )
 
 

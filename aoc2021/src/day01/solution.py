@@ -15,37 +15,37 @@ from typing import Sequence
 
 
 def part_one(depth_report: Sequence[int]) -> int:
-    """AOC 2021 Day 1 Part 1.
+  """AOC 2021 Day 1 Part 1.
 
-    Args:
-      depth_report: A sonar sweep report which consist of depth measurements.
-    Returns:
-      Number of times a depth measurement increases.
-    """
-    count_depth_increases = 0
-    last_depth = None
-    for depth in depth_report:
-        count_depth_increases += 1 if (last_depth and depth > last_depth) else 0
-        last_depth = depth
-    return count_depth_increases
+  Args:
+    depth_report: A sonar sweep report which consist of depth measurements.
+  Returns:
+    Number of times a depth measurement increases.
+  """
+  count_depth_increases = 0
+  last_depth = None
+  for depth in depth_report:
+    count_depth_increases += 1 if (last_depth and depth > last_depth) else 0
+    last_depth = depth
+  return count_depth_increases
 
 
 def part_two(depths: Sequence[int]) -> int:
-    """AOC 2021 Day 1 Part 2.
+  """AOC 2021 Day 1 Part 2.
 
-    Args:
-      depths: A sonar sweep report which consist of depth measurements.
-    Returns:
-      Number of times a depth measurement increases in sums of a
-      three-measurement sliding window.
-    """
-    count_depth_increases = 0
-    last_window_sum = None
-    for pos, depth in enumerate(depths):
-        if pos == 0 or pos == len(depths) - 1:
-            continue  # Sliding window is out of bounds.
-        window_sum = depths[pos - 1] + depths[pos] + depths[pos + 1]
-        if last_window_sum and window_sum > last_window_sum:
-            count_depth_increases += 1
-        last_window_sum = window_sum
-    return count_depth_increases
+  Args:
+    depths: A sonar sweep report which consist of depth measurements.
+  Returns:
+    Number of times a depth measurement increases in sums of a
+    three-measurement sliding window.
+  """
+  count_depth_increases = 0
+  last_window_sum = None
+  for pos, depth in enumerate(depths):
+    if pos == 0 or pos == len(depths) - 1:
+      continue  # Sliding window is out of bounds.
+    window_sum = depths[pos - 1] + depths[pos] + depths[pos + 1]
+    if last_window_sum and window_sum > last_window_sum:
+      count_depth_increases += 1
+    last_window_sum = window_sum
+  return count_depth_increases
