@@ -53,7 +53,7 @@ def count_xmas_words(input: Sequence[str]) -> int:
   The word XMAS may appear horizontally, vertically and diagonally.
   It may appear reversed SMAX too.
 
-  Time complexity: O(n*nm) + O(m+n) = O(n^2m)
+  Time complexity: O(nm) + O(2(m+n)) = O(nm)
   Space complexity: O(n+m)
   """
   lines = _extract_all_lines(input)
