@@ -13,7 +13,7 @@
 # limitations under the License.
 import unittest
 
-from aoc2024.src.day04.python.solution import count_xmas_words
+from aoc2024.src.day04.python.solution import count_xmas_words, count_xmas_shapes
 from common.python3.AdventOfCodeTestCase import AdventOfCodeTestCase
 
 
@@ -29,6 +29,15 @@ class TestDay04Solution(AdventOfCodeTestCase):
 
   def test_part1_withPuzzleInput_counts(self):
     self.assertEqual(2603, count_xmas_words(self.input))
+
+  def test_part2_withExample_counts(self):
+    self.assertEqual(1, count_xmas_shapes(self.examples[2]))
+
+  def test_part2_withExample2_counts(self):
+    self.assertEqual(9, count_xmas_shapes(self.examples[3]))
+
+  def test_part2_withPuzzleInput_counts(self):
+    self.assertEqual(1965, count_xmas_shapes(self.input))
 
 
 if __name__ == '__main__':
