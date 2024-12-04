@@ -16,6 +16,7 @@ from typing import Sequence
 
 def _extract_all_lines(input: Sequence[str]) -> Sequence[str]:
   """Breaks down the input grid into lines to facilitate word search.
+
   Time complexity: O(n) + O(nm) + O(2m*n) + O(2m*n) = O(nm)
   Space complexity: O(n) + O(m) + O(m+n) + O(m+n) = O(3m+3n) = O(m+n)
   """
@@ -50,6 +51,7 @@ def _extract_all_lines(input: Sequence[str]) -> Sequence[str]:
 
 def count_xmas_words(input: Sequence[str]) -> int:
   """Counts occurrences of the word XMAS in a grid.
+
   The word XMAS may appear horizontally, vertically and diagonally.
   It may appear reversed SMAX too.
 
@@ -62,6 +64,7 @@ def count_xmas_words(input: Sequence[str]) -> int:
 
 def count_xmas_shapes(input: Sequence[str]) -> int:
   """Counts occurrences of the X-MAS shape in a grid.
+
   There are 4 possible X-MAS shapes:
   M S  S S  M M  S M
    A    A    A    A
