@@ -16,6 +16,7 @@ from typing import Sequence, TypeAlias
 
 _LocationIds: TypeAlias = Sequence[int]
 
+
 def _parse_input(input: Sequence[str]) -> tuple[_LocationIds, _LocationIds]:
   """Converts puzzle input into 2 sequences of location IDs.
 
@@ -33,6 +34,7 @@ def _parse_input(input: Sequence[str]) -> tuple[_LocationIds, _LocationIds]:
     location_ids1.append(id1)
     location_ids2.append(id2)
   return tuple(location_ids1), tuple(location_ids2)
+
 
 def calculate_distance(input: Sequence[str]) -> int:
   """
@@ -53,6 +55,7 @@ def calculate_distance(input: Sequence[str]) -> int:
   return sum(
     abs(id1 - id2)
     for id1, id2 in zip(sorted_ids1, sorted_ids2))  # t:O(n)
+
 
 def calculate_similarity_score(input: Sequence[str]) -> int:
   """
