@@ -13,9 +13,10 @@
 # limitations under the License.
 from collections import defaultdict
 from typing import Sequence
+from functools import cmp_to_key
 
 # Tracks pages to downstream pages.
-type RuleGraph = defaultdict[int, set]
+type RuleGraph = dict[int, set]
 
 
 def _generate_graph(order_rules: Sequence[str]) -> RuleGraph:
@@ -41,11 +42,30 @@ def _is_valid(graph: RuleGraph, update: Sequence[int]) -> bool:
   return _is_valid(graph, update[1:])
 
 
-def sum_middle_pages(input: Sequence[str]) -> int:
+def _fix_update(graph: RuleGraph, incorrect_update: list[int]) -> Sequence[int]:
+  def cmp(a: int, b: int) -> int:
+    if b in graph[a]:
+      return -1
+    if a in graph[b]:
+      return 1
+    return 0
+
+  return sorted(incorrect_update, key=cmp_to_key(cmp))
+
+
+def sum_middle_pages(input: Sequence[str], from_correct_updates: bool = True) -> int:
   """Sums the middle page of all the valid updates."""
   breakline_num = list(input).index('')
   graph = _generate_graph(input[:breakline_num])
   updates = (list(map(int, input[i].split(',')))
              for i in range(breakline_num + 1, len(input)))
-  return sum(update[len(update) // 2] if _is_valid(graph, update) else 0
-             for update in updates)
+  result = 0
+  for update in updates:
+    if _is_valid(graph, update):
+      if from_correct_updates:
+        result += update[len(update) // 2]
+    else:
+      fixed_update = _fix_update(graph, update)
+      if not from_correct_updates:
+        result += fixed_update[len(fixed_update) // 2]
+  return result

@@ -27,6 +27,13 @@ class TestDay05Solution(AdventOfCodeTestCase):
   def test_part1_withPuzzleInput_sums(self):
     self.assertEqual(7024, sum_middle_pages(self.input))
 
+  def test_part2_withExample_sums(self):
+    self.assertEqual(123, sum_middle_pages(self.examples[0], from_correct_updates=False))
+
+  def test_part2_withPuzzleInput_sums(self):
+    # 4515 too high
+    self.assertEqual(4151, sum_middle_pages(self.input, from_correct_updates=False))
+
 
 if __name__ == '__main__':
   unittest.main()
