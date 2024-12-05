@@ -59,13 +59,11 @@ def sum_middle_pages(input: Sequence[str], from_correct_updates: bool = True) ->
   graph = _generate_graph(input[:breakline_num])
   updates = (list(map(int, input[i].split(',')))
              for i in range(breakline_num + 1, len(input)))
+  if from_correct_updates:
+    return sum(update[len(update) // 2] if _is_valid(graph, update) else 0 for update in updates)
   result = 0
   for update in updates:
-    if _is_valid(graph, update):
-      if from_correct_updates:
-        result += update[len(update) // 2]
-    else:
+    if not _is_valid(graph, update):
       fixed_update = _fix_update(graph, update)
-      if not from_correct_updates:
-        result += fixed_update[len(fixed_update) // 2]
+      result += fixed_update[len(fixed_update) // 2]
   return result
