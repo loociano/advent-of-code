@@ -43,7 +43,10 @@ def _is_valid(graph: RuleGraph, update: Sequence[int]) -> bool:
 
 
 def _fix_update(graph: RuleGraph, incorrect_update: list[int]) -> Sequence[int]:
+  """Fixes an incorrectly ordered update as per dependency graph."""
+
   def cmp(a: int, b: int) -> int:
+    """Compares two pages. If B depends on A then A goes before B."""
     if b in graph[a]:
       return -1
     if a in graph[b]:
@@ -54,7 +57,10 @@ def _fix_update(graph: RuleGraph, incorrect_update: list[int]) -> Sequence[int]:
 
 
 def sum_middle_pages(input: Sequence[str], from_correct_updates: bool = True) -> int:
-  """Sums the middle page of all the valid updates."""
+  """Sums the middle page of:
+  - If from_correct_updates=True, the valid updates.
+  - If from_correct_updates=False, from the fixed incorrectly ordered updates.
+  """
   breakline_num = list(input).index('')
   graph = _generate_graph(input[:breakline_num])
   updates = (list(map(int, input[i].split(',')))
