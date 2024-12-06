@@ -13,7 +13,7 @@
 # limitations under the License.
 import unittest
 
-from aoc2024.src.day06.python.solution import count_distinct_positions
+from aoc2024.src.day06.python.solution import count_distinct_positions, count_positions_with_loop
 from common.python3.AdventOfCodeTestCase import AdventOfCodeTestCase
 
 
@@ -26,6 +26,12 @@ class TestDay06Solution(AdventOfCodeTestCase):
 
   def test_part1_withPuzzleInput_counts(self):
     self.assertEqual(5564, count_distinct_positions(self.input))
+
+  def test_part2_withExample_countsPositionsWithLoop(self):
+    self.assertEqual(6, count_positions_with_loop(self.examples[0]))
+
+  def test_part2_withPuzzleInput_countsPositionsWithLoop(self):
+    self.assertEqual(1976, count_positions_with_loop(self.input))
 
 
 if __name__ == '__main__':
