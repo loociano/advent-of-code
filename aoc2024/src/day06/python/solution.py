@@ -58,14 +58,14 @@ class World:
   def is_stuck_in_loop(self) -> bool:
     """Returns true if the guard moves in an infinite loop."""
     while True:
-      state = (self._guard_pos, self._guard_dir)
-      if state in self._path:
+      before_moving_state = (self._guard_pos, self._guard_dir)
+      if before_moving_state in self._path:
         return True  # Guard is looping
       moved = self.move()
       if moved:
-        self._path.add(state)
-      if not moved:  # Guard exited the map.
-        return False
+        self._path.add(before_moving_state)
+      else:
+        return False  # Guard exited the map.
 
   def _find_guard_pos(self) -> Position:
     """Finds the starting guard position in the map."""
