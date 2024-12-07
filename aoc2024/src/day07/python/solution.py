@@ -25,7 +25,7 @@ def _could_be_true(equation_data: str, operators: tuple[str, ...]) -> int | None
     operands_queue = list(map(int, operands))
     operators_queue = list(combination)
     computation = operands_queue.pop(0)
-    while len(operands_queue) and computation < result:
+    while len(operands_queue):
       next_operand = operands_queue.pop(0)
       next_operator = operators_queue.pop(0)
       # Cannot use eval() because it follows math precedence rules.
@@ -35,6 +35,8 @@ def _could_be_true(equation_data: str, operators: tuple[str, ...]) -> int | None
         computation *= next_operand
       if next_operator == '||':
         computation = int(str(computation) + str(next_operand))
+      if computation > result:
+        break  # All operands increase computation so we can leave early.
     if computation == result:
       return result
   return None
