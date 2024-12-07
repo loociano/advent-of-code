@@ -11,8 +11,14 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-from typing import Sequence
+from typing import Callable, Sequence
 from itertools import product
+
+_OPERATORS: dict[str, Callable] = {
+  '+': lambda a, b: a + b,
+  '*': lambda a, b: a * b,
+  '||': lambda a, b: int(str(a) + str(b))
+}
 
 
 def _could_be_true(equation_data: str, operators: tuple[str, ...]) -> int | None:
@@ -26,15 +32,8 @@ def _could_be_true(equation_data: str, operators: tuple[str, ...]) -> int | None
     operators_queue = list(combination)
     computation = operands_queue.pop(0)
     while len(operands_queue):
-      next_operand = operands_queue.pop(0)
-      next_operator = operators_queue.pop(0)
       # Cannot use eval() because it follows math precedence rules.
-      if next_operator == '+':
-        computation += next_operand
-      if next_operator == '*':
-        computation *= next_operand
-      if next_operator == '||':
-        computation = int(str(computation) + str(next_operand))
+      computation = _OPERATORS.get(operators_queue.pop(0))(computation, operands_queue.pop(0))
       if computation > result:
         break  # All operands increase computation so we can leave early.
     if computation == result:
@@ -42,7 +41,11 @@ def _could_be_true(equation_data: str, operators: tuple[str, ...]) -> int | None
   return None
 
 
-def calc_calibration(equations: Sequence[str], operators: tuple[str, ...] = ('+', '*')) -> int:
+def calc_calibration(
+        equations: Sequence[str],
+        operators: tuple[str, ...] = ('+', '*')) -> int:
+  """Returns the total calibration result, which is the sum of the equations that
+  can be made true with some combination of operators."""
   total_calibration = 0
   for equation_data in equations:
     result = _could_be_true(equation_data, operators)
