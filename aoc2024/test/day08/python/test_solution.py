@@ -27,6 +27,12 @@ class TestDay08Solution(AdventOfCodeTestCase):
   def test_part1_withPuzzleInput_counts(self):
     self.assertEqual(327, count_antinodes(self.input))
 
+  def test_part2_withExample_counts(self):
+    self.assertEqual(34, count_antinodes(self.examples[0], any_grid_position=True))
+
+  def test_part2_withPuzzleInput_counts(self):
+    self.assertEqual(1233, count_antinodes(self.input, any_grid_position=True))
+
 
 if __name__ == '__main__':
   unittest.main()
