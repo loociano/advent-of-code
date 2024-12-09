@@ -42,8 +42,7 @@ class AdventOfCodeTestCase(unittest.TestCase):
       test_dir: directory where test are located.
       *args: arguments
       **kwargs: keyword arguments.
-        - read_raw: whether to read examples and puzzle input as is or line by
-        line.
+        - read_raw: reads the input as a str otherwise line by line as Sequence[str].
     """
     if 'read_raw' in kwargs:
       read_raw = kwargs['read_raw']
