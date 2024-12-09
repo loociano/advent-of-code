@@ -30,6 +30,18 @@ class TestDay09Solution(AdventOfCodeTestCase):
   def test_part1_withPuzzleInput_checksums(self):
     self.assertEqual(6448989155953, checksum(self.input))
 
+  def test_part2_withExample_checksums(self):
+    self.assertEqual(132, checksum('12345', move_whole_files=True))
+
+  def test_part2_withExample2_checksums(self):
+    self.assertEqual(2858, checksum('2333133121414131402', move_whole_files=True))
+
+  def test_part2_withPuzzleInput_checksums(self):
+    # 2829791 too low.
+    # 12337449353604 too high.
+    # 6476727100241 too high.
+    self.assertEqual(999, checksum(self.input, move_whole_files=True))
+
 
 if __name__ == '__main__':
   unittest.main()
