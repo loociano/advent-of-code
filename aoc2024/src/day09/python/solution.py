@@ -78,12 +78,13 @@ def _defrag_whole_files(disk_map: str, disk: list[str]) -> list[str]:
     try:
       file_start_index = disk.index(str(file_id))
       free_space_index = _find_first_available_space(disk, file_start_index, file_size)
-      # Clear from previous location.
-      for i in range(file_start_index, file_start_index + file_size):
-        disk[i] = _EMPTY_SPACE
-      # Move to empty space.
-      for i in range(free_space_index, free_space_index + file_size):
-        disk[i] = str(file_id)
+      if free_space_index < file_start_index:
+        # Clear from previous location.
+        for i in range(file_start_index, file_start_index + file_size):
+          disk[i] = _EMPTY_SPACE
+        # Move to empty space.
+        for i in range(free_space_index, free_space_index + file_size):
+          disk[i] = str(file_id)
     except SpaceNotFoundError:
       # Skip file IDs with size zero.
       # Only attempt to move file once.
@@ -102,8 +103,7 @@ def _checksum(disk: list[str], move_whole_files) -> int:
   if move_whole_files:
     # Need to scan the whole disk.
     # There can be empty space between files.
-    return sum(index * int(file_id) if file_id != _EMPTY_SPACE else 0
-               for index, file_id in enumerate(disk))
+    return sum(i * int(val) for i, val in enumerate(disk) if val.isdigit())
   else:
     for index, value in enumerate(disk):
       # Disk is organized so we can stop here. No need to scan whole disk.
