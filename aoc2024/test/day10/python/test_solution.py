@@ -14,7 +14,7 @@
 import unittest
 
 from common.python3.AdventOfCodeTestCase import AdventOfCodeTestCase
-from aoc2024.src.day10.python.solution import get_score_sum
+from aoc2024.src.day10.python.solution import get_score_sum, get_rating_sum
 
 
 class TestDay09Solution(AdventOfCodeTestCase):
@@ -35,6 +35,21 @@ class TestDay09Solution(AdventOfCodeTestCase):
 
   def test_part1_withPuzzleInput_getsScore(self):
     self.assertEqual(825, get_score_sum(self.input))
+
+  def test_part2_withExample_getsRating(self):
+    self.assertEqual(3, get_rating_sum(self.examples[4]))
+
+  def test_part2_withExample2_getsRating(self):
+    self.assertEqual(13, get_rating_sum(self.examples[5]))
+
+  def test_part2_withExample3_getsRating(self):
+    self.assertEqual(227, get_rating_sum(self.examples[6]))
+
+  def test_part2_withExample4_getsRating(self):
+    self.assertEqual(81, get_rating_sum(self.examples[7]))
+
+  def test_part2_withPuzzleInput_getsRating(self):
+    self.assertEqual(1805, get_rating_sum(self.input))
 
 
 if __name__ == '__main__':
