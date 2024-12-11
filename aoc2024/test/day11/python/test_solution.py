@@ -39,10 +39,10 @@ class TestDay09Solution(AdventOfCodeTestCase):
         initial_state='1 24596 0 740994 60 803 8918 9405859',
         blinks=25))
 
-  # def test_part2_withPuzzleInput_counts(self):
-  #   self.assertEqual(203457, count_stones(
-  #       initial_state='1 24596 0 740994 60 803 8918 9405859',
-  #       blinks=75))
+  def test_part2_withPuzzleInput_counts(self):
+    self.assertEqual(241394363462435, count_stones(
+        initial_state='1 24596 0 740994 60 803 8918 9405859',
+        blinks=75))
 
 
 if __name__ == '__main__':

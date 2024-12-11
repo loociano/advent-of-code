@@ -11,78 +11,39 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-from collections import defaultdict
-
-
-class _BinaryTree:
-  def __init__(self, value: int, parent=None, left=None, right=None):
-    self.value: int = value
-    self.parent: _BinaryTree | None = parent
-    self.left: _BinaryTree | None = left
-    self.right: _BinaryTree | None = right
+from functools import cache
 
 
 def _has_even_num_digits(number: int) -> bool:
+  """Returns true if an integer has an even number of digits.
+  Examples: 1234 is True and 123 is False."""
   return len(str(number)) % 2 == 0
-
-
-def _parse(initial_state: str) -> tuple[_BinaryTree, ...]:
-  """Returns binary tree roots."""
-  return tuple(
-      [_BinaryTree(value=int(stone)) for stone in initial_state.split()])
 
 
 class Simulation:
   def __init__(self, initial_state: str):
-    self._roots = _parse(initial_state)
-    # Tracks value and descendants by iteration.
-    self._cache: dict[int, list[int, ...]] = defaultdict(list)
+    self._roots = tuple([int(stone) for stone in initial_state.split()])
 
-  def _update_cache(self, node, add_value):
-    # TODO: fix.
-    self._cache[node.value].append(add_value)
-    # Update ascendants
-    curr = node.parent
-    while curr is not None:
-      values = self._cache[curr.value]
-      last_value = self._cache[curr.value][len(values) - 1]
-      self._cache[curr.value].append(last_value + add_value)
-      curr = curr.parent
-
-  def _iterate(self, node: _BinaryTree, num_iterations: int = 0) -> int:
+  @cache
+  def _iterate(self, value: int, num_iterations: int = 0) -> int:
     """Returns the number of stones after iteration."""
     if num_iterations == 0:
       return 1  # Leaf node
-    # TODO: use cache.
-    # if node.value in self._cache:
-    #   return self._cache[node.value][num_iterations - 1]
-    if node.value == 0:
-      node.left = _BinaryTree(value=1, parent=node)
-      self._update_cache(node=node, add_value=1)
-      return self._iterate(node.left, num_iterations - 1)
-    elif _has_even_num_digits(node.value):
-      half_digits = len(str(node.value)) // 2
+    if value == 0:
+      return self._iterate(1, num_iterations - 1)
+    elif _has_even_num_digits(value):
+      half_digits = len(str(value)) // 2
       # Break stone into 2:
-      left_node = _BinaryTree(value=int(str(node.value)[:half_digits]),
-                              parent=node)
-      right_node = _BinaryTree(value=int(str(node.value)[half_digits:]),
-                               parent=node)
-      node.left = left_node
-      node.right = right_node
-      self._update_cache(node=node, add_value=2)
-      return (self._iterate(node.left, num_iterations - 1)
-              + self._iterate(node.right, num_iterations - 1))
+      return (self._iterate(int(str(value)[:half_digits]), num_iterations - 1)
+              + self._iterate(int(str(value)[half_digits:]), num_iterations - 1))
     else:
-      node.left = _BinaryTree(value=node.value * 2024, parent=node)
-      self._update_cache(node=node, add_value=1)
-      return self._iterate(node.left, num_iterations - 1)
+      return self._iterate(value * 2024, num_iterations - 1)
 
   def simulate(self, num_iterations=0) -> int:
-    result = 0
-    for root in self._roots:
-      result += self._iterate(root, num_iterations)
-    return result
+    """Simulates the rules of stones a given number of times."""
+    return sum(self._iterate(root, num_iterations) for root in self._roots)
 
 
 def count_stones(initial_state: str, blinks: int = 0) -> int:
+  """Counts the number of stones after a number of blinks."""
   return Simulation(initial_state).simulate(num_iterations=blinks)
