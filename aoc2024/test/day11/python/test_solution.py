@@ -25,15 +25,24 @@ class TestDay09Solution(AdventOfCodeTestCase):
   def test_part1_withOneBlink_counts(self):
     self.assertEqual(7, count_stones(initial_state='0 1 10 99 999', blinks=1))
 
+  def test_part1_with3Blinks_counts(self):
+    self.assertEqual(5, count_stones(initial_state='125 17', blinks=3))
+
   def test_part1_withMoreBlinks_counts(self):
-    initial_state = '125 17'
-    self.assertEqual(22, count_stones(initial_state, blinks=6))
-    self.assertEqual(55312, count_stones(initial_state, blinks=25))
+    self.assertEqual(22, count_stones(initial_state='125 17', blinks=6))
+
+  def test_part1_withEvenMoreBlinks_counts(self):
+    self.assertEqual(55312, count_stones(initial_state='125 17', blinks=25))
 
   def test_part1_withPuzzleInput_counts(self):
     self.assertEqual(203457, count_stones(
         initial_state='1 24596 0 740994 60 803 8918 9405859',
         blinks=25))
+
+  # def test_part2_withPuzzleInput_counts(self):
+  #   self.assertEqual(203457, count_stones(
+  #       initial_state='1 24596 0 740994 60 803 8918 9405859',
+  #       blinks=75))
 
 
 if __name__ == '__main__':
