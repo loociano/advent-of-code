@@ -34,6 +34,24 @@ class TestSolution(AdventOfCodeTestCase):
   def test_part1_withPuzzleInput_calculates(self):
     self.assertEqual(1465112, calculate_fencing_price(self.input))
 
+  def test_part2_with4Areas_calculates(self):
+    self.assertEqual(80, calculate_fencing_price(self.examples[0], price_by_side=True))
+
+  def test_part2_withAreaHasHoles_calculates(self):
+    self.assertEqual(436, calculate_fencing_price(self.examples[1], price_by_side=True))
+
+  def test_part2_withEShape_calculates(self):
+    self.assertEqual(236, calculate_fencing_price(self.examples[3], price_by_side=True))
+
+  def test_part2_withAbba_calculates(self):
+    self.assertEqual(368, calculate_fencing_price(self.examples[4], price_by_side=True))
+
+  def test_part2_withLargerExample_calculates(self):
+    self.assertEqual(1206, calculate_fencing_price(self.examples[2], price_by_side=True))
+
+  def test_part2_withPuzzleInput_calculates(self):
+    self.assertEqual(893790, calculate_fencing_price(self.input, price_by_side=True))
+
 
 if __name__ == '__main__':
   unittest.main()
