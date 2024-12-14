@@ -45,22 +45,20 @@ def _parse(input: Sequence[str]) -> tuple[Machine, ...]:
   return tuple(machines)
 
 
-def _calc_tokens_brute_force(vector_0: Vector, vector_1: Vector, vector_2: Vector) -> int | None:
-  min_tokens = math.inf
-  for a in range(1, _MAX_BUTTON_PRESSES):
-    for b in range(1, _MAX_BUTTON_PRESSES):
-      if a * vector_0[0] + b * vector_1[0] == vector_2[0] and a * vector_0[1] + b * vector_1[1] == vector_2[1]:
-        tokens = a * _BUTTON_A_COST + b * _BUTTON_B_COST
-        if tokens < min_tokens:
-          min_tokens = tokens
-  return min_tokens if min_tokens < math.inf else None
+def _calc_tokens(vector_0: Vector, vector_1: Vector, vector_2: Vector) -> int | None:
+  b = (vector_2[1] - vector_2[0] * vector_0[1] / vector_0[0]) / (vector_1[1] - vector_1[0] * vector_0[1] / vector_0[0])
+  a = (vector_2[0] - b * vector_1[0]) / vector_0[0]
+  a, b = round(a, 2), round(b, 2)
+  if a.is_integer() and b.is_integer():
+    return int(a) * _BUTTON_A_COST + int(b) * _BUTTON_B_COST
+  return None
 
 
-def min_tokens_to_win(input: Sequence[str]) -> int | None:
+def min_tokens_to_win(input: Sequence[str], price_offset: int = 0) -> int | None:
   claw_machines = _parse(input)
   num_tokens = 0
   for machine in claw_machines:
-    tokens = _calc_tokens_brute_force(machine[0], machine[1], machine[2])
+    tokens = _calc_tokens(machine[0], machine[1], machine[2])
     if tokens is not None:
       num_tokens += tokens
   return num_tokens if num_tokens > 0 else None
