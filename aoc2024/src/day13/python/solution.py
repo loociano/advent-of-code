@@ -55,7 +55,14 @@ def _calc_tokens(vector_0: Vector, vector_1: Vector, vector_2: Vector) -> int | 
 
 
 def min_tokens_to_win(input: Sequence[str], price_offset: int = 0) -> int | None:
+  def add_price_offset(machine: Machine) -> Machine:
+    """Adds a given offset to price position."""
+    new_price_vector = (machine[2][0] + price_offset, machine[2][1] + price_offset)
+    return machine[0], machine[1], new_price_vector
+
   claw_machines = _parse(input)
+  if price_offset > 0:
+    claw_machines = tuple(map(add_price_offset, claw_machines))
   num_tokens = 0
   for machine in claw_machines:
     tokens = _calc_tokens(machine[0], machine[1], machine[2])

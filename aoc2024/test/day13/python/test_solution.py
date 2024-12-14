@@ -40,6 +40,9 @@ class TestSolution(AdventOfCodeTestCase):
   def test_part1_withPuzzleInput_correct(self):
     self.assertEqual(32067, min_tokens_to_win(self.input))
 
+  def test_part2_withPuzzleInput_correct(self):
+    self.assertEqual(92871736253789, min_tokens_to_win(self.input, price_offset=10000000000000))
+
 
 if __name__ == '__main__':
   unittest.main()
