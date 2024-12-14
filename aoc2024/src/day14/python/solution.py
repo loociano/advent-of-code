@@ -32,6 +32,9 @@ class Robot:
     self._width = world_size[0]
     self._height = world_size[1]
 
+  def position(self) -> Position:
+    return self._x, self._y
+
   def move(self) -> None:
     """Moves robot from its position according to its constant velocity."""
     self._x += self._dx
@@ -74,14 +77,55 @@ def _parse(input: Sequence[str], world_size: WorldSize) -> tuple[Robot, ...]:
   return tuple(robots)
 
 
+def _simulate(robots: tuple[Robot, ...], elapsed_seconds):
+  for _ in range(elapsed_seconds):
+    for robot in robots:
+      robot.move()
+
+
+def _calc_safety_factor(robots: tuple[Robot, ...]) -> int:
+  quadrant_counts = Counter(map(lambda r: r.get_quadrant(), robots))
+  # Assumes there will be at least one robot per quadrant.
+  return math.prod(quadrant_counts.get(quadrant_num) for quadrant_num in range(1, 5))
+
+
 def get_safety_factor(input: Sequence[str], world_size: WorldSize = _DEFAULT_SIZE,
                       elapsed_seconds: int = 0) -> int:
   """Returns safety factor as the multiplication of robots per quadrant after a number of seconds.
   Robots that end up between quadrants do not count towards safety factor."""
   robots = _parse(input, world_size)
-  for _ in range(elapsed_seconds):
+  _simulate(robots, elapsed_seconds)
+  return _calc_safety_factor(robots)
+
+
+def _print_world(robots: tuple[Robot, ...], world_size: WorldSize) -> None:
+  counter = Counter(map(lambda r: r.position(), robots))
+  for y in range(world_size[1]):
+    line = []
+    for x in range(world_size[0]):
+      line.append('X' if counter.get((x, y)) is not None else '.')
+    print(''.join(line))
+
+
+def get_seconds_to_easter_egg(input: Sequence[str], world_size: WorldSize = _DEFAULT_SIZE,
+                              elapsed_seconds: int = 0) -> int:
+  """Returns number of seconds that must elapse to display an Easter egg.
+  The Easter egg is a picture of a Christmas tree.
+  """
+  robots = _parse(input, world_size)
+  min_safety_factor = math.inf
+  result = 0
+  for t in range(1, elapsed_seconds + 1):
     for robot in robots:
       robot.move()
-  quadrant_counts = Counter(map(lambda r: r.get_quadrant(), robots))
-  # Assumes there will be at least one robot per quadrant.
-  return math.prod(quadrant_counts.get(quadrant_num) for quadrant_num in range(1, 5))
+    safety_factor = _calc_safety_factor(robots)
+    # Thanks to reddit.com/r/adventofcode we know that the picture is small and
+    # fits in one quadrant. In other words, it's when the safest factor is the
+    # lowest.
+    if safety_factor < min_safety_factor:
+      min_safety_factor = safety_factor
+      result = t
+      # Only print state when finding a lower safety factor.
+      print(f't={t}')
+      _print_world(robots, world_size)
+  return result
