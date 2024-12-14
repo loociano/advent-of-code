@@ -33,6 +33,7 @@ class Robot:
     self._height = world_size[1]
 
   def move(self) -> None:
+    """Moves robot from its position according to its constant velocity."""
     self._x += self._dx
     if self._x > self._width - 1:
       self._x -= self._width  # Wrap around right edge.
@@ -61,6 +62,7 @@ class Robot:
 
 
 def _parse(input: Sequence[str], world_size: WorldSize) -> tuple[Robot, ...]:
+  """Parses the input. Each line represents a robot."""
   robots = []
   for line in input:
     matches = re.match(r'p=(-?\d+),(-?\d+) v=(-?\d+),(-?\d+)', line)
@@ -74,6 +76,8 @@ def _parse(input: Sequence[str], world_size: WorldSize) -> tuple[Robot, ...]:
 
 def get_safety_factor(input: Sequence[str], world_size: WorldSize = _DEFAULT_SIZE,
                       elapsed_seconds: int = 0) -> int:
+  """Returns safety factor as the multiplication of robots per quadrant after a number of seconds.
+  Robots that end up between quadrants do not count towards safety factor."""
   robots = _parse(input, world_size)
   for _ in range(elapsed_seconds):
     for robot in robots:
