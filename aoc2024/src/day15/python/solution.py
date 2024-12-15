@@ -20,16 +20,12 @@ _ROBOT = '@'
 _BOX = 'O'
 _WALL = '#'
 _EMPTY = '.'
-
-
-def _opposite_dir(dir: Direction) -> Direction:
-  inverse = {
-    (0, 1): (0, -1),
-    (0, -1): (0, 1),
-    (-1, 0): (1, 0),
-    (1, 0): (-1, 0),
-  }
-  return inverse.get(dir)
+_DIR_TO_OPPOSITE = {
+  (0, 1): (0, -1),  # Right to left.
+  (0, -1): (0, 1),  # Left to right.
+  (-1, 0): (1, 0),  # Up to down.
+  (1, 0): (-1, 0),  # Down to up.
+}
 
 
 class Warehouse:
@@ -113,7 +109,7 @@ class Warehouse:
       next_pos = next_empty_pos
       while next_pos != pos:
         self._update(next_pos, _BOX)
-        opposite_dir = _opposite_dir(dir)
+        opposite_dir = _DIR_TO_OPPOSITE.get(dir)
         next_pos = (next_pos[0] + opposite_dir[0], next_pos[1] + opposite_dir[1])
       self._update(pos, _EMPTY)
 
