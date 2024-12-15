@@ -302,7 +302,6 @@ def _parse(input: Sequence[str]) -> tuple[WarehouseMap, Sequence[Position]]:
 def sum_all_boxes_gps_coordinates(input: Sequence[str], double_size=False) -> int:
   """Simulates all the robot moves in the warehouse and
   returns the sum of all boxes GPS coordinates at the end state."""
-  warehouse_map, robot_moves = _parse(input)
-  warehouse = DoubleWarehouse(warehouse_map, robot_moves) if double_size else Warehouse(warehouse_map, robot_moves)
+  warehouse = DoubleWarehouse(*_parse(input)) if double_size else Warehouse(*_parse(input))
   warehouse.simulate()
   return warehouse.sum_all_boxes_gps_coordinates()
