@@ -23,7 +23,7 @@ class BaseWarehouse:
   _WALL = '#'
   _EMPTY = '.'
   _BOX = 'O'
-  _REVERSE_DIRECTION: dict[Direction,Direction] = {
+  _REVERSE_DIRECTION: dict[Direction, Direction] = {
     (0, 1): (0, -1),  # Right to left.
     (0, -1): (0, 1),  # Left to right.
     (-1, 0): (1, 0),  # Up to down.
@@ -98,10 +98,6 @@ class BaseWarehouse:
     """Updates a warehouse position with a given element."""
     self._warehouse_map[pos[1]][pos[0]] = value
 
-  def _within_bounds(self, pos: Position):
-    """Returns true if a position is within warehouse bounds."""
-    return 0 <= pos[0] < self._width and 0 <= pos[1] < self._height
-
 
 class Warehouse(BaseWarehouse):
   @override
@@ -132,14 +128,12 @@ class Warehouse(BaseWarehouse):
 
   def _find_next_empty_pos(self, pos: Position, dir: Direction) -> Position | None:
     """Returns the next empty space from a position towards a given direction."""
-    while self._within_bounds(pos):
+    while True:  # Outer walls are guaranteed.
       if self._charAt(pos) == self._WALL:
         return None  # We hit a wall before an empty space.
       if self._charAt(pos) == self._EMPTY:
         return pos
       pos = (pos[0] + dir[0], pos[1] + dir[1])
-    # Empty space was not found.
-    return None
 
 
 class DoubleWarehouse(BaseWarehouse):
@@ -274,14 +268,12 @@ class DoubleWarehouse(BaseWarehouse):
     self._update(pos=(left_pos[0] + 1, left_pos[1]), value=self._EMPTY)
 
   def _find_next_empty_x(self, pos: Position, dir: Direction) -> Position | None:
-    while self._within_bounds(pos):
+    while True:  # Outer walls are guaranteed.
       if self._charAt(pos) == self._WALL:
         return None  # We hit a wall before an empty space.
       if self._charAt(pos) == self._EMPTY:
         return pos
       pos = (pos[0] + dir[0], pos[1] + dir[1])
-    # Empty space was not found.
-    return None
 
 
 def _parse(input: Sequence[str]) -> tuple[WarehouseMap, Sequence[Position]]:
