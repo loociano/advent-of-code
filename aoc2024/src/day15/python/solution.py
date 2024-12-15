@@ -23,7 +23,7 @@ class BaseWarehouse:
   _WALL = '#'
   _EMPTY = '.'
   _BOX = 'O'
-  _DIR_TO_OPPOSITE = {
+  _REVERSE_DIRECTION: dict[Direction,Direction] = {
     (0, 1): (0, -1),  # Right to left.
     (0, -1): (0, 1),  # Left to right.
     (-1, 0): (1, 0),  # Up to down.
@@ -41,6 +41,8 @@ class BaseWarehouse:
   def simulate(self) -> None:
     """Simulates all robot moves in the warehouse."""
     while self._next_move_index < len(self._robot_moves):
+      # I had to print map to debug all possible vertical movements.
+      # I missed the case when a box touches only half of another one behind.
       # self._print_map()
       self._move_robot()
       self._next_move_index += 1
@@ -124,7 +126,7 @@ class Warehouse(BaseWarehouse):
       next_pos = next_empty_pos
       while next_pos != box_pos:
         self._update(next_pos, self._BOX)
-        opposite_dir = self._DIR_TO_OPPOSITE.get(dir)
+        opposite_dir = self._REVERSE_DIRECTION.get(dir)
         next_pos = (next_pos[0] + opposite_dir[0], next_pos[1] + opposite_dir[1])
       self._update(box_pos, self._EMPTY)
 
