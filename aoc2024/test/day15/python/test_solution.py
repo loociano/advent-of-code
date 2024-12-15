@@ -31,6 +31,15 @@ class TestSolution(AdventOfCodeTestCase):
   def test_part1_withPuzzleInput_correct(self):
     self.assertEqual(1383666, sum_all_boxes_gps_coordinates(self.input))
 
+  def test_part2_withAnotherExample_correct(self):
+    self.assertEqual(618, sum_all_boxes_gps_coordinates(self.examples[2], double_size=True))
+
+  def test_part2_withLargerExample_correct(self):
+    self.assertEqual(9021, sum_all_boxes_gps_coordinates(self.examples[1], double_size=True))
+
+  def test_part2_withPuzzleInput_correct(self):
+    self.assertEqual(1412866, sum_all_boxes_gps_coordinates(self.input, double_size=True))
+
 
 if __name__ == '__main__':
   unittest.main()
