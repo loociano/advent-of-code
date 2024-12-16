@@ -142,11 +142,10 @@ class DoubleWarehouse(BaseWarehouse):
   def __init__(self, warehouse_map: WarehouseMap, robot_moves: Sequence[Position]):
     super().__init__(warehouse_map, robot_moves)
     self._resize_warehouse()
+    # Must recalculate.
     self._width = len(self._warehouse_map[0])
     self._height = len(self._warehouse_map)
     self._robot_pos = self._find_robot_pos()
-    self._robot_moves = robot_moves
-    self._next_move_index = 0
 
   @override
   def sum_all_boxes_gps_coordinates(self) -> int:
@@ -162,7 +161,12 @@ class DoubleWarehouse(BaseWarehouse):
     return result
 
   def _resize_warehouse(self):
-    # Resize (double) the map.
+    """Resizes the warehouse to double its size.
+    - Walls are double
+    - Boxes have double width
+    - Empty spaces double
+    - Robot does NOT double. 1 extra empty space is added.
+    """
     resized_map = []
     for y in range(self._height):
       line = []
@@ -200,21 +204,14 @@ class DoubleWarehouse(BaseWarehouse):
                                 + line[next_empty_pos[0] + 1:])
           self._warehouse_map[box_pos[1]] = list(shifted_right_line)
     elif dir in ((0, -1), (0, 1)):  # Boxes are 2-tile when moving vertically.
-      box_side = self._charAt(box_pos)
-      if box_side == '[':
-        if self._can_move_boxes_vertically(left_pos=box_pos, dir=dir):
-          self._move_boxes_vertically(left_pos=box_pos, dir=dir)
-      elif box_side == ']':
-        left_pos = (box_pos[0] - 1, box_pos[1])
-        if self._can_move_boxes_vertically(left_pos, dir):
-          self._move_boxes_vertically(left_pos, dir)
-      else:
-        raise ValueError(f'pos={box_pos} not a box, was: {box_side}')
+      left_pos = box_pos if self._charAt(box_pos) == '[' else (box_pos[0] - 1, box_pos[1])
+      if self._can_move_boxes_vertically(left_pos, dir):
+        self._move_boxes_vertically(left_pos, dir)
     else:
       raise ValueError(f'Unrecognized dir={dir}')
 
   def _can_move_boxes_vertically(self, left_pos: Position, dir: Direction) -> bool:
-    """Returns true if all boxes can be moved given a box position."""
+    """Returns true if all boxes can be moved vertically given a box position."""
     behind_left_pos = left_pos[0] + dir[0], left_pos[1] + dir[1]
     behind_right_pos = (behind_left_pos[0] + 1, behind_left_pos[1])
     behind_value = self._charAt(behind_left_pos) + self._charAt(behind_right_pos)
@@ -236,7 +233,7 @@ class DoubleWarehouse(BaseWarehouse):
               and self._can_move_boxes_vertically(left_pos=(behind_left_pos[0] + 1, behind_left_pos[1]), dir=dir))
 
   def _move_boxes_vertically(self, left_pos: Position, dir: Direction) -> None:
-    """Moves all boxes that can be moved in the y-axis given direction."""
+    """Recursively moves all boxes vertically given a box position (left side)."""
     behind_left_pos = left_pos[0] + dir[0], left_pos[1] + dir[1]
     behind_right_pos = (behind_left_pos[0] + 1, behind_left_pos[1])
     behind_value = self._charAt(behind_left_pos) + self._charAt(behind_right_pos)
@@ -259,7 +256,7 @@ class DoubleWarehouse(BaseWarehouse):
       self._move_box_vertically(left_pos, dir)
 
   def _move_box_vertically(self, left_pos: Position, dir: Direction) -> None:
-    """Moves box given up or down."""
+    """Moves a single box given direction, up or down."""
     behind_left_pos = left_pos[0] + dir[0], left_pos[1] + dir[1]
     behind_right_pos = (behind_left_pos[0] + 1, behind_left_pos[1])
     self._update(pos=behind_left_pos, value=self._BOX[0])
@@ -268,6 +265,7 @@ class DoubleWarehouse(BaseWarehouse):
     self._update(pos=(left_pos[0] + 1, left_pos[1]), value=self._EMPTY)
 
   def _find_next_empty_x(self, pos: Position, dir: Direction) -> Position | None:
+    """Returns the position of the next empty space in the x-axis or None if not found."""
     while True:  # Outer walls are guaranteed.
       if self._charAt(pos) == self._WALL:
         return None  # We hit a wall before an empty space.
