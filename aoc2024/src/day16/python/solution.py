@@ -11,10 +11,10 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-import math
+from math import inf
 from typing import Sequence
-from collections import deque
-from dataclasses import dataclass
+from collections import deque, defaultdict
+from dataclasses import dataclass, field
 
 type Position = tuple[int, int]  # (x,y)
 type Direction = tuple[int, int]  # (dx,dy) where -1 <= dx,dy <= 1.
@@ -42,12 +42,14 @@ class Node:
   pos: Position
   dir: Direction
   score: int = 0
+  path: set[Position] = field(default_factory=set)
 
 
 def _bfs(maze: Sequence[str], start_pos: Position, start_dir: Direction, end_pos: Position) -> int:
-  min_score_at = {
-    start_pos: 0
-  }
+  """Returns the minimum score from start position and direction to end position.
+  A step has a score of 1 and a 90-degree turn has a score of 1000.
+  """
+  min_score_at = defaultdict(int)
   queue = deque()
   queue.append(Node(pos=start_pos, dir=start_dir))
   while len(queue):
@@ -75,6 +77,44 @@ def _bfs(maze: Sequence[str], start_pos: Position, start_dir: Direction, end_pos
   return min_score_at[end_pos]
 
 
+def _get_unique_tiles_bfs(maze: Sequence[str], start_pos: Position, start_dir: Direction, end_pos: Position,
+                          min_score: int) -> int:
+  """Returns the number of unique positions from all the best paths.
+  The best paths are those with the given minimum score."""
+  tiles: set[Position] = set()
+  # Track visited "nodes" and their score.
+  # Node is not hashable because it contains a mutable set().
+  visited: dict[tuple[Position, Direction], int] = defaultdict(lambda: 100000000)
+  queue = deque()
+  start_path: set[Position] = set()
+  start_path.add(start_pos)
+  queue.append(Node(pos=start_pos, dir=start_dir, path=start_path))
+  while queue:
+    curr = queue.popleft()
+    if curr.score > visited[(curr.pos, curr.dir)] or curr.score > min_score:
+      continue  # Skip these paths.
+    visited[(curr.pos, curr.dir)] = curr.score
+    if curr.pos == end_pos:
+      if curr.score < min_score:
+        tiles = curr.path
+      elif curr.score == min_score:
+        tiles.update(curr.path)  # Alternative best paths!
+    else:
+      # Try moving one step in the same direction.
+      ahead_pos = (curr.pos[0] + curr.dir[0], curr.pos[1] + curr.dir[1])
+      if _charAt(maze, ahead_pos) != _WALL:
+        new_path = curr.path.copy()
+        new_path.add(ahead_pos)
+        queue.append(Node(pos=ahead_pos, dir=curr.dir, score=curr.score + _MOVE_POINTS, path=new_path))
+      # Try turning left:
+      left_dir = _TURN_LEFT_MAP.get(curr.dir)
+      queue.append(Node(pos=curr.pos, dir=left_dir, score=curr.score + _TURN_POINTS, path=curr.path.copy()))
+      # Try turning right:
+      right_dir = _TURN_RIGHT_MAP.get(curr.dir)
+      queue.append(Node(pos=curr.pos, dir=right_dir, score=curr.score + _TURN_POINTS, path=curr.path.copy()))
+  return len(tiles)
+
+
 def _find_pos(maze: Sequence[str], value: str) -> Position:
   """Finds the starting position represented by char 'S' in the maze."""
   for y in range(len(maze)):
@@ -85,8 +125,20 @@ def _find_pos(maze: Sequence[str], value: str) -> Position:
 
 
 def get_min_score(maze: Sequence[str]) -> int:
+  """Returns the minimum score from the start to the end position of the maze."""
   start_pos = _find_pos(maze, _START)
   end_pos = _find_pos(maze, _END)
   start_dir = (1, 0)  # Right (East).
   # DFS with recursion causes stack overflow.
   return _bfs(maze=maze, start_pos=start_pos, start_dir=start_dir, end_pos=end_pos)
+
+
+def get_total_tiles_in_best_paths(maze: Sequence[str]) -> int:
+  """Returns the number of tiles that are part of at least one of the best paths through the maze."""
+  start_pos = _find_pos(maze, _START)
+  end_pos = _find_pos(maze, _END)
+  start_dir = (1, 0)  # Right (East).
+  min_score = get_min_score(maze)
+  return _get_unique_tiles_bfs(maze=maze,
+                               start_pos=start_pos, start_dir=start_dir,
+                               end_pos=end_pos, min_score=min_score)

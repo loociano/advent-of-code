@@ -14,7 +14,7 @@
 import unittest
 
 from common.python3.AdventOfCodeTestCase import AdventOfCodeTestCase
-from aoc2024.src.day16.python.solution import get_min_score
+from aoc2024.src.day16.python.solution import get_min_score, get_total_tiles_in_best_paths
 
 
 class TestSolution(AdventOfCodeTestCase):
@@ -30,6 +30,15 @@ class TestSolution(AdventOfCodeTestCase):
 
   def test_part1_withPuzzleInput_correct(self):
     self.assertEqual(107512, get_min_score(self.input))
+
+  def test_part2_withExample_correct(self):
+    self.assertEqual(45, get_total_tiles_in_best_paths(self.examples[0]))
+
+  def test_part2_withSecondExample_correct(self):
+    self.assertEqual(64, get_total_tiles_in_best_paths(self.examples[1]))
+
+  def test_part2_withPuzzleInput_correct(self):
+    self.assertEqual(561, get_total_tiles_in_best_paths(self.input))
 
 
 if __name__ == '__main__':
