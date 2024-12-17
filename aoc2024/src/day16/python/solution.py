@@ -84,34 +84,31 @@ def _get_unique_tiles_bfs(maze: Sequence[str], start_pos: Position, start_dir: D
   tiles: set[Position] = set()
   # Track visited "nodes" and their score.
   # Node is not hashable because it contains a mutable set().
-  visited: dict[tuple[Position, Direction], int] = defaultdict(lambda: 100000000)
+  scores_at: dict[tuple[Position, Direction], int] = defaultdict(lambda: 100000000)
   queue = deque()
   start_path: set[Position] = set()
   start_path.add(start_pos)
   queue.append(Node(pos=start_pos, dir=start_dir, path=start_path))
   while queue:
     curr = queue.popleft()
-    if curr.score > visited[(curr.pos, curr.dir)] or curr.score > min_score:
-      continue  # Skip these paths.
-    visited[(curr.pos, curr.dir)] = curr.score
-    if curr.pos == end_pos:
-      if curr.score < min_score:
-        tiles = curr.path
-      elif curr.score == min_score:
-        tiles.update(curr.path)  # Alternative best paths!
-    else:
-      # Try moving one step in the same direction.
-      ahead_pos = (curr.pos[0] + curr.dir[0], curr.pos[1] + curr.dir[1])
-      if _charAt(maze, ahead_pos) != _WALL:
-        new_path = curr.path.copy()
-        new_path.add(ahead_pos)
-        queue.append(Node(pos=ahead_pos, dir=curr.dir, score=curr.score + _MOVE_POINTS, path=new_path))
-      # Try turning left:
-      left_dir = _TURN_LEFT_MAP.get(curr.dir)
-      queue.append(Node(pos=curr.pos, dir=left_dir, score=curr.score + _TURN_POINTS, path=curr.path.copy()))
-      # Try turning right:
-      right_dir = _TURN_RIGHT_MAP.get(curr.dir)
-      queue.append(Node(pos=curr.pos, dir=right_dir, score=curr.score + _TURN_POINTS, path=curr.path.copy()))
+    if curr.score <= scores_at[(curr.pos, curr.dir)] and curr.score <= min_score:
+      scores_at[(curr.pos, curr.dir)] = curr.score
+      if curr.pos == end_pos and curr.score == min_score:
+        # Found one of the best paths. Save their tiles.
+        tiles.update(curr.path)
+      else:
+        # Try moving one step in the same direction.
+        ahead_pos = (curr.pos[0] + curr.dir[0], curr.pos[1] + curr.dir[1])
+        if _charAt(maze, ahead_pos) != _WALL:
+          new_path = curr.path.copy()
+          new_path.add(ahead_pos)
+          queue.append(Node(pos=ahead_pos, dir=curr.dir, score=curr.score + _MOVE_POINTS, path=new_path))
+        # Try turning left:
+        left_dir = _TURN_LEFT_MAP.get(curr.dir)
+        queue.append(Node(pos=curr.pos, dir=left_dir, score=curr.score + _TURN_POINTS, path=curr.path.copy()))
+        # Try turning right:
+        right_dir = _TURN_RIGHT_MAP.get(curr.dir)
+        queue.append(Node(pos=curr.pos, dir=right_dir, score=curr.score + _TURN_POINTS, path=curr.path.copy()))
   return len(tiles)
 
 
