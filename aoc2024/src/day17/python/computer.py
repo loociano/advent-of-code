@@ -26,10 +26,10 @@ class Computer:
 
   def __init__(self, program: Sequence[int], reg_a: int = 0, reg_b: int = 0, reg_c: int = 0) -> None:
     self._program = program
-    self.reg_a = reg_a
-    self.reg_b = reg_b
-    self.reg_c = reg_c
-    self._instr_pointer = 0
+    self.reg_a: int = reg_a
+    self.reg_b: int = reg_b
+    self.reg_c: int = reg_c
+    self._instr_pointer: int = 0
     self._instr_set: list[Instr] = [
       (self._adv, self._get_combo_value),
       (self._bxl, _get_literal_value),
@@ -44,12 +44,23 @@ class Computer:
 
   def execute(self) -> None:
     """Executes the program then halts."""
-    while self._instr_pointer < len(self._program) - 1:
-      next_instr = self._instr_set[self._program[self._instr_pointer]]
-      executable = next_instr[0]
-      operand = next_instr[1](self._program[self._instr_pointer + 1])
-      executable(operand)
-      self._instr_pointer += 2
+    while not self.is_halted():
+      self._execute_next_instr()
+
+  def is_halted(self) -> bool:
+    return self._instr_pointer > len(self._program) - 2
+
+  def _execute_next_instr(self) -> None:
+    next_instr = self._instr_set[self._program[self._instr_pointer]]
+    executable = next_instr[0]
+    operand = next_instr[1](self._program[self._instr_pointer + 1])
+    executable(operand)
+    self._instr_pointer += 2
+
+  def execute_until_out(self) -> None:
+    curr_stdout_length = len(self._stdout)
+    while len(self._stdout) == curr_stdout_length and not self.is_halted():
+      self._execute_next_instr()
 
   def flush(self) -> str:
     """Flushes the buffered stdout."""
@@ -71,11 +82,11 @@ class Computer:
     self.reg_a = self._divide(operand)
 
   def _divide(self, operand: int) -> int:
-    return int(self.reg_a / (2 ** operand))
+    return self.reg_a >> operand
 
   def _bxl(self, operand: int) -> None:
     """Updates register B with bitwise XOR of register B and operand."""
-    self.reg_b = self.reg_b ^ operand
+    self.reg_b ^= operand
 
   def _bst(self, operand: int) -> None:
     """Updates register B with operand modulo 8."""
@@ -90,7 +101,7 @@ class Computer:
   def _bxc(self, operand: int) -> None:
     """Updates register B with B XOR C."""
     del operand  # Ignore.
-    self.reg_b = self.reg_b ^ self.reg_c
+    self.reg_b ^= self.reg_c
 
   def _out(self, operand: int) -> None:
     """Outputs the combo operand modulo 8."""
