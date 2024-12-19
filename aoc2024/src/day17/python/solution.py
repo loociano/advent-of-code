@@ -30,3 +30,18 @@ def print_stdout(program_info: Sequence[str]) -> str:
   computer = Computer(program=program, reg_a=reg_a, reg_b=reg_b, reg_c=reg_c)
   computer.execute()
   return computer.flush()
+
+
+def find_reg_a_init_value(program_info: Sequence[str]) -> int:
+  """Finds the initial value of register A so that the output matches the program."""
+  _, reg_b, reg_c, program = _parse_input(program_info)
+  searching_match = ','.join(map(str, program))
+  reg_a = 0
+  # Brute-force
+  while True:
+    computer = Computer(program=program, reg_a=reg_a, reg_b=reg_b, reg_c=reg_c)
+    computer.execute()
+    stdout = computer.flush()
+    if stdout == searching_match:
+      return reg_a
+    reg_a += 1

@@ -14,7 +14,7 @@
 import unittest
 
 from common.python3.AdventOfCodeTestCase import AdventOfCodeTestCase
-from aoc2024.src.day17.python.solution import print_stdout
+from aoc2024.src.day17.python.solution import print_stdout, find_reg_a_init_value
 
 
 class TestSolution(AdventOfCodeTestCase):
@@ -27,6 +27,22 @@ class TestSolution(AdventOfCodeTestCase):
 
   def test_part1_withPuzzleInput_success(self):
     self.assertEqual('2,0,1,3,4,0,2,1,7', print_stdout(self.input))
+
+  def test_part2_withExample_success(self):
+    self.assertEqual(117440, find_reg_a_init_value(self.examples[1]))
+
+  def test_part2_withPuzzleInput_success(self):
+    # bst,A
+    # bxl,3
+    # cdv,B
+    # adv,3
+    # bxc
+    # bxl,5
+    # out,B
+    # jnz,0
+    # Desired output: 2,4,1,3,7,5,0,3,4,3,1,5,5,5,3,0
+    # self.assertEqual(???, find_reg_a_init_value(self.input))
+    pass
 
 
 if __name__ == '__main__':
