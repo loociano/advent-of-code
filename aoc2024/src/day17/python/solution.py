@@ -13,6 +13,7 @@
 # limitations under the License.
 import re
 from typing import Sequence
+from collections import deque
 from aoc2024.src.day17.python.computer import Computer
 
 
@@ -32,16 +33,35 @@ def print_stdout(program_info: Sequence[str]) -> str:
   return computer.flush()
 
 
-def find_reg_a_init_value(program_info: Sequence[str]) -> int:
+def find_reg_a_init_value(program_info: Sequence[str], brute_force: bool = False) -> int:
   """Finds the initial value of register A so that the output matches the program."""
   _, reg_b, reg_c, program = _parse_input(program_info)
   searching_match = ','.join(map(str, program))
   reg_a = 0
-  # Brute-force
-  while True:
-    computer = Computer(program=program, reg_a=reg_a, reg_b=reg_b, reg_c=reg_c)
-    computer.execute()
-    stdout = computer.flush()
-    if stdout == searching_match:
-      return reg_a
-    reg_a += 1
+  if brute_force:
+    while True:
+      computer = Computer(program=program, reg_a=reg_a, reg_b=reg_b, reg_c=reg_c)
+      computer.execute()
+      stdout = computer.flush()
+      if stdout == searching_match:
+        return reg_a
+      reg_a += 1
+  else:
+    # Super helpful comments:
+    # https://www.reddit.com/r/adventofcode/comments/1hg38ah/comment/m2vn8nx/
+    # https://www.reddit.com/r/adventofcode/comments/1hg38ah/comment/m2ovom3/
+    queue = deque()
+    queue.append((len(program), 0))  # unmatched_length, starting_reg_a_value.
+    while queue:
+      unmatched_length, reg_a = queue.popleft()
+      for i in range(8):
+        possible_reg_a = reg_a * 8 + i  # Try values that satisfy A % 8 = i.
+        computer = Computer(program=program, reg_a=possible_reg_a, reg_b=reg_b, reg_c=reg_c)
+        computer.execute()
+        stdout = computer.stdout()
+        if stdout == program[unmatched_length - 1:]:
+          # Matching one more character from the right.
+          queue.append((unmatched_length - 1, possible_reg_a))
+          if len(stdout) == len(program):
+            return possible_reg_a
+    raise ValueError('Could not find register A value!')

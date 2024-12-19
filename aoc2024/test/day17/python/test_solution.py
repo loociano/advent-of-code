@@ -29,7 +29,7 @@ class TestSolution(AdventOfCodeTestCase):
     self.assertEqual('2,0,1,3,4,0,2,1,7', print_stdout(self.input))
 
   def test_part2_withExample_success(self):
-    self.assertEqual(117440, find_reg_a_init_value(self.examples[1]))
+    self.assertEqual(117440, find_reg_a_init_value(self.examples[1], brute_force=True))
 
   def test_part2_withPuzzleInput_success(self):
     # bst,A
@@ -40,9 +40,14 @@ class TestSolution(AdventOfCodeTestCase):
     # bxl,5
     # out,B
     # jnz,0
-    # Desired output: 2,4,1,3,7,5,0,3,4,3,1,5,5,5,3,0
-    # self.assertEqual(???, find_reg_a_init_value(self.input))
-    pass
+    # This is equivalent to:
+    # while A != 0:
+    #   A' = (A % 8) ^ 0b011
+    #   print(((A' ^ (A >> (A')) ^ 0b101) % 8
+    #   A /= 8
+    # Our desired output is: 2,4,1,3,7,5,0,3,4,3,1,5,5,5,3,0
+    # print() has to be executed 16 times, the minimum A for this is A=8**15=2*45=35184372088832
+    self.assertEqual(236580836040301, find_reg_a_init_value(self.input))
 
 
 if __name__ == '__main__':

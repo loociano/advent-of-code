@@ -11,7 +11,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-from typing import Sequence, Callable
+from typing import Sequence, Callable, Tuple
 
 type Instr = tuple[Callable, Callable]
 
@@ -40,12 +40,15 @@ class Computer:
       (self._bdv, self._get_combo_value),
       (self._cdv, self._get_combo_value),
     ]
-    self._stdout = []
+    self._stdout: list[int] = []
 
   def execute(self) -> None:
     """Executes the program then halts."""
     while not self.is_halted():
       self._execute_next_instr()
+
+  def stdout(self) -> tuple[int, ...]:
+    return tuple(self._stdout)
 
   def is_halted(self) -> bool:
     return self._instr_pointer > len(self._program) - 2
@@ -56,11 +59,6 @@ class Computer:
     operand = next_instr[1](self._program[self._instr_pointer + 1])
     executable(operand)
     self._instr_pointer += 2
-
-  def execute_until_out(self) -> None:
-    curr_stdout_length = len(self._stdout)
-    while len(self._stdout) == curr_stdout_length and not self.is_halted():
-      self._execute_next_instr()
 
   def flush(self) -> str:
     """Flushes the buffered stdout."""
