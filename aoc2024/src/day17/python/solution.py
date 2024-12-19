@@ -62,6 +62,6 @@ def find_reg_a_init_value(program_info: Sequence[str], brute_force: bool = False
         if stdout == program[unmatched_length - 1:]:
           # Matching one more character from the right.
           queue.append((unmatched_length - 1, possible_reg_a))
-          if len(stdout) == len(program):
+          if stdout == program:
             return possible_reg_a
     raise ValueError('Could not find register A value!')
