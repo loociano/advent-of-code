@@ -30,3 +30,4 @@ def shortest_distance_bfs(grid: list[list[str]], visited: set[Position] = None,
               and predicate(next_pos[0], next_pos[1])):
         visited.add(next_pos)
         queue.append((next_pos, level + 1))
+  raise ValueError('Could not reach the exit.')

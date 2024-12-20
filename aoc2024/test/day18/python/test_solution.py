@@ -14,7 +14,7 @@
 import unittest
 
 from common.python3.AdventOfCodeTestCase import AdventOfCodeTestCase
-from aoc2024.src.day18.python.solution import min_steps_to_exit
+from aoc2024.src.day18.python.solution import min_steps_to_exit, find_first_byte_preventing_exit
 
 
 class TestSolution(AdventOfCodeTestCase):
@@ -27,6 +27,12 @@ class TestSolution(AdventOfCodeTestCase):
 
   def test_part1_withPuzzleInput_success(self):
     self.assertEqual(234, min_steps_to_exit(self.input, num_bytes=1024))
+
+  def test_part2_withExample_success(self):
+    self.assertEqual((6, 1), find_first_byte_preventing_exit(self.examples[0], width=7, length=7))
+
+  def test_part2_withPuzzleInput_success(self):
+    self.assertEqual((58, 19), find_first_byte_preventing_exit(self.input))
 
 
 if __name__ == '__main__':
