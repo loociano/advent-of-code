@@ -14,7 +14,7 @@
 import unittest
 
 from common.python3.AdventOfCodeTestCase import AdventOfCodeTestCase
-from aoc2024.src.day19.python.solution import num_possible_designs
+from aoc2024.src.day19.python.solution import num_possible_designs, num_possible_options
 
 
 class TestSolution(AdventOfCodeTestCase):
@@ -27,6 +27,12 @@ class TestSolution(AdventOfCodeTestCase):
 
   def test_part1_withPuzzleInput_success(self):
     self.assertEqual(365, num_possible_designs(self.input))
+
+  def test_part2_withExample_success(self):
+    self.assertEqual(16, num_possible_options(self.examples[0]))
+
+  def test_part2_withPuzzleInput_success(self):
+    self.assertEqual(730121486795169, num_possible_options(self.input))
 
 
 if __name__ == '__main__':
