@@ -13,7 +13,6 @@
 # limitations under the License.
 from typing import Sequence
 from common.python3.graph_utils import shortest_distance_bfs
-from common.python3.types import Position
 
 _CORRUPTED = '#'
 _NOT_CORRUPTED = '.'
