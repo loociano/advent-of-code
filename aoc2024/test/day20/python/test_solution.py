@@ -28,10 +28,33 @@ class TestSolution(AdventOfCodeTestCase):
     self.assertEqual(3, count_cheats(self.examples[0], min_picosec_savings=38))
     self.assertEqual(4, count_cheats(self.examples[0], min_picosec_savings=36))
     self.assertEqual(5, count_cheats(self.examples[0], min_picosec_savings=20))
+    self.assertEqual(8, count_cheats(self.examples[0], min_picosec_savings=12))
+    self.assertEqual(10, count_cheats(self.examples[0], min_picosec_savings=10))
+    self.assertEqual(14, count_cheats(self.examples[0], min_picosec_savings=8))
+    self.assertEqual(16, count_cheats(self.examples[0], min_picosec_savings=6))
+    self.assertEqual(30, count_cheats(self.examples[0], min_picosec_savings=4))
+    self.assertEqual(44, count_cheats(self.examples[0], min_picosec_savings=2))
     self.assertEqual(44, count_cheats(self.examples[0], min_picosec_savings=0))
 
   def test_part1_withPuzzleInput_success(self):
     self.assertEqual(1448, count_cheats(self.input, min_picosec_savings=100))
+
+  def test_part2_withExample_success(self):
+    self.assertEqual(3, count_cheats(self.examples[0],
+                                     min_picosec_savings=76,
+                                     max_cheat_length=20))
+    self.assertEqual(7, count_cheats(self.examples[0],
+                                     min_picosec_savings=74,
+                                     max_cheat_length=20))
+    self.assertEqual(29, count_cheats(self.examples[0],
+                                      min_picosec_savings=72,
+                                      max_cheat_length=20))
+
+  def test_part2_withPuzzleInput_success(self):
+    # 233268 too low.
+    self.assertEqual(1017615, count_cheats(self.input,
+                                           min_picosec_savings=100,
+                                           max_cheat_length=20))
 
 
 if __name__ == '__main__':

@@ -17,10 +17,9 @@ from common.python3.graph_utils import find, within_bounds, char_at
 from common.python3.types import Direction, Position
 
 _WALL = '#'
-_SPACE = '.'
+_TRACK = '.'
 _START = 'S'
 _END = 'E'
-_CHEAT_COST = 2
 
 
 def shortest_distance_bfs(grid: list[list[str]], distance_from_start: dict[Position, int] = None,
@@ -51,28 +50,52 @@ def _is_valid_cheat_path(grid: list[list[str]], enter_pos: Position, exit_pos: P
   """Returns true if 2 positions in the grid constitute a valid passage cheat."""
   return (within_bounds(grid, enter_pos)
           and within_bounds(grid, exit_pos)
-          and char_at(grid, enter_pos) in (_SPACE, _START, _END)
-          and char_at(grid, exit_pos) in (_SPACE, _START, _END))
+          and char_at(grid, enter_pos) in (_TRACK, _START, _END)
+          and char_at(grid, exit_pos) in (_TRACK, _START, _END))
 
 
-def _find_cheat_savings(grid: list[list[str]], distance_from_start: dict[Position, int]) -> dict[int, int]:
-  cheats_savings = defaultdict(int)
+def _find_cheat_savings(grid: list[list[str]],
+                        distance_from_start: dict[Position, int],
+                        max_cheat_length: int,
+                        ) -> dict[int, set[tuple[Position, Position]]]:
+  """Produces a dictionary of all cheats that save time, keyed by saving time in picoseconds."""
+  cheats_savings: dict[int, set[tuple[Position, Position]]] = defaultdict(set)
   for y in range(len(grid)):
     for x in range(len(grid[0])):
-      if grid[y][x] == _WALL:
-        vertical = ((x, y - 1), (x, y + 1))
-        if _is_valid_cheat_path(grid, enter_pos=vertical[0], exit_pos=vertical[1]):
-          savings = abs(distance_from_start[vertical[0]] - distance_from_start[vertical[1]]) - _CHEAT_COST
-          cheats_savings[savings] += 1
-        horizontal = ((x - 1, y), (x + 1, y))
-        if _is_valid_cheat_path(grid, enter_pos=horizontal[0], exit_pos=horizontal[1]):
-          savings = abs(
-            distance_from_start[horizontal[0]] - distance_from_start[horizontal[1]]) - _CHEAT_COST
-          cheats_savings[savings] += 1
+      if grid[y][x] in (_TRACK, _START):
+        _find_cheat_savings_from_pos(grid=grid, start_pos=(x, y),
+                                     distance_from_start=distance_from_start,
+                                     cheat_savings=cheats_savings,
+                                     max_cheat_length=max_cheat_length)
   return cheats_savings
 
 
-def count_cheats(racetrack: Sequence[str], min_picosec_savings: int) -> int:
+def _find_cheat_savings_from_pos(grid: list[list[str]],
+                                 start_pos: Position,
+                                 distance_from_start: dict[Position, int],
+                                 cheat_savings: dict[int, set[tuple[Position, Position]]],
+                                 max_cheat_length: int) -> None:
+  """Finds cheats that save time from a position in the grid."""
+  queue = deque()
+  visited: set[Position] = set()
+  queue.append((start_pos, 0))  # Queue cheat length from position.
+  while queue:
+    curr, cheat_length = queue.popleft()
+    if curr != start_pos and char_at(grid, curr) in (_TRACK, _END):
+      savings = distance_from_start[curr] - distance_from_start[start_pos] - cheat_length
+      if savings > 0:
+        cheat_savings[savings].add((start_pos, curr))
+    for dxy in ((0, -1), (1, 0), (0, 1), (-1, 0)):
+      next_pos = (curr[0] + dxy[0], curr[1] + dxy[1])
+      if (within_bounds(grid, next_pos)
+              and next_pos not in visited
+              and cheat_length < max_cheat_length):
+        visited.add(next_pos)
+        queue.append((next_pos, cheat_length + 1))
+
+
+def count_cheats(racetrack: Sequence[str], min_picosec_savings: int,
+                 max_cheat_length: int = 2) -> int:
   grid = [list(line) for line in racetrack]
   distance_from_start: dict[Position, int] = defaultdict(int)
   # Traverse for Start to End storing distances from Start to positions in path.
@@ -82,6 +105,6 @@ def count_cheats(racetrack: Sequence[str], min_picosec_savings: int) -> int:
                         start_pos=find(grid, _START),
                         end_pos=find(grid, _END),
                         predicate=lambda x, y: grid[y][x] != _WALL)
-  cheat_savings = _find_cheat_savings(grid, distance_from_start)
-  return sum(frequency if picosec_savings >= min_picosec_savings else 0
-             for picosec_savings, frequency in cheat_savings.items())
+  cheat_savings = _find_cheat_savings(grid, distance_from_start, max_cheat_length)
+  return sum(len(cheats) if picosec_savings >= min_picosec_savings else 0
+             for picosec_savings, cheats in cheat_savings.items())
