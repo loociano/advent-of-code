@@ -93,35 +93,25 @@ def _calculate_paths_between_keys(keypad: KeyPad, keys: tuple[str, ...]) -> dict
   return directional_paths
 
 
-def _shortest_sequence_length(start: str, end: str, level: int,
+def _shortest_sequence_length(start: str, end: str, num_dir_keypads: int,
                               numpad_paths: dict[(str, str), list[Path]],
                               directional_paths: dict[(str, str), list[Path]]) -> int:
-  if level == 0:
+  if num_dir_keypads == 0:
     return len(directional_paths.get((start, end))[0])  # All shortest path(s) have same length.
   min_button_presses = 1000000000
-  if level < 2:
-    for path in directional_paths.get((start, end)):
-      button_presses = 0
-      last_key = 'A'
-      for key in path:
-        button_presses += _shortest_sequence_length(start=last_key, end=key, level=level - 1,
-                                                    numpad_paths=numpad_paths, directional_paths=directional_paths)
-        last_key = key
-      min_button_presses = min(min_button_presses, button_presses)
-    return min_button_presses
-  if level == 2:
-    for path in numpad_paths.get((start, end)):
-      button_presses = 0
-      last_key = 'A'
-      for key in path:
-        button_presses += _shortest_sequence_length(start=last_key, end=key, level=level - 1,
-                                                    numpad_paths=numpad_paths, directional_paths=directional_paths)
-        last_key = key
-      min_button_presses = min(min_button_presses, button_presses)
-    return min_button_presses
+  paths = numpad_paths.get((start, end)) if num_dir_keypads == 2 else directional_paths.get((start, end))
+  for path in paths:
+    button_presses = 0
+    last_key = 'A'
+    for key in path:
+      button_presses += _shortest_sequence_length(start=last_key, end=key, num_dir_keypads=num_dir_keypads - 1,
+                                                  numpad_paths=numpad_paths, directional_paths=directional_paths)
+      last_key = key
+    min_button_presses = min(min_button_presses, button_presses)
+  return min_button_presses
 
 
-def get_complexity(door_code: str) -> int:
+def get_complexity(door_code: str, num_dir_keypads: int = 2) -> int:
   """Returns the complexity of a door code.
   The complexity is minimum button presses required multiplied by the numeric part of the door code."""
   numpad_paths = _calculate_paths_between_numerical_keys()
@@ -129,13 +119,14 @@ def get_complexity(door_code: str) -> int:
   min_button_presses = 0
   last_key = 'A'
   for key in door_code:
-    min_button_presses += _shortest_sequence_length(start=last_key, end=key, level=2,
+    min_button_presses += _shortest_sequence_length(start=last_key, end=key,
+                                                    num_dir_keypads=num_dir_keypads,
                                                     numpad_paths=numpad_paths,
                                                     directional_paths=directional_paths)
     last_key = key
   return min_button_presses * int(door_code[:-1])
 
 
-def get_total_complexity(door_codes: Sequence[str]) -> int:
+def get_total_complexity(door_codes: Sequence[str], num_dir_keypads: int = 2) -> int:
   """Returns the total complexity of door codes."""
-  return sum(get_complexity(door_code) for door_code in door_codes)
+  return sum(get_complexity(door_code, num_dir_keypads) for door_code in door_codes)
