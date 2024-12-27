@@ -93,18 +93,19 @@ def _calculate_paths_between_keys(keypad: KeyPad, keys: tuple[str, ...]) -> dict
   return directional_paths
 
 
-def _shortest_sequence_length(start: str, end: str, num_dir_keypads: int,
+def _shortest_sequence_length(start: str, end: str, num_dir_keypads: int, remaining_dir_keypads: int,
                               numpad_paths: dict[(str, str), list[Path]],
                               directional_paths: dict[(str, str), list[Path]]) -> int:
-  if num_dir_keypads == 0:
+  if remaining_dir_keypads == 0:
     return len(directional_paths.get((start, end))[0])  # All shortest path(s) have same length.
   min_button_presses = 1000000000
-  paths = numpad_paths.get((start, end)) if num_dir_keypads == 2 else directional_paths.get((start, end))
-  for path in paths:
+  paths = numpad_paths if remaining_dir_keypads == num_dir_keypads else directional_paths
+  for path in paths.get((start, end)):
     button_presses = 0
     last_key = 'A'
     for key in path:
-      button_presses += _shortest_sequence_length(start=last_key, end=key, num_dir_keypads=num_dir_keypads - 1,
+      button_presses += _shortest_sequence_length(start=last_key, end=key, num_dir_keypads=num_dir_keypads,
+                                                  remaining_dir_keypads=remaining_dir_keypads - 1,
                                                   numpad_paths=numpad_paths, directional_paths=directional_paths)
       last_key = key
     min_button_presses = min(min_button_presses, button_presses)
@@ -121,6 +122,7 @@ def get_complexity(door_code: str, num_dir_keypads: int = 2) -> int:
   for key in door_code:
     min_button_presses += _shortest_sequence_length(start=last_key, end=key,
                                                     num_dir_keypads=num_dir_keypads,
+                                                    remaining_dir_keypads=num_dir_keypads,
                                                     numpad_paths=numpad_paths,
                                                     directional_paths=directional_paths)
     last_key = key
