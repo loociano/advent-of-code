@@ -14,7 +14,7 @@
 import unittest
 
 from common.python3.AdventOfCodeTestCase import AdventOfCodeTestCase
-from aoc2024.src.day22.python.solution import generate_secret_number, sum_2000th_secret_numbers
+from aoc2024.src.day22.python.solution import generate_secret_number, sum_2000th_secret_numbers, find_max_bananas
 
 
 class TestSolution(AdventOfCodeTestCase):
@@ -32,6 +32,12 @@ class TestSolution(AdventOfCodeTestCase):
 
   def test_part1_withPuzzleInput_success(self):
     self.assertEqual(18694566361, sum_2000th_secret_numbers(self.input))
+
+  def test_part2_withExample_success(self):
+    self.assertEqual(23, find_max_bananas(self.examples[1]))
+
+  def test_part2_withPuzzleInput_success(self):
+    self.assertEqual(2100, find_max_bananas(self.input))
 
 
 if __name__ == '__main__':
