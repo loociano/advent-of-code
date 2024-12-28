@@ -11,6 +11,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+from math import inf
 from typing import Sequence
 from collections import deque, defaultdict
 from itertools import product
@@ -103,7 +104,7 @@ _DIR_KEYPAD_PATHS = _calculate_paths_between_directional_keys()
 def _shortest_sequence_length(start_key: str, end_key: str, num_dir_keypads: int, remaining_dir_keypads: int) -> int:
   if remaining_dir_keypads == 0:
     return len(_DIR_KEYPAD_PATHS.get((start_key, end_key))[0])  # All shortest path(s) have same length.
-  min_button_presses = 1000000000000000
+  min_button_presses = inf
   key_paths = _NUMPAD_PATHS if remaining_dir_keypads == num_dir_keypads else _DIR_KEYPAD_PATHS
   for key_pair_path in key_paths.get((start_key, end_key)):
     button_presses = 0
