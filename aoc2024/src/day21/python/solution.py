@@ -40,17 +40,8 @@ _DIR_MAP = {
 }
 
 
-def char_at(keypad: KeyPad, pos: Position) -> str:
-  """Returns the character at the position in the keypad."""
-  return keypad[pos[1]][pos[0]]
-
-
-def within_bounds(keypad: KeyPad, pos: Position) -> bool:
-  """Returns true if a position is valid in a given keypad."""
-  return 0 <= pos[0] < len(keypad[0]) and 0 <= pos[1] < len(keypad)
-
-
 def get_pos(keypad: KeyPad, key_value: str) -> Position:
+  """Returns the position of a key in a given keypad."""
   for y in range(len(keypad)):
     for x in range(len(keypad[0])):
       if keypad[y][x] == key_value:
@@ -58,46 +49,42 @@ def get_pos(keypad: KeyPad, key_value: str) -> Position:
   raise ValueError(f'Could not find {key_value} in keypad!')
 
 
-def _calculate_paths_between_keys(keypad: KeyPad, keys: tuple[str, ...]) -> dict[(str, str), list[Path]]:
-  """Calculates shortest path(s) between all pairs of keys in a keypad using BFS."""
-  directional_paths: dict[(str, str), list[Path]] = defaultdict(list)
+def _find_shortest_paths_between_key_pairs(keypad: KeyPad, keys: tuple[str, ...]) -> dict[(str, str), tuple[Path, ...]]:
+  """Returns shortest path(s) between all pairs of keys in a keypad using BFS."""
+  shortest_paths: dict[(str, str), list[Path]] = defaultdict(list)
   for permutation in product(keys, repeat=2):
     start_pos = get_pos(keypad, permutation[0])
     end_pos = get_pos(keypad, permutation[1])
     queue = deque()
-    queue.append((start_pos, ()))
+    queue.append((start_pos, []))
     visited: set[Position] = {start_pos}
     while queue:
       curr_pos, path = queue.popleft()
       if curr_pos == end_pos:
-        complete_path = list(path)
+        complete_path = path.copy()
         complete_path.append('A')  # Press the button.
-        directional_paths[(permutation[0], permutation[1])].append(tuple(complete_path))
+        shortest_paths[(permutation[0], permutation[1])].append(tuple(complete_path))
       else:
         for dxy in ((0, -1), (1, 0), (0, 1), (-1, 0)):
           next_pos = (curr_pos[0] + dxy[0], curr_pos[1] + dxy[1])
-          if (within_bounds(keypad, next_pos)
-                  and char_at(keypad, next_pos) != _EMPTY_KEY
+          if (0 <= next_pos[0] < len(keypad[0]) and 0 <= next_pos[1] < len(keypad)
+                  and keypad[next_pos[1]][next_pos[0]] != _EMPTY_KEY
                   and next_pos not in visited):
-            new_path = list(path)
+            new_path = path.copy()
             new_path.append(_DIR_MAP.get(dxy))
-            queue.append((next_pos, tuple(new_path)))
+            queue.append((next_pos, new_path))
       visited.add(curr_pos)
-  return directional_paths
+  # Return a copy with immutable paths.
+  result = dict()
+  for k, v in shortest_paths.items():
+    result[k] = tuple(v)
+  return result
 
 
-def _calculate_paths_between_numerical_keys() -> dict[(str, str), list[Path]]:
-  """Returns shortest path(s) between keys in the numerical keypad."""
-  return _calculate_paths_between_keys(keypad=_NUMPAD, keys=('0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A'))
-
-
-def _calculate_paths_between_directional_keys() -> dict[(str, str), list[Path]]:
-  """Returns shortest path(s) between keys in the directional keypad."""
-  return _calculate_paths_between_keys(keypad=_DIR_KEYPAD, keys=('A', '^', 'v', '<', '>'))
-
-
-_NUMPAD_PATHS = _calculate_paths_between_numerical_keys()
-_DIR_KEYPAD_PATHS = _calculate_paths_between_directional_keys()
+# Precompute the shortest paths between key pairs in numpad and directional keypad.
+_NUMPAD_PATHS = _find_shortest_paths_between_key_pairs(keypad=_NUMPAD,
+                                                       keys=('0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A'))
+_DIR_KEYPAD_PATHS = _find_shortest_paths_between_key_pairs(keypad=_DIR_KEYPAD, keys=('A', '^', 'v', '<', '>'))
 
 
 @cache
