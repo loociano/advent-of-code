@@ -100,18 +100,19 @@ _DIR_KEYPAD_PATHS = _calculate_paths_between_directional_keys()
 
 
 @cache
-def _shortest_sequence_length(start: str, end: str, num_dir_keypads: int, remaining_dir_keypads: int) -> int:
+def _shortest_sequence_length(start_key: str, end_key: str, num_dir_keypads: int, remaining_dir_keypads: int) -> int:
   if remaining_dir_keypads == 0:
-    return len(_DIR_KEYPAD_PATHS.get((start, end))[0])  # All shortest path(s) have same length.
+    return len(_DIR_KEYPAD_PATHS.get((start_key, end_key))[0])  # All shortest path(s) have same length.
   min_button_presses = 1000000000000000
-  paths = _NUMPAD_PATHS if remaining_dir_keypads == num_dir_keypads else _DIR_KEYPAD_PATHS
-  for path in paths.get((start, end)):
+  key_paths = _NUMPAD_PATHS if remaining_dir_keypads == num_dir_keypads else _DIR_KEYPAD_PATHS
+  for key_pair_path in key_paths.get((start_key, end_key)):
     button_presses = 0
-    last_key = 'A'
-    for key in path:
-      button_presses += _shortest_sequence_length(start=last_key, end=key, num_dir_keypads=num_dir_keypads,
+    last_key = 'A'  # Important for recursion and memoize: robot movements start and end at the 'A' key!
+    for target_key in key_pair_path:
+      button_presses += _shortest_sequence_length(start_key=last_key, end_key=target_key,
+                                                  num_dir_keypads=num_dir_keypads,
                                                   remaining_dir_keypads=remaining_dir_keypads - 1)
-      last_key = key
+      last_key = target_key
     min_button_presses = min(min_button_presses, button_presses)
   return min_button_presses
 
@@ -120,12 +121,12 @@ def get_complexity(door_code: str, num_dir_keypads: int = 2) -> int:
   """Returns the complexity of a door code.
   The complexity is minimum button presses required multiplied by the numeric part of the door code."""
   min_button_presses = 0
-  last_key = 'A'
-  for key in door_code:
-    min_button_presses += _shortest_sequence_length(start=last_key, end=key,
+  last_key = 'A'  # Robot arm always starts at 'A' in the numpad.
+  for target_key in door_code:
+    min_button_presses += _shortest_sequence_length(start_key=last_key, end_key=target_key,
                                                     num_dir_keypads=num_dir_keypads,
                                                     remaining_dir_keypads=num_dir_keypads)
-    last_key = key
+    last_key = target_key
   return min_button_presses * int(door_code[:-1])
 
 
