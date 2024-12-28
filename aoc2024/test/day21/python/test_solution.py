@@ -31,6 +31,9 @@ class TestSolution(AdventOfCodeTestCase):
   def test_totalComplexity_withPuzzleInput_success(self):
     self.assertEqual(177814, get_total_complexity(self.input))
 
+  def test_totalComplexity_withMoreRobots_withInput_success(self):
+    self.assertEqual(220493992841852, get_total_complexity(self.input, num_dir_keypads=25))
+
 
 if __name__ == '__main__':
   unittest.main()

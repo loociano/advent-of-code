@@ -14,6 +14,7 @@
 from typing import Sequence
 from collections import deque, defaultdict
 from itertools import product
+from functools import cache
 from common.python3.types import Position
 
 type KeyPad = tuple[tuple[str, str, str], ...]
@@ -43,26 +44,17 @@ def char_at(keypad: KeyPad, pos: Position) -> str:
   return keypad[pos[1]][pos[0]]
 
 
+def within_bounds(keypad: KeyPad, pos: Position) -> bool:
+  """Returns true if a position is valid in a given keypad."""
+  return 0 <= pos[0] < len(keypad[0]) and 0 <= pos[1] < len(keypad)
+
+
 def get_pos(keypad: KeyPad, key_value: str) -> Position:
   for y in range(len(keypad)):
     for x in range(len(keypad[0])):
       if keypad[y][x] == key_value:
         return x, y
   raise ValueError(f'Could not find {key_value} in keypad!')
-
-
-def within_bounds(keypad: KeyPad, pos: Position) -> bool:
-  return 0 <= pos[0] < len(keypad[0]) and 0 <= pos[1] < len(keypad)
-
-
-def _calculate_paths_between_numerical_keys() -> dict[(str, str), list[Path]]:
-  """Returns shortest path(s) between keys in the numerical keypad."""
-  return _calculate_paths_between_keys(keypad=_NUMPAD, keys=('0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A'))
-
-
-def _calculate_paths_between_directional_keys() -> dict[(str, str), list[Path]]:
-  """Returns shortest path(s) between keys in the directional keypad."""
-  return _calculate_paths_between_keys(keypad=_DIR_KEYPAD, keys=('A', '^', 'v', '<', '>'))
 
 
 def _calculate_paths_between_keys(keypad: KeyPad, keys: tuple[str, ...]) -> dict[(str, str), list[Path]]:
@@ -93,20 +85,32 @@ def _calculate_paths_between_keys(keypad: KeyPad, keys: tuple[str, ...]) -> dict
   return directional_paths
 
 
-def _shortest_sequence_length(start: str, end: str, num_dir_keypads: int, remaining_dir_keypads: int,
-                              numpad_paths: dict[(str, str), list[Path]],
-                              directional_paths: dict[(str, str), list[Path]]) -> int:
+def _calculate_paths_between_numerical_keys() -> dict[(str, str), list[Path]]:
+  """Returns shortest path(s) between keys in the numerical keypad."""
+  return _calculate_paths_between_keys(keypad=_NUMPAD, keys=('0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A'))
+
+
+def _calculate_paths_between_directional_keys() -> dict[(str, str), list[Path]]:
+  """Returns shortest path(s) between keys in the directional keypad."""
+  return _calculate_paths_between_keys(keypad=_DIR_KEYPAD, keys=('A', '^', 'v', '<', '>'))
+
+
+_NUMPAD_PATHS = _calculate_paths_between_numerical_keys()
+_DIR_KEYPAD_PATHS = _calculate_paths_between_directional_keys()
+
+
+@cache
+def _shortest_sequence_length(start: str, end: str, num_dir_keypads: int, remaining_dir_keypads: int) -> int:
   if remaining_dir_keypads == 0:
-    return len(directional_paths.get((start, end))[0])  # All shortest path(s) have same length.
-  min_button_presses = 1000000000
-  paths = numpad_paths if remaining_dir_keypads == num_dir_keypads else directional_paths
+    return len(_DIR_KEYPAD_PATHS.get((start, end))[0])  # All shortest path(s) have same length.
+  min_button_presses = 1000000000000000
+  paths = _NUMPAD_PATHS if remaining_dir_keypads == num_dir_keypads else _DIR_KEYPAD_PATHS
   for path in paths.get((start, end)):
     button_presses = 0
     last_key = 'A'
     for key in path:
       button_presses += _shortest_sequence_length(start=last_key, end=key, num_dir_keypads=num_dir_keypads,
-                                                  remaining_dir_keypads=remaining_dir_keypads - 1,
-                                                  numpad_paths=numpad_paths, directional_paths=directional_paths)
+                                                  remaining_dir_keypads=remaining_dir_keypads - 1)
       last_key = key
     min_button_presses = min(min_button_presses, button_presses)
   return min_button_presses
@@ -115,16 +119,12 @@ def _shortest_sequence_length(start: str, end: str, num_dir_keypads: int, remain
 def get_complexity(door_code: str, num_dir_keypads: int = 2) -> int:
   """Returns the complexity of a door code.
   The complexity is minimum button presses required multiplied by the numeric part of the door code."""
-  numpad_paths = _calculate_paths_between_numerical_keys()
-  directional_paths = _calculate_paths_between_directional_keys()
   min_button_presses = 0
   last_key = 'A'
   for key in door_code:
     min_button_presses += _shortest_sequence_length(start=last_key, end=key,
                                                     num_dir_keypads=num_dir_keypads,
-                                                    remaining_dir_keypads=num_dir_keypads,
-                                                    numpad_paths=numpad_paths,
-                                                    directional_paths=directional_paths)
+                                                    remaining_dir_keypads=num_dir_keypads)
     last_key = key
   return min_button_presses * int(door_code[:-1])
 
