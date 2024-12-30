@@ -29,8 +29,8 @@ def _are_interconnected(a: str, b: str, c: str, computers: dict[str, set[str]]) 
   return {b, c}.issubset(computers.get(a)) and {a, c}.issubset(computers.get(b)) and {a, b}.issubset(computers.get(c))
 
 
-def _match_any(a, b, c, predicate: Callable) -> bool:
-  return predicate(a) or predicate(b) or predicate(c)
+def _match_any(*args, predicate: Callable) -> bool:
+  return any(predicate(computer) for computer in args)
 
 
 def count_computer_sets(connections: Sequence[str], starts_with: str) -> int:
