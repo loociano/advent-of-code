@@ -51,4 +51,4 @@ def find_lan_password(connections: Sequence[str]) -> str:
   maximal_cliques = []
   find_maximal_cliques(r=set(), p=set(computers.keys()), x=set(), graph=computers, maximal_cliques=maximal_cliques)
   maximum_clique = max(maximal_cliques, key=len)  # Find the set with most interconnected computers.
-  return ','.join(maximum_clique)
+  return ','.join(sorted(maximum_clique))

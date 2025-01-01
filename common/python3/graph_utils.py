@@ -52,7 +52,7 @@ def shortest_distance_bfs(grid: list[list[str]], visited: set[Position] = None,
 
 
 def find_maximal_cliques(r: set[str], p: set[str], x: set[str],
-                         graph: dict[str, set[str]], maximal_cliques: list[tuple[str, ...]]) -> None:
+                         graph: dict[str, set[str]], maximal_cliques: list[set[str]]) -> None:
   """Finds maximal cliques in an undirected graph.
   Example usage:
   graph: dict[str, set[str]]
@@ -69,10 +69,12 @@ def find_maximal_cliques(r: set[str], p: set[str], x: set[str],
   #     X := X ⋃ {v}
   if not p and not x:
     # R is a maximal clique.
-    maximal_cliques.append(tuple(sorted(r)))
+    if len(r) > 2:  # Skip 1-vertex cliques (vertices) 2-vertex cliques (edges).
+      maximal_cliques.append(set(r))  # Copy R.
     return
   # Choose a pivot vertex u in P ⋃ X.
-  (d, pivot) = max([(len(graph[v]), v) for v in p.union(x)])
+  # Prefer pivots with more edges.
+  _, pivot = max([(len(graph[v]), v) for v in p.union(x)])
   # For each vertex v in P \ N(u) do:
   for v in p.difference(graph[pivot]):
     find_maximal_cliques(r=r.union({v}), p=p.intersection(graph[v]), x=x.intersection(graph[v]),
