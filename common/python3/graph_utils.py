@@ -49,3 +49,33 @@ def shortest_distance_bfs(grid: list[list[str]], visited: set[Position] = None,
         visited.add(next_pos)
         queue.append((next_pos, level + 1))
   raise ValueError('Could not reach the exit.')
+
+
+def find_maximal_cliques(r: set[str], p: set[str], x: set[str],
+                         graph: dict[str, set[str]], maximal_cliques: list[tuple[str, ...]]) -> None:
+  """Finds maximal cliques in an undirected graph.
+  Example usage:
+  graph: dict[str, set[str]]
+  find_cliques(r=set(), p=set(graph.keys()), x=set(), graph=graph, maximal_cliques=[])
+  """
+  # https://en.wikipedia.org/wiki/Bron%E2%80%93Kerbosch_algorithm#With_pivoting
+  # algorithm BronKerbosch2(R, P, X) is
+  #   if P and X are both empty then
+  #     report R as a maximal clique
+  #   choose a pivot vertex u in P ⋃ X
+  #   for each vertex v in P \ N(u) do
+  #     BronKerbosch2(R ⋃ {v}, P ⋂ N(v), X ⋂ N(v))
+  #     P := P \ {v}
+  #     X := X ⋃ {v}
+  if not p and not x:
+    # R is a maximal clique.
+    maximal_cliques.append(tuple(sorted(r)))
+    return
+  # Choose a pivot vertex u in P ⋃ X.
+  (d, pivot) = max([(len(graph[v]), v) for v in p.union(x)])
+  # For each vertex v in P \ N(u) do:
+  for v in p.difference(graph[pivot]):
+    find_maximal_cliques(r=r.union({v}), p=p.intersection(graph[v]), x=x.intersection(graph[v]),
+                         graph=graph, maximal_cliques=maximal_cliques)
+    p.remove(v)
+    x.add(v)

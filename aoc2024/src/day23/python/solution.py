@@ -14,6 +14,7 @@
 from typing import Callable, Sequence
 from collections import defaultdict
 from itertools import combinations
+from common.python3.graph_utils import find_maximal_cliques
 
 
 def _build_computer_graph(connections: Sequence[str]) -> dict[str, set[str]]:
@@ -34,33 +35,6 @@ def _match_any(*computer_names: str, predicate: Callable) -> bool:
   return any(predicate(name) for name in computer_names)
 
 
-def _find_cliques(r: set[str], p: set[str], x: set[str],
-                  graph: dict[str, set[str]], cliques: list[tuple[str, ...]]) -> None:
-  # https://en.wikipedia.org/wiki/Bron%E2%80%93Kerbosch_algorithm#With_pivoting
-  # algorithm BronKerbosch2(R, P, X) is
-  #   if P and X are both empty then
-  #     report R as a maximal clique
-  #   choose a pivot vertex u in P ⋃ X
-  #   for each vertex v in P \ N(u) do
-  #     BronKerbosch2(R ⋃ {v}, P ⋂ N(v), X ⋂ N(v))
-  #     P := P \ {v}
-  #     X := X ⋃ {v}
-  if not p and not x:
-    # Report R as the maximal clique.
-    if len(r) > 2:
-      cliques.append(tuple(sorted(r)))
-    return
-  # Choose a pivot vertex u in P ⋃ X.
-  (d, pivot) = max([(len(graph[v]), v) for v in p.union(x)])
-  # For each vertex v in P \ N(u) do:
-  for v in p.difference(graph[pivot]):
-    _find_cliques(r=r.union({v}), p=p.intersection(graph[v]), x=x.intersection(graph[v]),
-                  graph=graph,
-                  cliques=cliques)
-    p.remove(v)
-    x.add(v)
-
-
 def count_computer_sets(connections: Sequence[str], starts_with: str) -> int:
   computers = _build_computer_graph(connections)
   return sum(1
@@ -74,7 +48,7 @@ def find_lan_password(connections: Sequence[str]) -> str:
   """Returns the LAN password.
   LAN Password is the alphabetical, comma-separated names of the largest set of interconnected computers."""
   computers = _build_computer_graph(connections)
-  cliques = []
-  _find_cliques(r=set(), p=set(computers.keys()), x=set(), graph=computers, cliques=cliques)
-  max_clique = max(cliques, key=len)  # Find the set with most computers.
-  return ','.join(max_clique)
+  maximal_cliques = []
+  find_maximal_cliques(r=set(), p=set(computers.keys()), x=set(), graph=computers, maximal_cliques=maximal_cliques)
+  maximum_clique = max(maximal_cliques, key=len)  # Find the set with most interconnected computers.
+  return ','.join(maximum_clique)
