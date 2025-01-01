@@ -20,8 +20,8 @@ type GateOp = tuple[str, str, str]
 def _parse_input(input: Sequence[str]) -> tuple[
   dict[str, list[str | GateOp]], dict[str | GateOp, int], dict[str, GateOp]]:
   graph = defaultdict(list)  # Adjacency list.
-  initial_values = dict()
-  ends = dict()
+  initial_values = dict()  # Wires with initial values.
+  ends = dict()  # Reverse map with gate output as keys and gate inputs as values.
   is_initial_values = True
   for line in input:
     if line == '':
@@ -52,6 +52,7 @@ def _get_in_degrees(graph: dict[str, list[str]]) -> dict[str, int]:
 
 def _topological_sort(graph: dict[str, list[str]]) -> list[str]:
   """Returns nodes in a graph in topological order."""
+  # https://en.wikipedia.org/wiki/Topological_sorting#Kahn's_algorithm
   queue = deque()  # Stores vertices with in_degree=0.
   in_degrees = _get_in_degrees(graph)
   for wire, in_degree in in_degrees.items():
@@ -70,8 +71,7 @@ def _topological_sort(graph: dict[str, list[str]]) -> list[str]:
 
 def get_output(input: Sequence[str]) -> int:
   graph, wire_values, ends = _parse_input(input)
-  order = _topological_sort(graph)
-  for task in order:
+  for task in _topological_sort(graph):
     if type(task) is tuple:  # Is a logic gate.
       wire1, gate, wire2 = task
       if gate == 'AND':
@@ -82,7 +82,7 @@ def get_output(input: Sequence[str]) -> int:
         wire_values[task] = wire_values[wire1] ^ wire_values[wire2]
     elif task in ends:
       wire_values[task] = wire_values[ends.get(task)]
-  result = []
+  result = []  # Will contain pairs of z-wires and their values, example: ('z00', 1).
   for name, value in wire_values.items():
     if type(name) is str and name.startswith('z'):
       result.append((name, value))
