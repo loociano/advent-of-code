@@ -14,7 +14,7 @@
 import unittest
 
 from common.python3.AdventOfCodeTestCase import AdventOfCodeTestCase
-from aoc2024.src.day23.python.solution import count_computer_sets
+from aoc2024.src.day23.python.solution import count_computer_sets, find_lan_password
 
 
 class TestSolution(AdventOfCodeTestCase):
@@ -27,6 +27,12 @@ class TestSolution(AdventOfCodeTestCase):
 
   def test_part1_withPuzzleInput_success(self):
     self.assertEqual(1344, count_computer_sets(connections=self.input, starts_with='t'))
+
+  def test_part2_withExample_success(self):
+    self.assertEqual('co,de,ka,ta', find_lan_password(connections=self.examples[0]))
+
+  def test_part2_withPuzzleInput_success(self):
+    self.assertEqual('ab,al,cq,cr,da,db,dr,fw,ly,mn,od,py,uh', find_lan_password(connections=self.input))
 
 
 if __name__ == '__main__':
