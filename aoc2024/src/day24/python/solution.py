@@ -69,8 +69,18 @@ def _topological_sort(graph: dict[str, list[str]]) -> list[str]:
   return result
 
 
+def _wires_to_integer(wire_values: dict[str | GateOp, int], wire_prefix: str) -> int:
+  result = []  # Will contain pairs of z-wires and their values, example: ('z00', 1).
+  for name, value in wire_values.items():
+    if type(name) is str and name.startswith(wire_prefix):
+      result.append((name, value))
+  return int(''.join([str(value) for _, value in sorted(result, reverse=True)]), 2)
+
+
 def get_output(input: Sequence[str]) -> int:
   graph, wire_values, ends = _parse_input(input)
+  print(f'x={_wires_to_integer(wire_values, wire_prefix='x')}')
+  print(f'y={_wires_to_integer(wire_values, wire_prefix='y')}')
   for task in _topological_sort(graph):
     if type(task) is tuple:  # Is a logic gate.
       wire1, gate, wire2 = task
@@ -82,8 +92,4 @@ def get_output(input: Sequence[str]) -> int:
         wire_values[task] = wire_values[wire1] ^ wire_values[wire2]
     elif task in ends:
       wire_values[task] = wire_values[ends.get(task)]
-  result = []  # Will contain pairs of z-wires and their values, example: ('z00', 1).
-  for name, value in wire_values.items():
-    if type(name) is str and name.startswith('z'):
-      result.append((name, value))
-  return int(''.join([str(value) for _, value in sorted(result, reverse=True)]), 2)
+  return _wires_to_integer(wire_values=wire_values, wire_prefix='z')
