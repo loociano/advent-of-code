@@ -14,9 +14,6 @@
 from typing import Callable, Sequence
 from collections import defaultdict
 from itertools import combinations
-from functools import cache
-
-computers = defaultdict(set)
 
 
 def _build_computer_graph(connections: Sequence[str]) -> dict[str, set[str]]:
@@ -28,10 +25,9 @@ def _build_computer_graph(connections: Sequence[str]) -> dict[str, set[str]]:
   return computers
 
 
-@cache
-def _are_interconnected(a: str, b: str, c: str) -> bool:
+def _are_interconnected(a: str, b: str, c: str, graph: dict[str, set[str]]) -> bool:
   """Returns True iff computers a, b and c are interconnected."""
-  return {b, c}.issubset(computers.get(a)) and {a, c}.issubset(computers.get(b)) and {a, b}.issubset(computers.get(c))
+  return {b, c}.issubset(graph.get(a)) and {a, c}.issubset(graph.get(b)) and {a, b}.issubset(graph.get(c))
 
 
 def _match_any(*computer_names: str, predicate: Callable) -> bool:
@@ -66,10 +62,9 @@ def _find_cliques(r: set[str], p: set[str], x: set[str],
 
 
 def count_computer_sets(connections: Sequence[str], starts_with: str) -> int:
-  global computers
   computers = _build_computer_graph(connections)
   return sum(1
-             if (_are_interconnected(a, b, c)
+             if (_are_interconnected(a, b, c, graph=computers)
                  and _match_any(a, b, c, predicate=lambda x: x.startswith(starts_with)))
              else 0
              for a, b, c in combinations(computers.keys(), r=3))
@@ -78,7 +73,6 @@ def count_computer_sets(connections: Sequence[str], starts_with: str) -> int:
 def find_lan_password(connections: Sequence[str]) -> str:
   """Returns the LAN password.
   LAN Password is the alphabetical, comma-separated names of the largest set of interconnected computers."""
-  global computers
   computers = _build_computer_graph(connections)
   cliques = []
   _find_cliques(r=set(), p=set(computers.keys()), x=set(), graph=computers, cliques=cliques)
