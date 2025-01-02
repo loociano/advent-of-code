@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 import os
+import re
 import unittest
 
 from os import path
@@ -35,7 +36,7 @@ def _read(file_path: str, read_raw: bool = False) -> tuple[str, ...] | str:
 class AdventOfCodeTestCase(unittest.TestCase):
   EXAMPLE_TEMPLATE = 'example{}.txt'
 
-  def __init__(self, year: int, day: int, *args, **kwargs) -> None:
+  def __init__(self, test_filepath, *args, **kwargs) -> None:
     """Initializes AoC Test Case, reading example(s) and puzzle input.
 
     Args:
@@ -50,6 +51,9 @@ class AdventOfCodeTestCase(unittest.TestCase):
       read_raw = False
     super(AdventOfCodeTestCase, self).__init__(*args, **kwargs)
     self._inputs_directory = __file__[:__file__.index('advent-of-code')] + 'advent-of-code\\advent-of-code-inputs\\'
+    matches = re.search(r'aoc(\d{4}).*day(\d{2})', test_filepath)
+    year = int(matches[1])
+    day = int(matches[2])
     self.examples = tuple(_read(
       file_path=self._get_path(year=year, day=day, filename=self.EXAMPLE_TEMPLATE.format(num)),
       read_raw=read_raw)
