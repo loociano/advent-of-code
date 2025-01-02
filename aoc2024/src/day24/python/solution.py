@@ -13,12 +13,14 @@
 # limitations under the License.
 from typing import Sequence
 from collections import defaultdict, deque
+from itertools import product
+import graphviz
 
 type GateOp = tuple[str, str, str]
 
 
 def _parse_input(input: Sequence[str]) -> tuple[
-  dict[str, list[str | GateOp]], dict[str | GateOp, int], dict[str, GateOp]]:
+  dict[str | GateOp, list[str | GateOp]], dict[str | GateOp, int], dict[str, GateOp]]:
   graph = defaultdict(list)  # Adjacency list.
   initial_values = dict()  # Wires with initial values.
   ends = dict()  # Reverse map with gate output as keys and gate inputs as values.
@@ -77,10 +79,9 @@ def _wires_to_integer(wire_values: dict[str | GateOp, int], wire_prefix: str) ->
   return int(''.join([str(value) for _, value in sorted(result, reverse=True)]), 2)
 
 
-def get_output(input: Sequence[str]) -> int:
-  graph, wire_values, ends = _parse_input(input)
-  print(f'x={_wires_to_integer(wire_values, wire_prefix='x')}')
-  print(f'y={_wires_to_integer(wire_values, wire_prefix='y')}')
+def _calculate(graph: dict[str | GateOp, list[str | GateOp]],
+               wire_values: dict[str | GateOp, int],
+               ends: dict[str, GateOp]) -> None:
   for task in _topological_sort(graph):
     if type(task) is tuple:  # Is a logic gate.
       wire1, gate, wire2 = task
@@ -92,4 +93,48 @@ def get_output(input: Sequence[str]) -> int:
         wire_values[task] = wire_values[wire1] ^ wire_values[wire2]
     elif task in ends:
       wire_values[task] = wire_values[ends.get(task)]
+
+
+def get_output(input: Sequence[str]) -> int:
+  graph, wire_values, ends = _parse_input(input)
+  _calculate(graph=graph, wire_values=wire_values, ends=ends)
   return _wires_to_integer(wire_values=wire_values, wire_prefix='z')
+
+
+def _swap(a: str, b: str, graph: dict[str | GateOp, list[str | GateOp]], ends: dict[str, GateOp]) -> None:
+  for adj_list in graph.values():
+    if len(adj_list) == 1 and adj_list[0] == a:
+      adj_list[0] = ''
+  for adj_list in graph.values():
+    if len(adj_list) == 1 and adj_list[0] == b:
+      adj_list[0] = a
+  for adj_list in graph.values():
+    if len(adj_list) == 1 and adj_list[0] == '':
+      adj_list[0] = b
+  tmp = ends[a]
+  ends[a] = ends[b]
+  ends[b] = tmp
+
+
+def _print_graphviz(graph: dict[str | GateOp, list[str | GateOp]]) -> None:
+  """Prints graph as Graphviz DOT."""
+  dot = graphviz.Digraph()
+  for key, values in graph.items():
+    for value in values:
+      dot.edge(str(key), str(value))
+  print(dot.source)
+
+
+def find_wrong_output_wires(input: Sequence[str], swaps: tuple[tuple[str, str], ...], operation: str = '&') -> str:
+  graph, wire_values, ends = _parse_input(input)
+  # _print_graphviz(graph)
+  x = _wires_to_integer(wire_values, wire_prefix='x')
+  y = _wires_to_integer(wire_values, wire_prefix='y')
+  for swap in swaps:
+    _swap(a=swap[0], b=swap[1], graph=graph, ends=ends)
+  _calculate(graph=graph, wire_values=wire_values, ends=ends)
+  z = _wires_to_integer(wire_values=wire_values, wire_prefix='z')
+  expected = eval(f'{x} {operation} {y}')
+  if expected == z:
+    return ','.join(sorted(([wire for swap in swaps for wire in swap])))
+  raise ValueError('Could not find wrong wires!')
