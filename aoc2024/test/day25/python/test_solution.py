@@ -19,7 +19,7 @@ from aoc2024.src.day25.python.solution import count_unique_lock_key_pairs
 
 class TestSolution(AdventOfCodeTestCase):
   def __init__(self, *args, **kwargs):
-    (super(TestSolution, self).__init__(__file__, *args,
+    (super(TestSolution, self).__init__(2024, 25, *args,
                                         **kwargs))
 
   def test_part1_withExample_success(self):
