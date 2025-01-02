@@ -1,0 +1,3 @@
+[submodule "advent-of-code-inputs"]
+	path = advent-of-code-inputs
+	url = https://github.com/loociano/advent-of-code-inputs.git
