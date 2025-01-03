@@ -19,7 +19,7 @@ from aoc2024.src.day09.python.solution import checksum
 
 class TestDaySolution(AdventOfCodeTestCase):
   def __init__(self, *args, **kwargs):
-    super().__init__(__file__, read_raw=True, *args, **kwargs)
+    super().__init__(__file__, *args, **kwargs)
 
   def test_part1_withExample_checksums(self):
     self.assertEqual(60, checksum('12345'))
@@ -28,7 +28,7 @@ class TestDaySolution(AdventOfCodeTestCase):
     self.assertEqual(1928, checksum('2333133121414131402'))
 
   def test_part1_withPuzzleInput_checksums(self):
-    self.assertEqual(6448989155953, checksum(self.input))
+    self.assertEqual(6448989155953, checksum(self.input[0]))
 
   def test_part2_withExample_checksums(self):
     self.assertEqual(132, checksum('12345', move_whole_files=True))
@@ -37,7 +37,7 @@ class TestDaySolution(AdventOfCodeTestCase):
     self.assertEqual(2858, checksum('2333133121414131402', move_whole_files=True))
 
   def test_part2_withPuzzleInput_checksums(self):
-    self.assertEqual(6476642796832, checksum(self.input, move_whole_files=True))
+    self.assertEqual(6476642796832, checksum(self.input[0], move_whole_files=True))
 
 
 if __name__ == '__main__':

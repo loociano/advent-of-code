@@ -19,7 +19,7 @@ from aoc2024.src.day11.python.solution import count_stones
 
 class TestDaySolution(AdventOfCodeTestCase):
   def __init__(self, *args, **kwargs):
-    super().__init__(__file__, read_raw=True, *args, **kwargs)
+    super().__init__(__file__, *args, **kwargs)
 
   def test_part1_withOneBlink_counts(self):
     self.assertEqual(7, count_stones(initial_state='0 1 10 99 999', blinks=1))
@@ -35,12 +35,12 @@ class TestDaySolution(AdventOfCodeTestCase):
 
   def test_part1_withPuzzleInput_counts(self):
     self.assertEqual(203457, count_stones(
-      initial_state=self.input,
+      initial_state=self.input[0],
       blinks=25))
 
   def test_part2_withPuzzleInput_counts(self):
     self.assertEqual(241394363462435, count_stones(
-      initial_state=self.input,
+      initial_state=self.input[0],
       blinks=75))
 
 
