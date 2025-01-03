@@ -17,9 +17,9 @@ from aoc2024.src.day06.python.solution import count_distinct_positions, count_po
 from common.python3.AdventOfCodeTestCase import AdventOfCodeTestCase
 
 
-class TestDay06Solution(AdventOfCodeTestCase):
+class TestDaySolution(AdventOfCodeTestCase):
   def __init__(self, *args, **kwargs):
-    (super(TestDay06Solution, self).__init__(__file__, *args, **kwargs))
+    super().__init__(__file__, *args, **kwargs)
 
   def test_part1_withExample_counts(self):
     self.assertEqual(41, count_distinct_positions(self.examples[0]))

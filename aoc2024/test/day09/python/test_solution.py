@@ -17,9 +17,9 @@ from common.python3.AdventOfCodeTestCase import AdventOfCodeTestCase
 from aoc2024.src.day09.python.solution import checksum
 
 
-class TestDay09Solution(AdventOfCodeTestCase):
+class TestDaySolution(AdventOfCodeTestCase):
   def __init__(self, *args, **kwargs):
-    (super(TestDay09Solution, self).__init__(__file__, read_raw=True, *args, **kwargs))
+    super().__init__(__file__, read_raw=True, *args, **kwargs)
 
   def test_part1_withExample_checksums(self):
     self.assertEqual(60, checksum('12345'))

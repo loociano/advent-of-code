@@ -17,10 +17,9 @@ from aoc2024.src.day03.python.solution import calculate, calculate2
 from common.python3.AdventOfCodeTestCase import AdventOfCodeTestCase
 
 
-class TestDay03Solution(AdventOfCodeTestCase):
+class TestDaySolution(AdventOfCodeTestCase):
   def __init__(self, *args, **kwargs):
-    (super(TestDay03Solution, self)
-     .__init__(__file__, read_raw=True, *args, **kwargs))
+    super().__init__(__file__, read_raw=True, *args, **kwargs)
 
   def test_part1_withExample_calculates(self):
     self.assertEqual(161, calculate(self.examples[0]))

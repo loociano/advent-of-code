@@ -17,9 +17,9 @@ from aoc2024.src.day02.python.solution import num_safe_reports
 from common.python3.AdventOfCodeTestCase import AdventOfCodeTestCase
 
 
-class TestDay01Solution(AdventOfCodeTestCase):
+class TestDaySolution(AdventOfCodeTestCase):
   def __init__(self, *args, **kwargs):
-    super(TestDay01Solution, self).__init__(__file__, *args, **kwargs)
+    super().__init__(__file__, *args, **kwargs)
 
   def test_part1_withExample_getsNumSafeReports(self):
     self.assertEqual(2, num_safe_reports(self.examples[0]))

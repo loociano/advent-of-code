@@ -17,9 +17,9 @@ from aoc2024.src.day01.python.solution import calculate_distance, calculate_simi
 from common.python3.AdventOfCodeTestCase import AdventOfCodeTestCase
 
 
-class TestDay01Solution(AdventOfCodeTestCase):
+class TestDaySolution(AdventOfCodeTestCase):
   def __init__(self, *args, **kwargs):
-    super(TestDay01Solution, self).__init__(__file__, *args, **kwargs)
+    super().__init__(__file__, *args, **kwargs)
 
   def test_part1_withExample_calculatesDistance(self):
     self.assertEqual(11, calculate_distance(self.examples[0]))

@@ -17,9 +17,9 @@ from common.python3.AdventOfCodeTestCase import AdventOfCodeTestCase
 from aoc2024.src.day08.python.solution import count_antinodes
 
 
-class TestDay08Solution(AdventOfCodeTestCase):
+class TestDaySolution(AdventOfCodeTestCase):
   def __init__(self, *args, **kwargs):
-    (super(TestDay08Solution, self).__init__(__file__, *args, **kwargs))
+    super().__init__(__file__, *args, **kwargs)
 
   def test_part1_withExample_counts(self):
     self.assertEqual(14, count_antinodes(self.examples[0]))

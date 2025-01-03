@@ -17,9 +17,9 @@ from aoc2024.src.day07.python.solution import calc_calibration
 from common.python3.AdventOfCodeTestCase import AdventOfCodeTestCase
 
 
-class TestDay07Solution(AdventOfCodeTestCase):
+class TestDaySolution(AdventOfCodeTestCase):
   def __init__(self, *args, **kwargs):
-    (super(TestDay07Solution, self).__init__(__file__, *args, **kwargs))
+    super().__init__(__file__, *args, **kwargs)
 
   def test_part1_withExample_counts(self):
     self.assertEqual(3749, calc_calibration(self.examples[0]))

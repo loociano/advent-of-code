@@ -17,9 +17,9 @@ from aoc2024.src.day04.python.solution import count_xmas_words, count_xmas_shape
 from common.python3.AdventOfCodeTestCase import AdventOfCodeTestCase
 
 
-class TestDay04Solution(AdventOfCodeTestCase):
+class TestDaySolution(AdventOfCodeTestCase):
   def __init__(self, *args, **kwargs):
-    (super(TestDay04Solution, self).__init__(__file__, *args, **kwargs))
+    super().__init__(__file__, *args, **kwargs)
 
   def test_part1_withExample_counts(self):
     self.assertEqual(4, count_xmas_words(self.examples[0]))

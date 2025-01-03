@@ -17,9 +17,9 @@ from aoc2024.src.day05.python.solution import sum_middle_pages
 from common.python3.AdventOfCodeTestCase import AdventOfCodeTestCase
 
 
-class TestDay05Solution(AdventOfCodeTestCase):
+class TestDaySolution(AdventOfCodeTestCase):
   def __init__(self, *args, **kwargs):
-    (super(TestDay05Solution, self).__init__(__file__, *args, **kwargs))
+    super().__init__(__file__, *args, **kwargs)
 
   def test_part1_withExample_sums(self):
     self.assertEqual(143, sum_middle_pages(self.examples[0]))

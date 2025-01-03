@@ -49,7 +49,7 @@ class AdventOfCodeTestCase(unittest.TestCase):
       del kwargs['read_raw']
     else:
       read_raw = False
-    super(AdventOfCodeTestCase, self).__init__(*args, **kwargs)
+    super().__init__(*args, **kwargs)
     self._inputs_directory = __file__[:__file__.index('advent-of-code')] + 'advent-of-code\\advent-of-code-inputs\\'
     matches = re.search(r'aoc(\d{4}).*day(\d{2})', test_filepath)
     year = int(matches[1])

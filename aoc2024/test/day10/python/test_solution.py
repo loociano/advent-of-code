@@ -17,9 +17,9 @@ from common.python3.AdventOfCodeTestCase import AdventOfCodeTestCase
 from aoc2024.src.day10.python.solution import get_score_sum, get_rating_sum
 
 
-class TestDay09Solution(AdventOfCodeTestCase):
+class TestDaySolution(AdventOfCodeTestCase):
   def __init__(self, *args, **kwargs):
-    (super(TestDay09Solution, self).__init__(__file__, *args, **kwargs))
+    super().__init__(__file__, *args, **kwargs)
 
   def test_part1_withExample_getsScore(self):
     self.assertEqual(2, get_score_sum(self.examples[0]))
