@@ -18,6 +18,27 @@ import unittest
 from os import path
 from typing import Sequence
 
+_EXAMPLE_FILENAME_TEMPLATE = 'example{}.txt'
+
+
+def _get_path(root_dir: str, year: int, day: int, filename: str) -> str:
+  """Returns the expected filepath for a given AoC year and day."""
+  return os.path.join(os.path.dirname(root_dir), str(year), str(day), filename)
+
+
+def _find_num_examples(root_dir: str, year: int, day: int) -> int:
+  """Returns the number of examples given on a given day.
+
+  Examples are provided in addition to the puzzle input. Can be zero."""
+  num = 1
+  while True:
+    if path.exists(_get_path(root_dir=root_dir,
+                             year=year, day=day,
+                             filename=_EXAMPLE_FILENAME_TEMPLATE.format(num))):
+      num += 1
+    else:
+      return num - 1
+
 
 def _read(file_path: str) -> Sequence[str]:
   """Reads an ASCII file.
@@ -32,7 +53,6 @@ def _read(file_path: str) -> Sequence[str]:
 
 
 class AdventOfCodeTestCase(unittest.TestCase):
-  EXAMPLE_TEMPLATE = 'example{}.txt'
 
   def __init__(self, test_filepath, *args, **kwargs) -> None:
     """Initializes AoC Test Case, reading example(s) and puzzle input.
@@ -43,24 +63,16 @@ class AdventOfCodeTestCase(unittest.TestCase):
     Test cases can access self.examples tuple and self.input.
     """
     super().__init__(*args, **kwargs)
-    self._inputs_directory = __file__[:__file__.index('advent-of-code')] + 'advent-of-code\\advent-of-code-inputs\\'
+    inputs_directory = __file__[:__file__.index('advent-of-code')] + 'advent-of-code\\advent-of-code-inputs\\'
     matches = re.search(r'aoc(\d{4}).*day(\d{2})', test_filepath)
     year = int(matches[1])
     day = int(matches[2])
-    self.examples: Sequence[Sequence[str]] = (
-      tuple(_read(file_path=self._get_path(year=year, day=day, filename=self.EXAMPLE_TEMPLATE.format(num)))
-            for num in range(1, self._get_num_examples(year=year, day=day) + 1)))
-    input_path = self._get_path(year=year, day=day, filename='input.txt')
+    num_examples = _find_num_examples(root_dir=inputs_directory, year=year, day=day)
+    self.examples: Sequence[Sequence[str]] = tuple(
+      _read(file_path=_get_path(root_dir=inputs_directory,
+                                year=year, day=day,
+                                filename=_EXAMPLE_FILENAME_TEMPLATE.format(num)))
+      for num in range(1, num_examples + 1))  # Examples are numbered 1,2,3...
+    input_path = _get_path(root_dir=inputs_directory, year=year, day=day, filename='input.txt')
     if path.exists(input_path):
       self.input: Sequence[str] = _read(file_path=input_path)
-
-  def _get_num_examples(self, year: int, day: int) -> int:
-    num = 1
-    while True:
-      if path.exists(self._get_path(year=year, day=day, filename=self.EXAMPLE_TEMPLATE.format(num))):
-        num += 1
-      else:
-        return num - 1
-
-  def _get_path(self, year: int, day: int, filename: str) -> str:
-    return os.path.join(os.path.dirname(self._inputs_directory), str(year), str(day), filename)
