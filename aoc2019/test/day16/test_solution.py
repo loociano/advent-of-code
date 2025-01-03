@@ -18,13 +18,13 @@ from aoc2019.src.day16.solution import part_one, part_two
 
 class TestSolution(AdventOfCodeTestCase):
   def __init__(self, *args, **kwargs):
-    super(TestSolution, self).__init__(__file__, read_raw=True, *args, **kwargs)
+    super(TestSolution, self).__init__(__file__, *args, **kwargs)
 
   def test_part_one(self):
-    self.assertEqual('70856418', part_one(self.input, 100))
+    self.assertEqual('70856418', part_one(integers=self.input[0], target_phases=100))
 
   def test_part_two(self):
-    self.assertEqual('87766336', part_two(self.input, 100))
+    self.assertEqual('87766336', part_two(integers=self.input[0], target_phases=100))
 
 
 if __name__ == '__main__':

@@ -132,16 +132,16 @@ def bsf_min_steps(grid: Grid, portals_key_pos: dict, portals_key_name: dict, sta
   return -1  # could not find ZZ portal
 
 
-def _parse_grid(grid: str) -> Grid:
-  return tuple(tuple(line) for line in grid.split('\n'))
+def _parse_grid(grid: Sequence[str]) -> Grid:
+  return tuple(tuple(line) for line in grid)
 
-def part_one(grid: str) -> int:
-  grid = _parse_grid(grid)
+
+def part_one(grid: Sequence[str]) -> int:
   portals_key_pos, portals_key_name = find_portals(grid)
   return bsf_min_steps(grid, portals_key_pos, portals_key_name, find_start(grid))
 
 
-def part_two(grid: Grid) -> int:
+def part_two(grid: Sequence[str]) -> int:
   grid = _parse_grid(grid)
   portals_key_pos, portals_key_name = find_portals(grid)
   return bsf_min_steps(grid, portals_key_pos, portals_key_name, find_start(grid), True)

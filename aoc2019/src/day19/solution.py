@@ -87,8 +87,8 @@ def binary_search(program: Sequence[int], slope: float) -> int:
   return find_right_edge(program, y_high, y_high)
 
 
-def part_two(filename: str):
-  program = read_intcode(filename)
+def part_two(program: str):
+  program = read_intcode(program)
   slope = get_slope(program)
   x = binary_search(program, slope)
   y = ceil(x * slope)

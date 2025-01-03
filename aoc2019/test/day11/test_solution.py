@@ -18,10 +18,10 @@ from aoc2019.src.day11.solution import part_one
 
 class TestSolution(AdventOfCodeTestCase):
   def __init__(self, *args, **kwargs):
-    super(TestSolution, self).__init__(__file__, read_raw=True, *args, **kwargs)
+    super(TestSolution, self).__init__(__file__, *args, **kwargs)
 
   def test_part_one(self):
-    self.assertEqual(2373, part_one(program=self.input))
+    self.assertEqual(2373, part_one(program=self.input[0]))
 
   def test_part_two(self):
     # print(part_two(program=self.input))

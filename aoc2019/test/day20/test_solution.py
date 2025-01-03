@@ -18,7 +18,7 @@ from aoc2019.src.day20.solution import part_one, part_two
 
 class TestSolution(AdventOfCodeTestCase):
   def __init__(self, *args, **kwargs):
-    super(TestSolution, self).__init__(__file__, read_raw=True,*args, **kwargs)
+    super().__init__(__file__,*args, **kwargs)
 
   def test_case1(self):
     self.assertEqual(23, part_one(self.examples[0]))

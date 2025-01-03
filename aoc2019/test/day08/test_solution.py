@@ -18,10 +18,10 @@ from aoc2019.src.day08.solution import part_one, part_two
 
 class TestSolution(AdventOfCodeTestCase):
   def __init__(self, *args, **kwargs):
-    super(TestSolution, self).__init__(__file__, read_raw=True, *args, **kwargs)
+    super(TestSolution, self).__init__(__file__, *args, **kwargs)
 
   def test_part_one(self):
-    self.assertEqual(1965, part_one(input=self.input, width=25, height=6))
+    self.assertEqual(1965, part_one(input=self.input[0], width=25, height=6))
 
   def test_part_two(self):
     self.assertEqual(''.join([
@@ -30,7 +30,7 @@ class TestSolution(AdventOfCodeTestCase):
       'X      X  XX      X  X X \n',
       'X XX  X   X X     X   X  \n',
       'X  X X    X X  X  X   X  \n',
-      ' XXX XXXX X  X  XX    X  ']), part_two(input=self.input, width=25,
+      ' XXX XXXX X  X  XX    X  ']), part_two(input=self.input[0], width=25,
                                               height=6))  # GZKJY
 
 
