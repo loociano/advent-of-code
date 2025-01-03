@@ -19,18 +19,17 @@ from typing import Sequence, Tuple
 _CRATE_LENGTH = 3
 
 
-def _parse_stacks(drawing: str) -> Tuple[deque]:
-  lines = drawing.split('\n')
+def _parse_stacks(drawing: Sequence[str]) -> Sequence[deque]:
   stacks = []
-  bottom_crates = lines[-2]
+  bottom_crates = drawing[-2]
   for i in range(0, len(bottom_crates), _CRATE_LENGTH + 1):
     stack = deque()
     stack.append(bottom_crates[i + 1])
     stacks.append(stack)
   # Bottom to top, skip stack numbers and bottom line.
-  line_num = len(lines) - 3
+  line_num = len(drawing) - 3
   while line_num >= 0:
-    line = lines[line_num]
+    line = drawing[line_num]
     for i in range(0, len(line), _CRATE_LENGTH + 1):
       if line[i] == '[':  # There is a crate.
         stack_num = int(i / (_CRATE_LENGTH + 1))
@@ -39,7 +38,7 @@ def _parse_stacks(drawing: str) -> Tuple[deque]:
   return tuple(stacks)
 
 
-def _execute_procedure(procedure: Sequence[str], stacks: Tuple[deque],
+def _execute_procedure(procedure: Sequence[str], stacks: Sequence[deque],
                        keep_order: bool = False) -> None:
   """Executes procedure on stacks in-place."""
   for instruction in procedure:
@@ -65,11 +64,11 @@ def _execute_procedure(procedure: Sequence[str], stacks: Tuple[deque],
         stacks[dest].append(stacks[origin].pop())
 
 
-def _read_message(stacks: Tuple[deque]) -> str:
+def _read_message(stacks: Sequence[deque]) -> str:
   return ''.join([stack[-1] if len(stack) else '' for stack in stacks])
 
 
-def read_message_at_top(drawing_with_procedure: str,
+def read_message_at_top(drawing_with_procedure: Sequence[str],
                         keep_order: bool = False) -> str:
   """Reads message at the top of the crates after executing a procedure.
 
@@ -82,7 +81,9 @@ def read_message_at_top(drawing_with_procedure: str,
   Returns
     The message.
   """
-  drawing, procedure = drawing_with_procedure.split('\n\n')
+  separator_line_index = drawing_with_procedure.index('')
+  drawing = drawing_with_procedure[:separator_line_index]
+  procedure = drawing_with_procedure[separator_line_index + 1:]
   stacks = _parse_stacks(drawing)
-  _execute_procedure(procedure.split('\n'), stacks, keep_order)
+  _execute_procedure(procedure, stacks, keep_order)
   return _read_message(stacks)

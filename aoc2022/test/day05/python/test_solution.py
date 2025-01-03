@@ -19,10 +19,7 @@ from common.python3.AdventOfCodeTestCase import AdventOfCodeTestCase
 
 class TestDay05Solution(AdventOfCodeTestCase):
   def __init__(self, *args, **kwargs):
-    super(TestDay05Solution, self).__init__(
-      __file__,
-      read_raw=True,
-      *args, **kwargs)
+    super().__init__(__file__, *args, **kwargs)
 
   def test_part1_withExampleInput_returnsMessage(self):
     self.assertEqual('CMZ', read_message_at_top(self.examples[0]))
