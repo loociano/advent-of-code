@@ -30,7 +30,7 @@ def _read(file_path: str, read_raw: bool = False) -> tuple[str, ...] | str:
   with open(file_path) as file:
     if read_raw:
       return file.read()
-    return tuple(x.strip() for x in file.readlines())
+    return tuple(line.rstrip('\n') for line in file.readlines())
 
 
 class AdventOfCodeTestCase(unittest.TestCase):
