@@ -40,15 +40,16 @@ def _find_num_examples(root_dir: str, year: int, day: int) -> int:
       return num - 1
 
 
-def _read(file_path: str) -> Sequence[str]:
+def _read_file_lines(filepath: str) -> Sequence[str]:
   """Reads an ASCII file.
 
   Args
-    file_path: location of the file to read.
+    filepath: location of the file to read.
   Returns:
     File content lines.
   """
-  with open(file_path) as file:
+  with open(filepath) as file:
+    # Only remove new line characters.
     return tuple(line.rstrip('\n') for line in file.readlines())
 
 
@@ -69,10 +70,10 @@ class AdventOfCodeTestCase(unittest.TestCase):
     day = int(matches[2])
     num_examples = _find_num_examples(root_dir=inputs_directory, year=year, day=day)
     self.examples: Sequence[Sequence[str]] = tuple(
-      _read(file_path=_get_path(root_dir=inputs_directory,
+      _read_file_lines(filepath=_get_path(root_dir=inputs_directory,
                                 year=year, day=day,
                                 filename=_EXAMPLE_FILENAME_TEMPLATE.format(num)))
       for num in range(1, num_examples + 1))  # Examples are numbered 1,2,3...
     input_path = _get_path(root_dir=inputs_directory, year=year, day=day, filename='input.txt')
     if path.exists(input_path):
-      self.input: Sequence[str] = _read(file_path=input_path)
+      self.input: Sequence[str] = _read_file_lines(filepath=input_path)
