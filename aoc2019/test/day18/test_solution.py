@@ -12,22 +12,23 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 import unittest
-
-from aoc2019.src.common.file_utils import get_path
+from common.python3.AdventOfCodeTestCase import AdventOfCodeTestCase
 from aoc2019.src.day18.solution import part_one
 
 
-class TestDay18(unittest.TestCase):
+class TestSolution(AdventOfCodeTestCase):
+  def __init__(self, *args, **kwargs):
+    super(TestSolution, self).__init__(__file__, *args, **kwargs)
 
-    def test_shortest_path_test1(self):
-        self.assertEqual(part_one(get_path(__file__, 'test1.txt')), 8)
+  def test_shortest_path_test1(self):
+    self.assertEqual(8, part_one(self.examples[0]))
 
-    def test_shortest_path_test2(self):
-        self.assertEqual(part_one(get_path(__file__, 'test2.txt')), 86)
+  def test_shortest_path_test2(self):
+    self.assertEqual(86, part_one(self.examples[1]))
 
-    def test_shortest_path_test3(self):
-        self.assertEqual(part_one(get_path(__file__, 'test3.txt')), 132)
+  def test_shortest_path_test3(self):
+    self.assertEqual(132, part_one(self.examples[2]))
 
 
 if __name__ == '__main__':
-    unittest.main()
+  unittest.main()

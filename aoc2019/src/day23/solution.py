@@ -11,9 +11,9 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-from aoc2019.src.common.file_utils import read_intcode
 from aoc2019.src.common.nat import NAT
 from aoc2019.src.common.net_intcode import NetIntcode
+from aoc2019.src.common.intcode import read_intcode
 
 
 def init_network(program: list, num_computers: int, nat_address: int) -> list:
@@ -23,8 +23,8 @@ def init_network(program: list, num_computers: int, nat_address: int) -> list:
     return network
 
 
-def part_one(filename: str, num_computers: int, target_address: int) -> int:
-    network = init_network(read_intcode(filename), num_computers, target_address)
+def part_one(program: str, num_computers: int, target_address: int) -> int:
+    network = init_network(read_intcode(program), num_computers, target_address)
     while True:
         for computer in network:
             packet = computer.run_until_io()

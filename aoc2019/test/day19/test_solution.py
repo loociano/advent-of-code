@@ -12,18 +12,20 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 import unittest
-
-from aoc2019.src.common.file_utils import get_path
+from common.python3.AdventOfCodeTestCase import AdventOfCodeTestCase
 from aoc2019.src.day19.solution import part_one, part_two
 
 
-class TestDay19(unittest.TestCase):
-    def test_part_one(self):
-        self.assertEqual(229, part_one(get_path(__file__, 'input.txt'), 50, 50))
+class TestSolution(AdventOfCodeTestCase):
+  def __init__(self, *args, **kwargs):
+    super(TestSolution, self).__init__(__file__, read_raw=True, *args, **kwargs)
 
-    def test_part_two(self):
-        self.assertEqual(6950903, part_two(get_path(__file__, 'input.txt')))
+  def test_part_one(self):
+    self.assertEqual(229, part_one(self.input, width=50, height=50))
+
+  def test_part_two(self):
+    self.assertEqual(6950903, part_two(self.input))
 
 
 if __name__ == '__main__':
-    unittest.main()
+  unittest.main()

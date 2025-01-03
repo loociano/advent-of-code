@@ -11,29 +11,29 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+from typing import Sequence
 
 
-def _get_mass_list(filename):
-    with open(filename) as file:
-        return list(map(int, file))
+def _get_mass_list(masses: Sequence[str]) -> Sequence[int]:
+  return tuple(map(int, masses))
 
 
 def _calculate_fuel(mass):
-    return mass // 3 - 2
+  return mass // 3 - 2
 
 
-def part_one(filename):
-    total_fuel_req = 0
-    for mass in _get_mass_list(filename):
-        total_fuel_req += _calculate_fuel(mass)
-    return total_fuel_req
+def part_one(masses: Sequence[str]):
+  total_fuel_req = 0
+  for mass in _get_mass_list(masses):
+    total_fuel_req += _calculate_fuel(mass)
+  return total_fuel_req
 
 
-def part_two(filename):
-    total_fuel = 0
-    for module_mass in _get_mass_list(filename):
-        module_fuel = _calculate_fuel(module_mass)
-        while module_fuel > 0:
-            total_fuel += module_fuel
-            module_fuel = _calculate_fuel(module_fuel)
-    return total_fuel
+def part_two(masses: Sequence[str]):
+  total_fuel = 0
+  for module_mass in _get_mass_list(masses):
+    module_fuel = _calculate_fuel(module_mass)
+    while module_fuel > 0:
+      total_fuel += module_fuel
+      module_fuel = _calculate_fuel(module_fuel)
+  return total_fuel

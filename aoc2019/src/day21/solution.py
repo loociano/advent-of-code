@@ -11,8 +11,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-from aoc2019.src.common.file_utils import read_intcode
-from aoc2019.src.common.intcode import Intcode
+from aoc2019.src.common.intcode import Intcode, read_intcode
 
 
 def run_springscript(vm: Intcode) -> (int, str):
@@ -43,7 +42,7 @@ def get_hull_damage(vm: Intcode, script: list) -> int:
     return damage
 
 
-def part_one(filename: str) -> int:
+def part_one(program: str) -> int:
     # (!A or !B or !C) and D
     script = [
         'NOT A T',
@@ -53,10 +52,10 @@ def part_one(filename: str) -> int:
         'OR T J',
         'AND D J',
         'WALK']
-    return get_hull_damage(Intcode(read_intcode(filename)), script)
+    return get_hull_damage(Intcode(read_intcode(program)), script)
 
 
-def part_two(filename: str) -> int:
+def part_two(program: str) -> int:
     script = [
         # (!A or !B or !C) and D and (E or H)
         # Inferred experimentally by inspecting the failed scenarios
@@ -71,4 +70,4 @@ def part_two(filename: str) -> int:
         'OR H T',
         'AND T J',
         'RUN']
-    return get_hull_damage(Intcode(read_intcode(filename)), script)
+    return get_hull_damage(Intcode(read_intcode(program)), script)

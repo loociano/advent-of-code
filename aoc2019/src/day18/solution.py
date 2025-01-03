@@ -11,7 +11,8 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-from aoc2019.src.common.file_utils import read_map
+from typing import Sequence
+from common.python3.types import Grid
 
 
 class TreeNode:
@@ -27,7 +28,7 @@ def get_grid(lines: list) -> list:
     return [list(line) for line in lines]
 
 
-def get_num_keys(grid: list) -> int:
+def get_num_keys(grid: Grid) -> int:
     count = 0
     for y in range(0, len(grid)):
         for x in range(0, len(grid[y])):
@@ -36,28 +37,28 @@ def get_num_keys(grid: list) -> int:
     return count
 
 
-def find_start(grid: list) -> tuple:
+def find_start(grid: Grid) -> tuple:
     for y in range(0, len(grid)):
         for x in range(0, len(grid[y])):
             if grid[y][x] == '@':
                 return x, y
 
 
-def is_in_bounds(grid: list, x: int, y: int) -> bool:
+def is_in_bounds(grid: Grid, x: int, y: int) -> bool:
     if x < 0 or x > len(grid[0]) - 1 or y < 0 or y > len(grid) - 1:
         return False
     return grid[y][x] != '#'
 
 
-def is_door(grid: list, x: int, y: int) -> bool:
+def is_door(grid: Grid, x: int, y: int) -> bool:
     return grid[y][x].isupper()
 
 
-def is_key(grid: list, x: int, y: int) -> bool:
+def is_key(grid: Grid, x: int, y: int) -> bool:
     return grid[y][x].islower()
 
 
-def min_steps_all_keys(grid: list, num_keys: int, start_x: int, start_y: int) -> int:
+def min_steps_all_keys(grid: Grid, num_keys: int, start_x: int, start_y: int) -> int:
     dirs = [(0, -1), (0, 1), (-1, 0), (1, 0)]
     root = TreeNode('@', 0, set())
     q = [(start_x, start_y, 0, root)]
@@ -81,7 +82,6 @@ def min_steps_all_keys(grid: list, num_keys: int, start_x: int, start_y: int) ->
     return -1
 
 
-def part_one(filename: str) -> int:
-    grid = read_map(filename)
+def part_one(grid: Sequence[str]) -> int:
     x, y = find_start(grid)
     return min_steps_all_keys(grid, get_num_keys(grid), x, y)

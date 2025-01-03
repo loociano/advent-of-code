@@ -13,18 +13,18 @@
 # limitations under the License.
 import unittest
 from common.python3.AdventOfCodeTestCase import AdventOfCodeTestCase
-from aoc2019.src.day16.solution import part_one, part_two
+from aoc2019.src.day12.solution import part_one, part_two
 
 
 class TestSolution(AdventOfCodeTestCase):
   def __init__(self, *args, **kwargs):
-    super(TestSolution, self).__init__(__file__, read_raw=True, *args, **kwargs)
+    super(TestSolution, self).__init__(__file__, *args, **kwargs)
 
   def test_part_one(self):
-    self.assertEqual('70856418', part_one(self.input, 100))
+    self.assertEqual(6735, part_one(moon_data=self.input, steps=1000))
 
   def test_part_two(self):
-    self.assertEqual('87766336', part_two(self.input, 100))
+    self.assertEqual(326489627728984, part_two(moon_data=self.input))
 
 
 if __name__ == '__main__':

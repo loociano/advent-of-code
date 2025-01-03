@@ -12,30 +12,32 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 import unittest
-
-from aoc2019.src.common.file_utils import get_path
+from common.python3.AdventOfCodeTestCase import AdventOfCodeTestCase
 from aoc2019.src.day20.solution import part_one, part_two
 
 
-class TestDay20(unittest.TestCase):
-    def test_case1(self):
-        self.assertEqual(23, part_one(get_path(__file__, 'test1.txt')))
+class TestSolution(AdventOfCodeTestCase):
+  def __init__(self, *args, **kwargs):
+    super(TestSolution, self).__init__(__file__, read_raw=True,*args, **kwargs)
 
-    def test_case2(self):
-        self.assertEqual(58, part_one(get_path(__file__, 'test2.txt')))
+  def test_case1(self):
+    self.assertEqual(23, part_one(self.examples[0]))
 
-    def test_puzzle_input(self):
-        self.assertEqual(514, part_one(get_path(__file__, 'input.txt')))
+  def test_case2(self):
+    self.assertEqual(58, part_one(self.examples[1]))
 
-    def test_case1_recursive_spaces(self):
-        self.assertEqual(26, part_two(get_path(__file__, 'test1.txt')))
+  def test_puzzle_input(self):
+    self.assertEqual(514, part_one(self.input))
 
-    def test_case3_recursive_spaces(self):
-        self.assertEqual(396, part_two(get_path(__file__, 'test3.txt')))
+  def test_case1_recursive_spaces(self):
+    self.assertEqual(26, part_two(self.examples[0]))
 
-    def test_case3_puzzle_input(self):
-        self.assertEqual(6208, part_two(get_path(__file__, 'input.txt')))
+  def test_case3_recursive_spaces(self):
+    self.assertEqual(396, part_two(self.examples[2]))
+
+  def test_case3_puzzle_input(self):
+    self.assertEqual(6208, part_two(self.input))
 
 
 if __name__ == '__main__':
-    unittest.main()
+  unittest.main()

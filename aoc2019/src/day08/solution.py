@@ -14,9 +14,8 @@
 import sys
 
 
-def get_image_pixels(file: str) -> list:
-    with open(file) as f:
-        return list(map(int, f.read()))
+def _get_image_pixels(input: str) -> list:
+   return list(map(int, input))
 
 
 def get_layer_with_fewest_zeros(freq_list: list) -> list:
@@ -56,10 +55,10 @@ def compute_image(pixels: list, width: int, height: int) -> str:
     return '\n'.join(message)
 
 
-def part_one(filename: str, width: int, height: int) -> str:
-    result_layer = get_layer_with_fewest_zeros(compute_frequencies(get_image_pixels(filename), width, height))
+def part_one(input: str, width: int, height: int) -> str:
+    result_layer = get_layer_with_fewest_zeros(compute_frequencies(_get_image_pixels(input), width, height))
     return result_layer[1] * result_layer[2]
 
 
-def part_two(filename: str, width: int, height: int) -> str:
-    return compute_image(get_image_pixels(filename), width, height)
+def part_two(input: str, width: int, height: int) -> str:
+    return compute_image(_get_image_pixels(input), width, height)

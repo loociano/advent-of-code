@@ -12,24 +12,27 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 import unittest
-
-from aoc2019.src.common.file_utils import get_path
+from common.python3.AdventOfCodeTestCase import AdventOfCodeTestCase
 from aoc2019.src.day08.solution import part_one, part_two
 
 
-class TestDay08(unittest.TestCase):
-    def test_part_one(self):
-        self.assertEqual(1965, part_one(get_path(__file__, 'input.txt'), 25, 6))
+class TestSolution(AdventOfCodeTestCase):
+  def __init__(self, *args, **kwargs):
+    super(TestSolution, self).__init__(__file__, read_raw=True, *args, **kwargs)
 
-    def test_part_two(self):
-        self.assertEqual(''.join([
-            ' XX  XXXX X  X   XX X   X\n',
-            'X  X    X X X     X X   X\n',
-            'X      X  XX      X  X X \n',
-            'X XX  X   X X     X   X  \n',
-            'X  X X    X X  X  X   X  \n',
-            ' XXX XXXX X  X  XX    X  ']), part_two(get_path(__file__, 'input.txt'), 25, 6))  # GZKJY
+  def test_part_one(self):
+    self.assertEqual(1965, part_one(input=self.input, width=25, height=6))
+
+  def test_part_two(self):
+    self.assertEqual(''.join([
+      ' XX  XXXX X  X   XX X   X\n',
+      'X  X    X X X     X X   X\n',
+      'X      X  XX      X  X X \n',
+      'X XX  X   X X     X   X  \n',
+      'X  X X    X X  X  X   X  \n',
+      ' XXX XXXX X  X  XX    X  ']), part_two(input=self.input, width=25,
+                                              height=6))  # GZKJY
 
 
 if __name__ == '__main__':
-    unittest.main()
+  unittest.main()
