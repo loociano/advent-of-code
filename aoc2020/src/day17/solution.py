@@ -114,11 +114,11 @@ def _count_active_neighbours(universe: Dict[Tuple, str],
               continue
             if w < -diameter or w > diameter:
               continue
-            num_active_neighbours += 1 if universe[x, y, z, w] == '#' else 0
+            num_active_neighbours += universe[x, y, z, w] == '#'
         else:
           if (x, y, z) == point:
             continue
-          num_active_neighbours += 1 if universe[x, y, z] == '#' else 0
+          num_active_neighbours += universe[x, y, z] == '#'
   return num_active_neighbours
 
 
@@ -131,7 +131,7 @@ def _count_active_cubes(universe: Dict[Tuple, str], length: int,
       for z in range(-diameter, diameter + 1):
         if dims == 4:
           for w in range(-diameter, diameter + 1):
-            num_active_cubes += 1 if universe[x, y, z, w] == '#' else 0
+            num_active_cubes += universe[x, y, z, w] == '#'
         else:
-          num_active_cubes += 1 if universe[x, y, z] == '#' else 0
+          num_active_cubes += universe[x, y, z] == '#'
   return num_active_cubes

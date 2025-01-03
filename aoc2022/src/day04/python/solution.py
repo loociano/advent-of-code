@@ -39,10 +39,8 @@ def _overlaps(first: str, second: str) -> bool:
 
 
 def count_fully_contained_pairs(pairs: Sequence[str]) -> int:
-  return sum(
-    [1 if _is_fully_contained(*pair.split(',')) else 0 for pair in pairs])
+  return sum(_is_fully_contained(*pair.split(',')) for pair in pairs)
 
 
 def count_overlapping_pairs(pairs: Sequence[str]) -> int:
-  return sum(
-    [1 if _overlaps(*pair.split(',')) else 0 for pair in pairs])
+  return sum(_overlaps(*pair.split(',')) for pair in pairs)

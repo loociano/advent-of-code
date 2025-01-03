@@ -46,7 +46,7 @@ def _count_distinct_arrangements(design: str, patterns: frozenset[str], prefix: 
 def num_possible_designs(input: Sequence[str]) -> int:
   """Returns the total number of designs that can be made with the available patterns."""
   patterns: frozenset[str] = frozenset(input[0].split(', '))  # First line has comma-separated patterns.
-  return sum(1 if _is_possible(design, patterns) else 0
+  return sum(_is_possible(design, patterns)
              for design in input[2:])  # Designs start on the third line.
 
 

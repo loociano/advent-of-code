@@ -19,7 +19,7 @@ def part_one(move_list: List[str]) -> int:
   Returns:
     Number of tiles with black side up.
   """
-  return sum(1 if value == -1 else 0
+  return sum(value == -1
              for value in _calculate_initial_state(move_list).values())
 
 
@@ -40,18 +40,17 @@ def part_two(move_list: List[str], days=100) -> int:
     new_hexagons = hexagons.copy()
     for pos, state in hexagons.items():
       adj_coords = _get_adjacent_coords(pos)
-      num_adj_black = sum([1 if hexagons.get(adj_coord) == -1 else 0
-                           for adj_coord in adj_coords])
+      num_adj_black = sum(hexagons.get(adj_coord) == -1 for adj_coord in adj_coords)
       if state == -1 and (num_adj_black == 0 or num_adj_black > 2):
         new_hexagons[pos] = 1  # Flip black to white
       elif state == 1 and num_adj_black == 2:
         new_hexagons[pos] = -1  # Flip white to black
     hexagons = new_hexagons
-  return sum(1 if value == -1 else 0 for value in hexagons.values())
+  return sum(value == -1 for value in hexagons.values())
 
 
 def _calculate_initial_state(move_list: List[str]) \
-    -> Dict[Tuple[int, int, int], int]:
+        -> Dict[Tuple[int, int, int], int]:
   # Dictionary of hexagons and their state: white (1), black (-1)
   state = {}  # type:Dict[Tuple[int, int, int], int]
   for tile_moves in move_list:
@@ -63,10 +62,10 @@ def _calculate_initial_state(move_list: List[str]) \
 
 
 def _get_adjacent_coords(pos: Tuple[int, int, int]) \
-    -> List[Tuple[int, int, int]]:
+        -> List[Tuple[int, int, int]]:
   result = []
   adjacent_coords = [(0, 1, -1), (1, 0, -1), (1, -1, 0), (0, -1, 1), (-1, 0, 1),
-               (-1, 1, 0)]
+                     (-1, 1, 0)]
   x, y, z = pos
   for coords in adjacent_coords:
     dx, dy, dz = coords
@@ -85,10 +84,10 @@ def _get_num_adj_black(hexagons: Dict[Tuple[int, int, int], int],
   """
   adjacents = [(0, 1, -1), (1, 0, -1), (1, -1, 0), (0, -1, 1), (-1, 0, 1),
                (-1, 1, 0)]
-  return sum([1 if hexagons.get((pos[0] + adj[0],
-                                 pos[1] + adj[1],
-                                 pos[2] + adj[2])) == -1
-              else 0 for adj in adjacents])
+  return sum(hexagons.get((pos[0] + adj[0],
+                           pos[1] + adj[1],
+                           pos[2] + adj[2])) == -1
+             for adj in adjacents)
 
 
 def _decode_moves(moves: str) -> List[Tuple[int, int, int]]:

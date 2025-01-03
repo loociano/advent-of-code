@@ -81,8 +81,8 @@ def _compare_packets(left: Packet, right: Packet):
 
 
 def sum_indices_correct_order(packet_pairs: Sequence[str]) -> int:
-  return sum([index + 1 if is_correct_order(*pair) else 0
-              for index, pair in enumerate(_parse_pairs(packet_pairs))])
+  return sum(index + 1 if is_correct_order(*pair) else 0
+              for index, pair in enumerate(_parse_pairs(packet_pairs)))
 
 
 def calc_decoder_key(packet_pairs: Sequence[str]) -> int:

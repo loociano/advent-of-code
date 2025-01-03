@@ -24,7 +24,7 @@ def get_num_blocks(program: Sequence[int]) -> int:
       break
     vm.run()  # ignore y value
     tile_id = vm.run()
-    block_tile_count += 1 if tile_id == 2 else 0
+    block_tile_count += tile_id == 2
   return block_tile_count
 
 

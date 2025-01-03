@@ -116,20 +116,20 @@ def _count_adj_occupied(grid: List[List[str]], row: int, col: int) -> int:
   count = 0
   if row - 1 >= 0:
     if col - 1 >= 0:
-      count += 1 if grid[row - 1][col - 1] == '#' else 0
+      count += grid[row - 1][col - 1] == '#'
     if col + 1 < len(grid[0]):
-      count += 1 if grid[row - 1][col + 1] == '#' else 0
-    count += 1 if grid[row - 1][col] == '#' else 0
+      count += grid[row - 1][col + 1] == '#'
+    count += grid[row - 1][col] == '#'
   if row + 1 < len(grid):
     if col - 1 >= 0:
-      count += 1 if grid[row + 1][col - 1] == '#' else 0
+      count += grid[row + 1][col - 1] == '#'
     if col + 1 < len(grid[0]):
-      count += 1 if grid[row + 1][col + 1] == '#' else 0
-    count += 1 if grid[row + 1][col] == '#' else 0
+      count += grid[row + 1][col + 1] == '#'
+    count += grid[row + 1][col] == '#'
   if col - 1 >= 0:
-    count += 1 if grid[row][col - 1] == '#' else 0
+    count += grid[row][col - 1] == '#'
   if col + 1 < len(grid[0]):
-    count += 1 if grid[row][col + 1] == '#' else 0
+    count += grid[row][col + 1] == '#'
   return count
 
 
@@ -141,7 +141,7 @@ def _count_seen_occupied(grid: List[List[str]], row: int, col: int) -> int:
   for dx in [-1, 0, 1]:
     for dy in [-1, 0, 1]:
       if not (dx == 0 and dy == 0):
-        count += 1 if _is_occupied(grid, row, col, dx, dy) else 0
+        count += _is_occupied(grid, row, col, dx, dy)
   return count
 
 

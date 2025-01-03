@@ -59,7 +59,7 @@ def part_one(program: str, grid=None):
     color = vm.run()
     if color is None:
       break
-    painted_count += 1 if robot_grid.paint_panel(color) else 0
+    painted_count += robot_grid.paint_panel(color)
     vm.set_input(curr_color)
     robot_grid.move_robot(vm.run())
   return painted_count

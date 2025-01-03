@@ -36,6 +36,6 @@ def _count_trees(tree_map: list, slope_right: int, slope_down: int) -> int:
   width = len(tree_map[0])
 
   for y in range(0, len(tree_map), slope_down):
-    num_trees += 1 if tree_map[y][x % width] == TREE else 0
+    num_trees += tree_map[y][x % width] == TREE
     x += slope_right
   return num_trees

@@ -51,7 +51,7 @@ def part_one(lanternfish_ages: str, days: int) -> int:
   while today < days:
     spawn_count = 0
     for fish in population:
-      spawn_count += 1 if fish.run() else 0
+      spawn_count += fish.run()
     population += [LanternFish() for _ in range(0, spawn_count)]
     today += 1
   return len(population)

@@ -84,9 +84,8 @@ def count_xmas_shapes(input: Sequence[str]) -> int:
         # M S  S S  M M  S M
         #  A    A    A    A
         # M S  M M  S S  S M
-        found_shape = (((input[y - 1][x - 1] == 'M' and input[y + 1][x + 1] == 'S')
+        counter += (((input[y - 1][x - 1] == 'M' and input[y + 1][x + 1] == 'S')
                         or (input[y - 1][x - 1] == 'S' and input[y + 1][x + 1] == 'M'))
                        and ((input[y + 1][x - 1] == 'M' and input[y - 1][x + 1] == 'S')
                             or (input[y + 1][x - 1] == 'S' and input[y - 1][x + 1] == 'M')))
-        counter += 1 if found_shape else 0
   return counter

@@ -24,7 +24,7 @@ def part_one(rules_and_messages: List[str]) -> int:
   """
   rules, messages = _parse(rules_and_messages)
   rule = _flatten_rules(rules)
-  return sum(1 if _matches_rule(message, rule) else 0 for message in messages)
+  return sum(_matches_rule(message, rule) for message in messages)
 
 
 def part_two(rules_and_messages: List[str]) -> int:
@@ -42,7 +42,7 @@ def part_two(rules_and_messages: List[str]) -> int:
     rules[11] = _compute_rule_11(num_loops)
     rule = _flatten_rules(rules)
     new_num_matching_messages = \
-      sum(1 if _matches_rule(message, rule) else 0 for message in messages)
+      sum(_matches_rule(message, rule) for message in messages)
     if new_num_matching_messages == num_matching_messages:
       # Last matching number was the maximum.
       return num_matching_messages

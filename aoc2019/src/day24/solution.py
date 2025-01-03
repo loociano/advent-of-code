@@ -20,7 +20,7 @@ def count_bugs_in_row(grid: list, row: int) -> int:
 
 
 def count_bugs_in_col(grid: list, col: int) -> int:
-  return sum([1 if row[col] == '#' else 0 for row in grid])
+  return sum(row[col] == '#' for row in grid)
 
 
 def count_bugs_in_deeper_level(grids: dict, level: int, line: int, col: int, size: int) -> int:
@@ -58,7 +58,7 @@ def count_adj_bugs(grids: dict, level: int, line: int, col: int, is_recursive_gr
       if is_recursive_grid and is_middle(x, y, size):
         count += count_bugs_in_deeper_level(grids, level, line, col, size)
       else:
-        count += 1 if grid[y][x] == '#' else 0
+        count += grid[y][x] == '#'
     elif is_recursive_grid and has_bug_in_outer_level(grids, level, x, y, size):
       count += 1
   return count

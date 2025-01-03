@@ -113,5 +113,5 @@ def count_positions_with_loop(world_map: Sequence[str]) -> int:
   visited_positions = _move_until_exit(world)
   visited_positions.remove(world.start_guard_pos)  # Guard will notice obstacle, skip.
   # Try adding an obstacle on each of the positions leading to the exit.
-  return sum(1 if World(world_map, add_obstacle=pos).is_stuck_in_loop() else 0
+  return sum(World(world_map, add_obstacle=pos).is_stuck_in_loop()
              for pos in visited_positions)

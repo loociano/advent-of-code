@@ -66,4 +66,4 @@ def _fits(lock: Lock, key: Key) -> bool:
 def count_unique_lock_key_pairs(schematics: Sequence[str]) -> int:
   """Counts unique pairs of (key,lock) that fit."""
   locks, keys = _parse_schematics(schematics)
-  return sum(1 if _fits(key=key, lock=lock) else 0 for lock, key in product(locks, keys))
+  return sum(_fits(key=key, lock=lock) for lock, key in product(locks, keys))

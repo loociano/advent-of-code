@@ -25,7 +25,7 @@ def part_one(depth_report: Sequence[int]) -> int:
   count_depth_increases = 0
   last_depth = None
   for depth in depth_report:
-    count_depth_increases += 1 if (last_depth and depth > last_depth) else 0
+    count_depth_increases += last_depth and depth > last_depth
     last_depth = depth
   return count_depth_increases
 

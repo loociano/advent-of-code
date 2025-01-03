@@ -63,7 +63,7 @@ def count_visible_trees(forest_rows: Sequence[str]) -> int:
   visible_trees = 0
   for x in range(len(forest)):
     for y in range(len(forest[x])):
-      visible_trees += 1 if _is_visible(forest, x, y) else 0
+      visible_trees += _is_visible(forest, x, y)
   return visible_trees
 
 
