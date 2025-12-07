@@ -28,31 +28,44 @@ class Dial:
       raise ValueError(f'Start position must be between 0 and 99, was: {start_position}')
     self.position = start_position
 
-  def rotate(self, num_rotations: int) -> None:
+  def rotate(self, num_rotations: int) -> int:
     """Rotates the dial by a number of rotations and returns the number of
     times it crosses zero.
 
     Rotations can be positive (rotate right) or negative (rotate left).
     """
-    new_position = self.position + num_rotations
-    while new_position < 0:
-      new_position += self._NUM_POSITIONS
-    while new_position >= self._NUM_POSITIONS:
-      new_position -= self._NUM_POSITIONS
-    self.position = new_position
+    count_zero_crosses = 0
+    if num_rotations > 0:
+      distance = self._NUM_POSITIONS - self.position
+    else:
+      if self.position == 0:
+        distance = self._NUM_POSITIONS
+      else:
+        distance = self.position
+    if abs(num_rotations) >= distance:
+      num_of_full_circles = (abs(num_rotations) - distance) // self._NUM_POSITIONS
+      count_zero_crosses += num_of_full_circles + 1
+    self.position = (self.position + num_rotations) % self._NUM_POSITIONS
+    return count_zero_crosses
 
 
-def find_password(rotations: Sequence[str]) -> int:
+def find_password(rotations: Sequence[str],
+                  count_all_zero_clicks: bool = False) -> int:
   """Returns the number of times the dial is left pointing at 0 after any
   rotation in the sequence"""
   dial = Dial()
   count_position_zero = 0
+  count_zero_crosses = 0
   for rotation in rotations:
     matches = re.match(r'(?P<direction>[LR])(?P<num_rotations>\d+)', rotation)
     if matches is None:
-      raise ValueError(f'Invalid rotation {rotation}, expected format [LR]\d+')
+      raise ValueError(f'Invalid rotation {rotation}, expected format [LR]\\d+')
     direction = matches.groupdict()['direction']
     num_rotations = matches.groupdict()['num_rotations']
-    dial.rotate(num_rotations=int(num_rotations) * (-1 if direction == 'L' else 1))
-    count_position_zero += 1 if dial.position == 0 else 0
+    count_zero_crosses += dial.rotate(
+      num_rotations=int(num_rotations) * (-1 if direction == 'L' else 1))
+    if not count_all_zero_clicks and dial.position == 0:
+      count_position_zero += 1
+  if count_all_zero_clicks:
+    return count_zero_crosses
   return count_position_zero

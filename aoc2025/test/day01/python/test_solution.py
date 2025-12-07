@@ -63,6 +63,45 @@ class DialTest(unittest.TestCase):
     dial.rotate(-201)
     self.assertEqual(99, dial.position)
 
+  def testDial_countZeroClicks_success(self):
+    dial = Dial()
+    self.assertEqual(1, dial.rotate(-68))
+    self.assertEqual(82, dial.position)
+    self.assertEqual(0, dial.rotate(-30))
+    self.assertEqual(52, dial.position)
+    self.assertEqual(1, dial.rotate(48))
+    self.assertEqual(0, dial.position)
+    self.assertEqual(1, dial.rotate(100))
+    self.assertEqual(0, dial.position)
+    self.assertEqual(0, dial.rotate(-1))
+    self.assertEqual(99, dial.position)
+
+  def testDial_countZeroClicksMultipleNegativeRotations_success(self):
+    dial = Dial()
+    self.assertEqual(10, dial.rotate(-1000))
+    self.assertEqual(50, dial.position)
+
+  def testDial_countZeroClicksMultiplePositiveRotations_success(self):
+    dial = Dial()
+    self.assertEqual(10, dial.rotate(1000))
+    self.assertEqual(50, dial.position)
+
+  def testDial_countCrossingsWhenStartingAtZero_success(self):
+    dial = Dial(start_position=0)
+    self.assertEqual(0, dial.rotate(-1))
+    self.assertEqual(99, dial.position)
+    self.assertEqual(1, dial.rotate(100))
+    self.assertEqual(99, dial.position)
+    self.assertEqual(10, dial.rotate(1000))
+    self.assertEqual(99, dial.position)
+
+  def testDial_countCrossingsEdgeCase_success(self):
+    dial = Dial()
+    self.assertEqual(1, dial.rotate(-50))
+    self.assertEqual(0, dial.position)
+    self.assertEqual(1, dial.rotate(101))
+    self.assertEqual(1, dial.position)
+
 
 class TestDaySolution(AdventOfCodeTestCase):
   def __init__(self, *args, **kwargs):
@@ -79,6 +118,22 @@ class TestDaySolution(AdventOfCodeTestCase):
 
   def test_findPassword_withPuzzleInput(self):
     self.assertEqual(1168, find_password(self.input))
+
+  def test_findPasswordMethod0x434C49434B_withSampleInput(self):
+    self.assertEqual(6, find_password(self.examples[0], count_all_zero_clicks=True))
+
+  def test_findPasswordMethod0x434C49434B_edgeCases(self):
+    self.assertEqual(1, find_password(('L50', 'R50'), count_all_zero_clicks=True))
+    self.assertEqual(1, find_password(('L50', 'L50'), count_all_zero_clicks=True))
+    self.assertEqual(1, find_password(('R50', 'L50'), count_all_zero_clicks=True))
+    self.assertEqual(1, find_password(('R50', 'R50'), count_all_zero_clicks=True))
+    self.assertEqual(2, find_password(('L150', 'L50'), count_all_zero_clicks=True))
+    self.assertEqual(2, find_password(('L150', 'R50'), count_all_zero_clicks=True))
+    self.assertEqual(2, find_password(('R150', 'L50'), count_all_zero_clicks=True))
+    self.assertEqual(2, find_password(('R150', 'R50'), count_all_zero_clicks=True))
+
+  def test_findPasswordMethod0x434C49434B_withPuzzleInput(self):
+    self.assertEqual(7199, find_password(self.input, count_all_zero_clicks=True))
 
 
 if __name__ == '__main__':
