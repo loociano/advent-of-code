@@ -26,38 +26,33 @@ def _is_made_of_sequence_exactly_twice(product_id: str) -> bool:
   return True
 
 
+def _is_made_of_sequence(product_id: str, sequence_length: int) -> bool:
+  """Returns True iff a product IDs is made of a sequence of a given length."""
+  for i in range(0, sequence_length):
+    for j in range(i, len(product_id), sequence_length):
+      if product_id[j] != product_id[i]:
+        return False
+  return True
+
+
 def _is_made_of_repeated_sequence_at_least_twice(product_id: str) -> bool:
+  """Returns True if a product ID is made only of a sequence repeated at least
+  twice"""
   if len(product_id) < 2:
     # Need at least two digits.
     return False
   if len(product_id) % 2 == 0:  # Even length.
     # Even lengths can be 2, 4, 6, 8 or 10.
-    if _is_made_of_sequence_exactly_twice(product_id):
+    if _is_made_of_sequence(product_id=product_id, sequence_length=len(product_id) // 2):
       return True
     if len(product_id) > 4:
       # In these cases try length 2. 6=3x2, 8=2x2x2, 10=5x2.
-      try_length = 2
-      for i in range(0, try_length):
-        for j in range(i, len(product_id), try_length):
-          if product_id[j] != product_id[i]:
-            return False
-      return True
+      return _is_made_of_sequence(product_id=product_id, sequence_length=2)
     return False
   else:  # Odd length.
     # Max input range length is 10, hence max odd length is 9.
-    if len(product_id) < 9:
-      # We can only try a sequence of 1.
-      for i in range(1, len(product_id)):
-        if product_id[i] != product_id[0]:
-          return False
-    else:
-      # Length is 9, which is 3x3.
-      try_length = 3
-      for i in range(0, try_length):
-        for j in range(i, len(product_id), try_length):
-          if product_id[j] != product_id[i]:
-            return False
-    return True
+    sequence_length = 1 if len(product_id) < 9 else 3  # For length 9 we must try 3-digit sequence.
+    return _is_made_of_sequence(product_id=product_id, sequence_length=sequence_length)
 
 
 def is_valid_id(product_id: str) -> bool:
