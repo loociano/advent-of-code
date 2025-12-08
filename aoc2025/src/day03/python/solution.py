@@ -15,11 +15,9 @@ from typing import Sequence
 
 
 def find_max_joltage(bank: str) -> int:
-  max_joltage = -1
-  for i in range(0, len(bank) - 1):
-    for j in range(i + 1, len(bank)):
-      max_joltage = max(max_joltage, int(bank[i] + bank[j]))
-  return max_joltage
+  return max(int(bank[i] + bank[j])
+             for i in range(0, len(bank) - 1)
+             for j in range(i + 1, len(bank)))
 
 
 def calc_total_output_joltage(banks: Sequence[str]) -> int:
