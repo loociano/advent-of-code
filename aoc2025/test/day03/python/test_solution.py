@@ -26,7 +26,16 @@ class JoltageTest(unittest.TestCase):
     ('818181911112111', 92),
   ])
   def testFindMaxJoltage_success(self, bank, expected):
-    self.assertEqual(expected, find_max_joltage(bank))
+    self.assertEqual(expected, find_max_joltage(bank, digits_left=2))
+
+  @parameterized.expand([
+    ('987654321111111', 987654321111),
+    ('811111111111119', 811111111119),
+    ('234234234234278', 434234234278),
+    ('818181911112111', 888911112111),
+  ])
+  def testFindMaxJoltage2_success(self, bank, expected):
+    self.assertEqual(expected, find_max_joltage(bank=bank))
 
 
 class TestDaySolution(AdventOfCodeTestCase):
@@ -38,6 +47,14 @@ class TestDaySolution(AdventOfCodeTestCase):
 
   def testCalcTotalOutputJoltage_withPuzzleInput(self):
     self.assertEqual(17158, calc_total_output_joltage(banks=self.input))
+
+  def testCalcTotalOutputJoltage2_withSampleInput(self):
+    self.assertEqual(3121910778619,
+                     calc_total_output_joltage(banks=self.examples[0], batteries=12))
+
+  def testCalcTotalOutputJoltage2_withPuzzleInput(self):
+    self.assertEqual(170449335646486,
+                     calc_total_output_joltage(banks=self.input, batteries=12))
 
 
 if __name__ == '__main__':
