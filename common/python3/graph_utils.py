@@ -1,10 +1,10 @@
 """Common graph utility functions."""
 from collections import deque
-from typing import Any, Callable
+from typing import Any, Callable, Sequence
 from common.python3.types import Direction, Position
 
 
-def find(grid: list[list[str]], symbol: str) -> Position:
+def find(grid: Sequence[Sequence[str]], symbol: str) -> Position:
   """Returns the position of a symbol in the grid if found."""
   for y in range(len(grid)):
     for x in range(len(grid[0])):
@@ -13,16 +13,16 @@ def find(grid: list[list[str]], symbol: str) -> Position:
   raise ValueError(f'Symbol {symbol} not found.')
 
 
-def char_at(grid: list[list[str]], pos: Position) -> str:
+def char_at(grid: Sequence[Sequence[str]], pos: Position) -> str:
   """Returns the character at the position in the grid."""
   return grid[pos[1]][pos[0]]
 
 
-def within_bounds(grid: list[list[str]], pos: Position) -> bool:
+def within_bounds(grid: Sequence[Sequence[str]], pos: Position) -> bool:
   return 0 <= pos[0] < len(grid[0]) and 0 <= pos[1] < len(grid)
 
 
-def shortest_distance_bfs(grid: list[list[str]], visited: set[Position] = None,
+def shortest_distance_bfs(grid: Sequence[Sequence[str]], visited: set[Position] = None,
                           start_pos: Position = (0, 0), end_pos: Position = None,
                           directions: tuple[Direction, ...] = ((0, -1), (1, 0), (0, 1), (-1, 0)),
                           predicate: Callable[[Any, ...], bool] = None) -> int:
