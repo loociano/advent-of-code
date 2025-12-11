@@ -13,7 +13,7 @@
 # limitations under the License.
 import unittest
 
-from aoc2025.src.day04.python.solution import count_rolls
+from aoc2025.src.day04.python.solution import count_accessible_rolls, remove_rolls
 from common.python3.AdventOfCodeTestCase import AdventOfCodeTestCase
 
 
@@ -22,10 +22,20 @@ class TestDaySolution(AdventOfCodeTestCase):
     super().__init__(__file__, *args, **kwargs)
 
   def testPart1_withSampleInput(self):
-    self.assertEqual(13, count_rolls(grid=tuple(tuple(row) for row in self.examples[0])))
+    self.assertEqual(13, count_accessible_rolls(
+      grid=tuple(tuple(row) for row in self.examples[0])))
 
   def testPart1_withPuzzleInput(self):
-    self.assertEqual(1344, count_rolls(grid=tuple(tuple(row) for row in self.input)))
+    self.assertEqual(1344, count_accessible_rolls(
+      grid=tuple(tuple(row) for row in self.input)))
+
+  def testPart2_withSampleInput(self):
+    self.assertEqual(43, remove_rolls(
+      grid=tuple(tuple(row) for row in self.examples[0])))
+
+  def testPart2_withSampleInput(self):
+    self.assertEqual(8112, remove_rolls(
+      grid=tuple(tuple(row) for row in self.input)))
 
 
 if __name__ == '__main__':

@@ -44,9 +44,28 @@ def _can_access_roll(grid: Sequence[Sequence[str]], pos: Position) -> bool:
   return True
 
 
-def count_rolls(grid: Sequence[Sequence[str]]) -> int:
+def _is_accessible_roll(grid: Sequence[Sequence[str]], pos: Position) -> bool:
+  return _is_roll(grid=grid, pos=pos) and _can_access_roll(grid=grid, pos=pos)
+
+
+def count_accessible_rolls(grid: Sequence[Sequence[str]]) -> int:
   return sum(1
              for y in range(len(grid))
              for x in range(len(grid[0]))
-             if _is_roll(grid=grid, pos=(y, x))
-             and _can_access_roll(grid=grid, pos=(y, x)))
+             if _is_accessible_roll(grid=grid, pos=(y, x)))
+
+
+def remove_rolls(grid: Sequence[Sequence[str]]) -> int:
+  """Iteratively removes accessible rolls and returns total removed."""
+  removed = 0
+  mutable_grid = list(list(row) for row in grid)
+  while count_accessible_rolls(grid=mutable_grid) != 0:
+    to_be_removed: list[Position] = []
+    for y in range(len(grid)):
+      for x in range(len(grid[0])):
+        if _is_accessible_roll(grid=mutable_grid, pos=(y, x)):
+          to_be_removed.append((y, x))
+    for pos in to_be_removed:
+      mutable_grid[pos[1]][pos[0]] = '.'
+    removed += len(to_be_removed)
+  return removed
