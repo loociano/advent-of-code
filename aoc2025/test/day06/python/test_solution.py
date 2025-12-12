@@ -13,7 +13,7 @@
 # limitations under the License.
 import unittest
 
-from aoc2025.src.day06.python.solution import calculate_grand_total
+from aoc2025.src.day06.python.solution import calculate_grand_total, parse_lines2
 from common.python3.AdventOfCodeTestCase import AdventOfCodeTestCase
 
 
@@ -26,6 +26,14 @@ class TestDaySolution(AdventOfCodeTestCase):
 
   def testPart1_withPuzzleInput(self):
     self.assertEqual(4449991244405, calculate_grand_total(self.input))
+
+  def testPart2_withSampleInput(self):
+    self.assertEqual(3263827, calculate_grand_total(self.examples[0],
+                                                    parse_fn=parse_lines2))
+
+  def testPart2_withPuzzleInput(self):
+    self.assertEqual(9348430857627, calculate_grand_total(self.input,
+                                                    parse_fn=parse_lines2))
 
 
 if __name__ == '__main__':

@@ -13,7 +13,7 @@
 # limitations under the License.
 from math import prod
 from enum import Enum
-from typing import Optional, Sequence
+from typing import Callable, Sequence
 from dataclasses import dataclass, field
 
 
@@ -59,6 +59,25 @@ def _parse_lines(lines: Sequence[str]) -> Sequence[_Problem]:
   return problems
 
 
-def calculate_grand_total(lines: Sequence[str]) -> int:
-  """Returns the sum of all computed problems."""
-  return sum(problem.compute() for problem in _parse_lines(lines))
+def parse_lines2(lines: Sequence[str]) -> Sequence[_Problem]:
+  """Reads operands as columns."""
+  last_line = lines[-1]
+  problems = []
+  for i in range(0, len(lines[0])):
+    str_operand = ''.join(lines[j][i] for j in range(0, len(lines) - 1))
+    if last_line[i] == '*' or last_line[i] == '+':
+      # New problem starts
+      op = _Operator.PRODUCT if last_line[i] == '*' else _Operator.ADD
+      problem = _Problem(operator=op)
+      problem.operands.append(int(str_operand))
+      problems.append(problem)
+    elif not str_operand.isspace():  # Ignore whitespace column.
+      last_problem: _Problem = problems[-1]
+      last_problem.operands.append(int(str_operand))
+  return problems
+
+
+def calculate_grand_total(lines: Sequence[str], parse_fn: Callable[
+  [Sequence[str]], Sequence[_Problem]] = _parse_lines) -> int:
+  """Returns the sum of all computed problems given an input and parsing function."""
+  return sum(problem.compute() for problem in parse_fn(lines))
