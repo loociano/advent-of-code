@@ -15,6 +15,7 @@ from typing import Sequence
 
 
 def _is_in_range(intervals: Sequence[range], number: int) -> bool:
+  """Returns True if a number is within any interval."""
   for interval in intervals:
     if number in interval:
       return True
@@ -22,6 +23,7 @@ def _is_in_range(intervals: Sequence[range], number: int) -> bool:
 
 
 def _parse_lines(lines: Sequence[str]) -> tuple[Sequence[range], Sequence[int]]:
+  """Parses input lines into intervals and ingredient IDs."""
   intervals = []
   numbers = []
   reading_intervals = True
@@ -37,13 +39,11 @@ def _parse_lines(lines: Sequence[str]) -> tuple[Sequence[range], Sequence[int]]:
   return tuple(intervals), tuple(numbers)
 
 
-def count_fresh_ingredients(lines: Sequence[str]) -> int:
-  intervals, numbers = _parse_lines(lines)
-  return sum(1 if _is_in_range(intervals=intervals, number=number) else 0
-             for number in numbers)
-
-
 def _merge_intervals(intervals: Sequence[range]) -> Sequence[range]:
+  """Merges intervals.
+
+  [3-6),[10-15),[12-19),[16-21) becomes [3-6),[10,21).
+  """
   sorted_intervals = sorted(intervals, key=lambda x: x[0])
   merged = [sorted_intervals[0]]
   for i in range(1, len(sorted_intervals)):
@@ -52,15 +52,20 @@ def _merge_intervals(intervals: Sequence[range]) -> Sequence[range]:
     if next_interval[0] > last_interval[-1]:
       # Next interval is disjointed from last one.
       merged.append(next_interval)
-    elif next_interval[0] <= last_interval[-1]:
-      # Next interval is connected to last one.
-      if next_interval[-1] > last_interval[-1]:
-        # Extend last interval
-        merged[-1] = range(merged[-1][0], next_interval[-1] + 1)
+    elif next_interval[0] <= last_interval[-1] < next_interval[-1]:
+      # Next interval is within last one. Extend last interval accordingly.
+      merged[-1] = range(merged[-1][0], next_interval[-1] + 1)
   return tuple(merged)
 
 
+def count_fresh_ingredients(lines: Sequence[str]) -> int:
+  """Counts fresh ingredient IDs given fresh ranges."""
+  intervals, numbers = _parse_lines(lines)
+  return sum(1 if _is_in_range(intervals=intervals, number=number) else 0
+             for number in numbers)
+
+
 def count_fresh_ingredients_in_range(lines: Sequence[str]) -> int:
+  """Counts fresh ingredients considering all ranges."""
   intervals, _ = _parse_lines(lines)
-  merged_intervals = _merge_intervals(intervals)
-  return sum(len(interval) for interval in merged_intervals)
+  return sum(len(interval) for interval in _merge_intervals(intervals))
