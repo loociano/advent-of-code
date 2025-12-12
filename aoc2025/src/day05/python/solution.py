@@ -41,3 +41,26 @@ def count_fresh_ingredients(lines: Sequence[str]) -> int:
   intervals, numbers = _parse_lines(lines)
   return sum(1 if _is_in_range(intervals=intervals, number=number) else 0
              for number in numbers)
+
+
+def _merge_intervals(intervals: Sequence[range]) -> Sequence[range]:
+  sorted_intervals = sorted(intervals, key=lambda x: x[0])
+  merged = [sorted_intervals[0]]
+  for i in range(1, len(sorted_intervals)):
+    next_interval = sorted_intervals[i]
+    last_interval = merged[-1]
+    if next_interval[0] > last_interval[-1]:
+      # Next interval is disjointed from last one.
+      merged.append(next_interval)
+    elif next_interval[0] <= last_interval[-1]:
+      # Next interval is connected to last one.
+      if next_interval[-1] > last_interval[-1]:
+        # Extend last interval
+        merged[-1] = range(merged[-1][0], next_interval[-1] + 1)
+  return tuple(merged)
+
+
+def count_fresh_ingredients_in_range(lines: Sequence[str]) -> int:
+  intervals, _ = _parse_lines(lines)
+  merged_intervals = _merge_intervals(intervals)
+  return sum(len(interval) for interval in merged_intervals)

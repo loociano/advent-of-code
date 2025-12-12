@@ -13,7 +13,7 @@
 # limitations under the License.
 import unittest
 
-from aoc2025.src.day05.python.solution import count_fresh_ingredients
+from aoc2025.src.day05.python.solution import count_fresh_ingredients, count_fresh_ingredients_in_range
 from common.python3.AdventOfCodeTestCase import AdventOfCodeTestCase
 
 
@@ -26,6 +26,14 @@ class TestDaySolution(AdventOfCodeTestCase):
 
   def testPart1_withPuzzleInput(self):
     self.assertEqual(529, count_fresh_ingredients(self.input))
+
+  def testPart2_withSampleInput(self):
+    self.assertEqual(14, count_fresh_ingredients_in_range(self.examples[0]))
+
+  def testPart2_withPuzzleInput(self):
+    # 328796939857376 too low
+    self.assertEqual(344260049617193,
+                     count_fresh_ingredients_in_range(self.input))
 
 
 if __name__ == '__main__':
