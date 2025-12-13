@@ -12,6 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 from typing import Sequence
+from functools import cache
+from common.python3.types import Position
 
 _START = 'S'
 _BEAM = '|'
@@ -20,6 +22,7 @@ _SPACE = '.'
 
 
 def count_beam_splits(grid: Sequence[Sequence[str]]) -> int:
+  """Counts the number of splits a tachyon beam takes from start downwards."""
   mutable_grid = list(list(row) for row in grid)
   width = len(mutable_grid[0])  # Assumes all lines have same length.
   count_splits = 0
@@ -36,3 +39,35 @@ def count_beam_splits(grid: Sequence[Sequence[str]]) -> int:
         if x < width - 1:
           mutable_grid[y][x + 1] = _BEAM  # Split right
   return count_splits
+
+
+@cache  # Caches distinct paths from each split.
+def _count_distinct_paths(grid: Sequence[Sequence[str]], pos: Position,
+                          counter: int) -> int:
+  """Recursively count distinct paths a tachyon can take.
+
+  A tachyon always travels downwards. If it encounters a split '^', the tachyon
+  can go either down-left or down-right.
+  """
+  if pos[0] == len(grid) - 1:
+    return 1
+  look_down = grid[pos[0] + 1][pos[1]]
+  if look_down == _SPLIT:
+    subcounter = 0
+    # There are two possible downward directions: down-left or down-right
+    for step in ((1, -1), (1, 1)):
+      next_pos = (pos[0] + step[0]), (pos[1] + step[1])
+      if 0 <= pos[0] < len(grid) and 0 <= pos[1] < len(grid[0]):
+        subcounter += _count_distinct_paths(grid=grid, pos=next_pos,
+                                            counter=counter)
+    return subcounter
+  else:  # Must be empty space.
+    # Can only go down.
+    return _count_distinct_paths(grid=grid, pos=(pos[0] + 1, pos[1]),
+                                 counter=counter)
+
+
+def count_timelines(grid: Sequence[Sequence[str]]) -> int:
+  """Counts the different timelines that a tachyon particle ends up on."""
+  start_pos: Position = (0, list(grid[0]).index(_START))
+  return _count_distinct_paths(grid=grid, pos=start_pos, counter=0)

@@ -13,7 +13,7 @@
 # limitations under the License.
 import unittest
 
-from aoc2025.src.day07.python.solution import count_beam_splits
+from aoc2025.src.day07.python.solution import count_beam_splits, count_timelines
 from common.python3.AdventOfCodeTestCase import AdventOfCodeTestCase
 
 
@@ -27,6 +27,14 @@ class TestDaySolution(AdventOfCodeTestCase):
 
   def testPart1_withPuzzleInput(self):
     self.assertEqual(1555, count_beam_splits(
+      grid=tuple(tuple(row) for row in self.input)))
+
+  def testPart2_withSampleInput(self):
+    self.assertEqual(40, count_timelines(
+      grid=tuple(tuple(row) for row in self.examples[0])))
+
+  def testPart2_withPuzzleInput(self):
+    self.assertEqual(12895232295789, count_timelines(
       grid=tuple(tuple(row) for row in self.input)))
 
 
